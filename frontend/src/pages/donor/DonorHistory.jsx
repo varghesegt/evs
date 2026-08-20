@@ -122,13 +122,11 @@ export default function DonorHistory() {
         </div>
       </div>
 
-      {/* Horizontal Scrollable Status Filter Chips (Touch Friendly) */}
+      {/* Status Filter Chips Container (Flex Wrap - No Scroll) */}
       <div style={{
         display: 'flex',
+        flexWrap: 'wrap',
         gap: 'var(--space-2)',
-        overflowX: 'auto',
-        WebkitOverflowScrolling: 'touch',
-        paddingBottom: 'var(--space-2)',
         marginBottom: 'var(--space-5)',
       }}>
         {statuses.map(s => (
@@ -140,10 +138,8 @@ export default function DonorHistory() {
             style={{
               borderRadius: 'var(--radius-full)',
               padding: '6px 14px',
-              whiteSpace: 'nowrap',
               fontSize: '12px',
               fontWeight: 700,
-              flexShrink: 0,
             }}
           >
             {s.label} ({s.count})
