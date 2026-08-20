@@ -71,7 +71,7 @@ export default function DonationCard({ donation, actions }) {
       }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '11px', marginBottom: '4px' }}>
           <span style={{ fontWeight: 700, color: methaneColor }}>
-            ⚠️ EVS: {methaneRisk}
+            EVS: {methaneRisk}
           </span>
           <span style={{ color: '#64748b', fontStyle: 'italic', fontSize: '10px' }}>
             CH₄ GWP: 28× · Avoided: {ch4AvoidedKg} kg CO₂e
@@ -148,7 +148,7 @@ export default function DonationCard({ donation, actions }) {
           fontSize: '11px',
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <span style={{ fontSize: '18px' }}>🔐</span>
+            <span className="badge badge-secondary" style={{ fontSize: '9px' }}>SECURE</span>
             <div>
               <div style={{ fontWeight: 700, color: '#0f172a' }}>QR Verification Code</div>
               <div style={{ fontFamily: 'monospace', fontSize: '13px', fontWeight: 800, color: 'var(--color-primary-dark)', letterSpacing: '1.5px' }}>

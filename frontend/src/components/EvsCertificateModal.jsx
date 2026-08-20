@@ -133,7 +133,7 @@ export default function EvsCertificateModal({ donorId = 1, isOpen, onClose }) {
               color: '#92400e',
               textAlign: 'center',
             }}>
-              ⚡ Emissions calculated using IPCC AR6 food category emission factors (1.9–3.2 kg CO₂e/kg) · CH₄ GWP Factor: 28× over 100-year period
+              Emissions calculated using IPCC AR6 food category emission factors (1.9–3.2 kg CO₂e/kg) · CH₄ GWP Factor: 28× over 100-year period
             </div>
 
             {/* Physical Equivalencies */}
@@ -145,17 +145,14 @@ export default function EvsCertificateModal({ donorId = 1, isOpen, onClose }) {
               textAlign: 'center',
             }}>
               <div style={{ background: '#f8fafc', padding: 'var(--space-3)', borderRadius: 'var(--radius-sm)', border: '1px solid #e2e8f0' }}>
-                <span style={{ fontSize: '22px' }}>🚗</span>
                 <div style={{ fontSize: '16px', fontWeight: '700', color: '#0f172a' }}>{cert.carKmNegatedEquivalency} km</div>
                 <span style={{ fontSize: '10px', color: '#64748b' }}>Car Emissions Negated</span>
               </div>
               <div style={{ background: '#f8fafc', padding: 'var(--space-3)', borderRadius: 'var(--radius-sm)', border: '1px solid #e2e8f0' }}>
-                <span style={{ fontSize: '22px' }}>🌳</span>
                 <div style={{ fontSize: '16px', fontWeight: '700', color: '#0f172a' }}>{cert.treesPlantedEquivalency} trees/yr</div>
                 <span style={{ fontSize: '10px', color: '#64748b' }}>Carbon Sequestration</span>
               </div>
               <div style={{ background: '#f8fafc', padding: 'var(--space-3)', borderRadius: 'var(--radius-sm)', border: '1px solid #e2e8f0' }}>
-                <span style={{ fontSize: '22px' }}>💧</span>
                 <div style={{ fontSize: '16px', fontWeight: '700', color: '#0f172a' }}>{(cert.totalWaterSavedLiters / 1000).toFixed(1)} kL</div>
                 <span style={{ fontSize: '10px', color: '#64748b' }}>Water Preserved</span>
               </div>
@@ -171,11 +168,11 @@ export default function EvsCertificateModal({ donorId = 1, isOpen, onClose }) {
             }}>
               <div style={{ background: '#fef3c7', padding: 'var(--space-2)', borderRadius: 'var(--radius-sm)' }}>
                 <div style={{ fontSize: '14px', fontWeight: '700', color: '#92400e' }}>{cert.electricityHoursEquivalency} hrs</div>
-                <span style={{ fontSize: '10px', color: '#b45309' }}>💡 Clean Energy Saved (LED Hours)</span>
+                <span style={{ fontSize: '10px', color: '#b45309' }}>Clean Energy Saved (LED Hours)</span>
               </div>
               <div style={{ background: '#ede9fe', padding: 'var(--space-2)', borderRadius: 'var(--radius-sm)' }}>
                 <div style={{ fontSize: '14px', fontWeight: '700', color: '#5b21b6' }}>{cert.totalLandfillPreventedKg} kg</div>
-                <span style={{ fontSize: '10px', color: '#7c3aed' }}>🗑️ Landfill Mass Diverted</span>
+                <span style={{ fontSize: '10px', color: '#7c3aed' }}>Landfill Mass Diverted</span>
               </div>
             </div>
 
@@ -253,7 +250,7 @@ export default function EvsCertificateModal({ donorId = 1, isOpen, onClose }) {
             {/* Print Action */}
             <div style={{ marginTop: 'var(--space-5)', display: 'flex', gap: 'var(--space-3)' }}>
               <button type="button" className="btn btn-primary" style={{ flex: 1 }} onClick={handlePrint}>
-                🖨 Print / Save PDF Certificate
+                Print / Save PDF Certificate
               </button>
               <button type="button" className="btn btn-secondary" onClick={onClose}>
                 Close

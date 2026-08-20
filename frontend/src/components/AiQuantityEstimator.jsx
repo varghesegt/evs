@@ -65,7 +65,7 @@ export default function AiQuantityEstimator({ onConfirmEstimate }) {
       <div className="card-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--color-border)', paddingBottom: 'var(--space-3)' }}>
         <div>
           <h3 style={{ fontSize: 'var(--font-size-md)', color: 'var(--color-primary-dark)', margin: 0 }}>
-            📸 AI Food Quantity & Serving Estimator
+            AI Food Quantity & Serving Estimator
           </h3>
           <p style={{ fontSize: '11px', color: 'var(--color-text-muted)', margin: '2px 0 0 0' }}>
             Volumetric computer vision & calibrated density model with donor verification
@@ -78,7 +78,7 @@ export default function AiQuantityEstimator({ onConfirmEstimate }) {
         {/* Photo Upload 1: Top View */}
         <div style={{ background: 'var(--color-surface)', padding: 'var(--space-3)', borderRadius: 'var(--radius-md)', border: '1px dashed var(--color-border)', textAlign: 'center' }}>
           <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: 'var(--color-text-main)', marginBottom: 'var(--space-2)' }}>
-            📷 Top View Photo (Required)
+            Top View Photo (Required)
           </label>
           {topPhoto ? (
             <div style={{ position: 'relative' }}>
@@ -94,7 +94,7 @@ export default function AiQuantityEstimator({ onConfirmEstimate }) {
         {/* Photo Upload 2: Side View */}
         <div style={{ background: 'var(--color-surface)', padding: 'var(--space-3)', borderRadius: 'var(--radius-md)', border: '1px dashed var(--color-border)', textAlign: 'center' }}>
           <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: 'var(--color-text-main)', marginBottom: 'var(--space-2)' }}>
-            📷 Side View Photo (Optional)
+            Side View Photo (Optional)
           </label>
           {sidePhoto ? (
             <div style={{ position: 'relative' }}>
@@ -104,7 +104,7 @@ export default function AiQuantityEstimator({ onConfirmEstimate }) {
           ) : (
             <input type="file" accept="image/*" onChange={(e) => handlePhotoUpload(e, setSidePhoto)} style={{ fontSize: '11px', width: '100%' }} />
           )}
-          <span style={{ fontSize: '10px', color: 'var(--color-primary)', display: 'block', marginTop: '4px' }}>⚡ 2-Photo system reduces error margin to ±8%</span>
+          <span style={{ fontSize: '10px', color: 'var(--color-primary)', display: 'block', marginTop: '4px' }}>2-Photo system reduces error margin to ±8%</span>
         </div>
       </div>
 
@@ -151,7 +151,7 @@ export default function AiQuantityEstimator({ onConfirmEstimate }) {
       </div>
 
       <button type="button" className="btn btn-primary" style={{ width: '100%', marginTop: 'var(--space-4)', fontSize: '13px', padding: '8px' }} onClick={handleAnalyze} disabled={analyzing}>
-        {analyzing ? '⚡ Running Volumetric Analysis...' : '⚡ Run AI Volumetric & Serving Analysis'}
+        {analyzing ? 'Running Volumetric Analysis...' : 'Run AI Volumetric & Serving Analysis'}
       </button>
 
       {/* AI Estimation Results Card */}
@@ -161,11 +161,11 @@ export default function AiQuantityEstimator({ onConfirmEstimate }) {
             <div>
               <span style={{ fontSize: '11px', color: 'var(--color-text-muted)', textTransform: 'uppercase', tracking: '0.5px' }}>AI Detected Food</span>
               <h4 style={{ margin: 0, fontSize: 'var(--font-size-md)', color: 'var(--color-primary-dark)' }}>
-                🍚 {result.foodDisplayName}
+                {result.foodDisplayName}
               </h4>
             </div>
             <div style={{ textAlign: 'right' }}>
-              <span className="badge badge-accent" style={{ fontSize: '11px' }}>🎯 {result.confidenceScore}% Confidence</span>
+              <span className="badge badge-accent" style={{ fontSize: '11px' }}>{result.confidenceScore}% Confidence</span>
               <span style={{ display: 'block', fontSize: '10px', color: 'var(--color-text-muted)', marginTop: '2px' }}>MAPE Error: {result.historicalModelErrorRate}%</span>
             </div>
           </div>
@@ -195,7 +195,7 @@ export default function AiQuantityEstimator({ onConfirmEstimate }) {
           {/* Donor Verification Step */}
           <div style={{ marginTop: 'var(--space-4)', paddingTop: 'var(--space-3)', borderTop: '1px dashed var(--color-border)' }}>
             <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: 'var(--color-text-main)', marginBottom: 'var(--space-2)' }}>
-              ✏️ Donor Verification & Actual Weight Confirmation
+              Donor Verification & Actual Weight Confirmation
             </label>
             <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
               <input

@@ -49,7 +49,7 @@ const icons = {
   ngo: createCustomIcon('#0284c7', 'N'),
   volunteer: createCustomIcon('#8b5cf6', 'V'),
   donation: createCustomIcon('#d97706', 'F'),
-  selected: createCustomIcon('#dc2626', '📍'),
+  selected: createCustomIcon('#dc2626', 'S'),
   default: createCustomIcon('#64748b', '•'),
 };
 
@@ -189,7 +189,7 @@ export default function MapView({
               onClick={handleGetCurrentLocation}
               disabled={isLocating}
             >
-              {isLocating ? 'Locating...' : '📍 Use My GPS Location'}
+              {isLocating ? 'Locating...' : 'Use My GPS Location'}
             </button>
           )}
         </div>
@@ -240,8 +240,8 @@ export default function MapView({
                     )}
                   </div>
                   {m.subtitle && <div style={{ fontSize: '12px', color: '#475569', marginTop: '2px' }}>{m.subtitle}</div>}
-                  {m.address && <div style={{ fontSize: '11px', color: '#94a3b8', marginTop: '4px' }}>📍 {m.address}</div>}
-                  {m.phone && <div style={{ fontSize: '11px', color: '#0d9668', marginTop: '2px' }}>📞 {m.phone}</div>}
+                  {m.address && <div style={{ fontSize: '11px', color: '#94a3b8', marginTop: '4px' }}>Address: {m.address}</div>}
+                  {m.phone && <div style={{ fontSize: '11px', color: '#0d9668', marginTop: '2px' }}>Phone: {m.phone}</div>}
                 </div>
               </Popup>
             </Marker>

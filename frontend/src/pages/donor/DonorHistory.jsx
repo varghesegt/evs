@@ -40,7 +40,7 @@ export default function DonorHistory() {
           onClick={() => setCertModalOpen(true)}
           style={{ fontSize: '13px', display: 'flex', alignItems: 'center', gap: '6px' }}
         >
-          📄 Download Official EVS Carbon Certificate
+          Download Official EVS Carbon Certificate
         </button>
       </div>
 
@@ -68,7 +68,7 @@ export default function DonorHistory() {
           <div style={{ fontSize: 'var(--font-size-xl)', fontWeight: 800, color: '#d97706' }}>{totalMeals}</div>
         </div>
         <div className="card" style={{ padding: 'var(--space-3)', textAlign: 'center', borderLeft: '4px solid #7c3aed' }}>
-          <div style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--color-text-muted)', letterSpacing: '0.5px' }}>🌳 Trees Equivalent</div>
+          <div style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--color-text-muted)', letterSpacing: '0.5px' }}>Trees Equivalent</div>
           <div style={{ fontSize: 'var(--font-size-xl)', fontWeight: 800, color: '#7c3aed' }}>{(totalCo2e / 22.0).toFixed(1)} <span style={{ fontSize: '12px', fontWeight: 500 }}>trees/yr</span></div>
         </div>
       </div>

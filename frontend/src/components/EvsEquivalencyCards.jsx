@@ -13,7 +13,6 @@ export default function EvsEquivalencyCards({ summary }) {
       title: 'Car Emissions Negated',
       value: carKm.toLocaleString(),
       unit: 'km driven',
-      icon: '🚗',
       desc: 'Equivalent auto exhaust emissions prevented based on EPA average vehicle factor.',
       badge: 'IPCC GWP Factor',
       formula: 'CO₂e × 4.1 km/kg',
@@ -23,7 +22,6 @@ export default function EvsEquivalencyCards({ summary }) {
       title: 'Trees Planted Equivalent',
       value: trees.toLocaleString(),
       unit: 'trees / yr',
-      icon: '🌳',
       desc: 'Annual carbon sequestration by mature urban trees (USDA Forest Service data).',
       badge: 'UN Carbon Offset',
       formula: 'CO₂e ÷ 22 kg/tree/yr',
@@ -33,7 +31,6 @@ export default function EvsEquivalencyCards({ summary }) {
       title: 'Clean Energy Saved',
       value: elecHours.toLocaleString(),
       unit: 'hrs LED power',
-      icon: '💡',
       desc: 'Household LED electricity hours saved by halting food waste lifecycle (CERC Grid Factor).',
       badge: 'SDG 7 Energy',
       formula: 'CO₂e × 12.0 hrs/kg',
@@ -43,7 +40,6 @@ export default function EvsEquivalencyCards({ summary }) {
       title: 'Virtual Water Preserved',
       value: waterKL.toLocaleString(),
       unit: 'kL conserved',
-      icon: '💧',
       desc: 'Agricultural irrigation water preserved in food supply chain (Water Footprint Network).',
       badge: 'SDG 6 Water',
       formula: 'Food kg × 1,800 L/kg',
@@ -56,7 +52,7 @@ export default function EvsEquivalencyCards({ summary }) {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--space-4)' }}>
         <div>
           <h3 style={{ margin: 0, fontSize: 'var(--font-size-md)', color: 'var(--color-primary-dark)' }}>
-            🌱 Physical EVS Impact Equivalencies
+            Physical EVS Impact Equivalencies
           </h3>
           <p style={{ margin: '2px 0 0 0', fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>
             Tangible real-world environmental equivalents calculated via IPCC landfill methane GWP metrics & verified conversion factors
@@ -88,7 +84,6 @@ export default function EvsEquivalencyCards({ summary }) {
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--space-2)' }}>
-              <span style={{ fontSize: '24px' }}>{card.icon}</span>
               <span className="badge badge-secondary" style={{ fontSize: '9px' }}>{card.badge}</span>
             </div>
             <span style={{ fontSize: '11px', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>

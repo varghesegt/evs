@@ -58,7 +58,7 @@ export default function AnalyticsDashboard() {
   return (
     <DashboardLayout>
       <div className="page-header">
-        <h1>🌍 Environmental Analytics Observatory</h1>
+        <h1>Environmental Analytics Observatory</h1>
         <p>IPCC AR6 emissions methodology · Physical EVS equivalencies · UN SDG contribution metrics</p>
       </div>
 
@@ -86,7 +86,7 @@ export default function AnalyticsDashboard() {
       }}>
         <div>
           <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 700, color: '#92400e' }}>
-            ⚠️ Methane (CH₄) Mitigation Summary
+            Methane (CH₄) Mitigation Summary
           </div>
           <div style={{ fontSize: '12px', color: '#b45309', marginTop: '2px' }}>
             Every kg of food diverted from landfill prevents ~0.06 kg CH₄ emission (GWP 28×) = {((env?.totalFoodRescuedKg || 0) * 0.06 * 28).toFixed(1)} kg CO₂e equivalent methane prevented
@@ -103,7 +103,7 @@ export default function AnalyticsDashboard() {
       <div className="charts-grid">
         {/* Feature 4: IPCC CO2e by Food Category */}
         <div className="chart-card">
-          <div className="chart-card-title">📊 IPCC CO₂e Saved by Food Category (AR6 Emission Factors)</div>
+          <div className="chart-card-title">IPCC CO₂e Saved by Food Category (AR6 Emission Factors)</div>
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie data={categoryIpccData} cx="50%" cy="50%" outerRadius={100} dataKey="value" label={({ name, value }) => `${value} kg`}>
@@ -119,7 +119,7 @@ export default function AnalyticsDashboard() {
 
         {/* Feature 11: Environmental Impact Breakdown */}
         <div className="chart-card">
-          <div className="chart-card-title">📈 Environmental Impact Breakdown</div>
+          <div className="chart-card-title">Environmental Impact Breakdown</div>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={impactData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
@@ -136,7 +136,7 @@ export default function AnalyticsDashboard() {
 
         {/* Feature 7: UN SDG Contribution Metrics */}
         <div className="chart-card">
-          <div className="chart-card-title">🎯 UN Sustainable Development Goals (SDG) Contribution</div>
+          <div className="chart-card-title">UN Sustainable Development Goals (SDG) Contribution</div>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={sdgData} layout="vertical">
               <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
@@ -153,7 +153,7 @@ export default function AnalyticsDashboard() {
 
         {/* Feature 8: Resource Conservation (Transport Optimization) */}
         <div className="chart-card">
-          <div className="chart-card-title">♻️ Resource Conservation via GPS Proximity Matching</div>
+          <div className="chart-card-title">Resource Conservation via GPS Proximity Matching</div>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={resourceData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
@@ -179,7 +179,7 @@ export default function AnalyticsDashboard() {
         fontSize: '12px',
         color: '#065f46',
       }}>
-        <strong>📐 Scientific Methodology & Calibration Notes:</strong>
+        <strong>Scientific Methodology & Calibration Notes:</strong>
         <ul style={{ margin: '8px 0 0 0', paddingLeft: '20px', lineHeight: '1.8' }}>
           <li><strong>AI Volumetric Estimation:</strong> Calibrated container fill % × food density (kg/L) database with ±8% dual-photo error bounding</li>
           <li><strong>IPCC Carbon Footprint:</strong> Category-specific emission factors from IPCC AR6 (Rice: 2.7, Curry: 2.2, Dairy: 3.2 kg CO₂e/kg)</li>

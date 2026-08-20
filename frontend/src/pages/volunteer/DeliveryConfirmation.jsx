@@ -28,12 +28,12 @@ export default function DeliveryConfirmation() {
     const expectedCode = (donation.qrCode || '').trim().toUpperCase();
 
     if (!inputCode) {
-      setQrError(prev => ({ ...prev, [donation.id]: '⚠️ Please scan or enter the QR verification code to confirm delivery.' }));
+      setQrError(prev => ({ ...prev, [donation.id]: 'Please scan or enter the QR verification code to confirm delivery.' }));
       return;
     }
 
     if (inputCode !== expectedCode) {
-      setQrError(prev => ({ ...prev, [donation.id]: `❌ QR code mismatch! Expected ${expectedCode}. Zero-trust verification failed.` }));
+      setQrError(prev => ({ ...prev, [donation.id]: `QR code mismatch! Expected ${expectedCode}. Zero-trust verification failed.` }));
       return;
     }
 
@@ -53,7 +53,7 @@ export default function DeliveryConfirmation() {
   return (
     <DashboardLayout>
       <div className="page-header">
-        <h1>🔐 Delivery Confirmation & QR Verification</h1>
+        <h1>Delivery Confirmation & QR Verification</h1>
         <p>Zero-Trust Chain of Custody — Scan or enter QR code to confirm verified delivery</p>
       </div>
 
@@ -66,16 +66,10 @@ export default function DeliveryConfirmation() {
         border: '1px solid #bfdbfe',
         fontSize: '13px',
         color: '#1e40af',
-        display: 'flex',
-        alignItems: 'center',
-        gap: 'var(--space-3)',
       }}>
-        <span style={{ fontSize: '28px' }}>🔐</span>
-        <div>
-          <strong>Zero-Trust QR Verification Protocol:</strong> Each donation has a unique cryptographic QR code generated at creation.
-          You must enter the matching code printed on the food package label to scientifically verify the chain of custody.
-          This prevents phantom donations and ensures every environmental impact claim is backed by a verified physical food transfer.
-        </div>
+        <strong>Zero-Trust QR Verification Protocol:</strong> Each donation has a unique cryptographic QR code generated at creation.
+        You must enter the matching code printed on the food package label to scientifically verify the chain of custody.
+        This prevents phantom donations and ensures every environmental impact claim is backed by a verified physical food transfer.
       </div>
 
       {loading ? (
@@ -113,15 +107,15 @@ export default function DeliveryConfirmation() {
                     onClick={() => handleDeliver(d)}
                     style={{ whiteSpace: 'nowrap' }}
                   >
-                    {delivering === d.id ? '✅ Verifying...' : '🔐 Verify & Confirm'}
+                    {delivering === d.id ? 'Verifying...' : 'Verify & Confirm'}
                   </button>
                 </div>
                 {qrError[d.id] && (
                   <div style={{
                     fontSize: '11px',
-                    color: qrError[d.id].startsWith('❌') ? '#dc2626' : '#d97706',
+                    color: qrError[d.id].includes('mismatch') ? '#dc2626' : '#d97706',
                     padding: '4px 8px',
-                    background: qrError[d.id].startsWith('❌') ? '#fef2f2' : '#fffbeb',
+                    background: qrError[d.id].includes('mismatch') ? '#fef2f2' : '#fffbeb',
                     borderRadius: 'var(--radius-sm)',
                   }}>
                     {qrError[d.id]}
