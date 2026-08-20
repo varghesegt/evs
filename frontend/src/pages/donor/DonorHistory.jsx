@@ -21,73 +21,143 @@ export default function DonorHistory() {
 
   const filtered = filter === 'ALL' ? donations : donations.filter(d => d.status === filter);
 
-  // Calculate environmental impact summary from delivered donations
-  const deliveredDonations = donations.filter(d => d.status === 'DELIVERED');
+  // Environmental impact calculations
   const totalKgRescued = donations.reduce((sum, d) => sum + (d.quantityKg || 0), 0);
   const totalCo2e = Math.round(totalKgRescued * 2.5 * 10) / 10;
   const totalMeals = Math.round(totalKgRescued * 6.25);
+  const totalTrees = (totalCo2e / 22.0).toFixed(1);
+
+  const statuses = [
+    { id: 'ALL', label: 'All', count: donations.length },
+    { id: 'VALIDATED', label: 'Pending AI Match', count: donations.filter(d => d.status === 'VALIDATED').length },
+    { id: 'ACCEPTED', label: 'NGO Accepted', count: donations.filter(d => d.status === 'ACCEPTED').length },
+    { id: 'DELIVERED', label: 'Delivered', count: donations.filter(d => d.status === 'DELIVERED').length },
+    { id: 'EXPIRED', label: 'Expired', count: donations.filter(d => d.status === 'EXPIRED').length },
+  ];
 
   return (
     <DashboardLayout>
-      <div className="page-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 'var(--space-4)' }}>
+      {/* Mobile-First Header */}
+      <div className="page-header" style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: 'var(--space-3)',
+        marginBottom: 'var(--space-4)',
+      }}>
         <div>
-          <h1>My Food Donations</h1>
-          <p>Complete history of your food donations, environmental ledger, and carbon offset records</p>
+          <h1>My Donation History</h1>
+          <p>Track your surplus food donations, status progression, and verified carbon offsets</p>
         </div>
+
         <button
           type="button"
-          className="btn btn-accent btn-md"
+          className="btn btn-accent btn-lg"
           onClick={() => setCertModalOpen(true)}
-          style={{ fontSize: '13px', display: 'flex', alignItems: 'center', gap: '6px' }}
+          style={{
+            minHeight: '48px',
+            fontSize: '13px',
+            fontWeight: 700,
+            borderRadius: 'var(--radius-lg)',
+            boxShadow: '0 4px 12px rgba(217, 119, 6, 0.25)',
+            width: '100%',
+            maxWidth: '340px',
+          }}
         >
           Download Official EVS Carbon Certificate
         </button>
       </div>
 
-      {/* Donor Environmental Impact Summary Strip */}
+      {/* Mobile Environmental Impact Summary Cards */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))',
         gap: 'var(--space-3)',
         marginBottom: 'var(--space-5)',
       }}>
         <div className="card" style={{ padding: 'var(--space-3)', textAlign: 'center', borderLeft: '4px solid var(--color-primary)' }}>
-          <div style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--color-text-muted)', letterSpacing: '0.5px' }}>Total Donations</div>
-          <div style={{ fontSize: 'var(--font-size-xl)', fontWeight: 800, color: 'var(--color-primary-dark)' }}>{donations.length}</div>
+          <div style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--color-text-muted)', letterSpacing: '0.05em', fontWeight: 700 }}>
+            Total Batches
+          </div>
+          <div style={{ fontSize: 'var(--font-size-xl)', fontWeight: 800, color: 'var(--color-primary-dark)', margin: '2px 0' }}>
+            {donations.length}
+          </div>
         </div>
+
         <div className="card" style={{ padding: 'var(--space-3)', textAlign: 'center', borderLeft: '4px solid #0284c7' }}>
-          <div style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--color-text-muted)', letterSpacing: '0.5px' }}>Food Rescued</div>
-          <div style={{ fontSize: 'var(--font-size-xl)', fontWeight: 800, color: '#0284c7' }}>{totalKgRescued.toFixed(1)} <span style={{ fontSize: '12px', fontWeight: 500 }}>kg</span></div>
+          <div style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--color-text-muted)', letterSpacing: '0.05em', fontWeight: 700 }}>
+            Food Rescued
+          </div>
+          <div style={{ fontSize: 'var(--font-size-xl)', fontWeight: 800, color: '#0284c7', margin: '2px 0' }}>
+            {totalKgRescued.toFixed(1)} <span style={{ fontSize: '11px', fontWeight: 500 }}>kg</span>
+          </div>
         </div>
+
         <div className="card" style={{ padding: 'var(--space-3)', textAlign: 'center', borderLeft: '4px solid #0d9668' }}>
-          <div style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--color-text-muted)', letterSpacing: '0.5px' }}>CO₂e Avoided</div>
-          <div style={{ fontSize: 'var(--font-size-xl)', fontWeight: 800, color: '#0d9668' }}>{totalCo2e} <span style={{ fontSize: '12px', fontWeight: 500 }}>kg</span></div>
+          <div style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--color-text-muted)', letterSpacing: '0.05em', fontWeight: 700 }}>
+            CO₂e Avoided
+          </div>
+          <div style={{ fontSize: 'var(--font-size-xl)', fontWeight: 800, color: '#0d9668', margin: '2px 0' }}>
+            {totalCo2e} <span style={{ fontSize: '11px', fontWeight: 500 }}>kg</span>
+          </div>
         </div>
+
         <div className="card" style={{ padding: 'var(--space-3)', textAlign: 'center', borderLeft: '4px solid #d97706' }}>
-          <div style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--color-text-muted)', letterSpacing: '0.5px' }}>Meals Supported</div>
-          <div style={{ fontSize: 'var(--font-size-xl)', fontWeight: 800, color: '#d97706' }}>{totalMeals}</div>
+          <div style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--color-text-muted)', letterSpacing: '0.05em', fontWeight: 700 }}>
+            Meals Provided
+          </div>
+          <div style={{ fontSize: 'var(--font-size-xl)', fontWeight: 800, color: '#d97706', margin: '2px 0' }}>
+            {totalMeals}
+          </div>
         </div>
+
         <div className="card" style={{ padding: 'var(--space-3)', textAlign: 'center', borderLeft: '4px solid #7c3aed' }}>
-          <div style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--color-text-muted)', letterSpacing: '0.5px' }}>Trees Equivalent</div>
-          <div style={{ fontSize: 'var(--font-size-xl)', fontWeight: 800, color: '#7c3aed' }}>{(totalCo2e / 22.0).toFixed(1)} <span style={{ fontSize: '12px', fontWeight: 500 }}>trees/yr</span></div>
+          <div style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--color-text-muted)', letterSpacing: '0.05em', fontWeight: 700 }}>
+            Trees Equivalent
+          </div>
+          <div style={{ fontSize: 'var(--font-size-xl)', fontWeight: 800, color: '#7c3aed', margin: '2px 0' }}>
+            {totalTrees} <span style={{ fontSize: '11px', fontWeight: 500 }}>trees/yr</span>
+          </div>
         </div>
       </div>
 
-      <div className="flex gap-2 mb-6">
-        {['ALL', 'VALIDATED', 'ACCEPTED', 'DELIVERED', 'EXPIRED'].map(s => (
-          <button key={s} className={`btn ${filter === s ? 'btn-primary' : 'btn-secondary'} btn-sm`}
-                  onClick={() => setFilter(s)}>
-            {s === 'ALL' ? `All (${donations.length})` : s.charAt(0) + s.slice(1).toLowerCase()}
+      {/* Horizontal Scrollable Status Filter Chips (Touch Friendly) */}
+      <div style={{
+        display: 'flex',
+        gap: 'var(--space-2)',
+        overflowX: 'auto',
+        WebkitOverflowScrolling: 'touch',
+        paddingBottom: 'var(--space-2)',
+        marginBottom: 'var(--space-5)',
+      }}>
+        {statuses.map(s => (
+          <button
+            key={s.id}
+            type="button"
+            className={`btn ${filter === s.id ? 'btn-primary' : 'btn-secondary'} btn-sm`}
+            onClick={() => setFilter(s.id)}
+            style={{
+              borderRadius: 'var(--radius-full)',
+              padding: '6px 14px',
+              whiteSpace: 'nowrap',
+              fontSize: '12px',
+              fontWeight: 700,
+              flexShrink: 0,
+            }}
+          >
+            {s.label} ({s.count})
           </button>
         ))}
       </div>
 
+      {/* Donation Cards Container */}
       {loading ? (
         <div className="loading-spinner"><div className="spinner"></div></div>
       ) : filtered.length === 0 ? (
         <div className="empty-state">
           <h3>No donations found</h3>
-          <p>No donations match the selected filter.</p>
+          <p>No donation records match the selected status filter.</p>
         </div>
       ) : (
         <div className="donation-cards-grid">
@@ -97,7 +167,7 @@ export default function DonorHistory() {
         </div>
       )}
 
-      {/* Official EVS Carbon Offset Certificate Modal */}
+      {/* EVS Carbon Offset Certificate Modal */}
       <EvsCertificateModal
         donorId={user?.id || 1}
         isOpen={certModalOpen}
