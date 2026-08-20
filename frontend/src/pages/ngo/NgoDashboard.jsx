@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../../components/DashboardLayout';
 import StatCard from '../../components/StatCard';
 import DonationCard from '../../components/DonationCard';
@@ -8,6 +9,7 @@ import { getAvailableDonations } from '../../api/donationApi';
 import { getMapPins } from '../../api/analyticsApi';
 
 export default function NgoDashboard() {
+  const navigate = useNavigate();
   const [myDonations, setMyDonations] = useState([]);
   const [available, setAvailable] = useState([]);
   const [mapPins, setMapPins] = useState([]);
@@ -29,27 +31,47 @@ export default function NgoDashboard() {
 
   return (
     <DashboardLayout>
-      <div className="page-header">
-        <h1>NGO Dashboard</h1>
-        <p>Manage incoming food requests, view live pins, and coordinate volunteers</p>
+      <div className="page-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 'var(--space-3)' }}>
+        <div>
+          <h1>NGO Operations</h1>
+          <p>Manage incoming food requests, view live pins, and coordinate volunteers</p>
+        </div>
+        <div style={{ display: 'flex', gap: 'var(--space-2)', width: '100%', maxWidth: '400px' }}>
+          <button
+            type="button"
+            className="btn btn-primary btn-md"
+            onClick={() => navigate('/ngo/incoming')}
+            style={{ flex: 1, minHeight: '44px' }}
+          >
+            Incoming Requests ({available.length})
+          </button>
+          <button
+            type="button"
+            className="btn btn-secondary btn-md"
+            onClick={() => navigate('/ngo/assign')}
+            style={{ flex: 1, minHeight: '44px' }}
+          >
+            Assign Volunteers
+          </button>
+        </div>
       </div>
 
       <div className="stats-grid">
-        <StatCard label="Available Donations" value={available.length} variant="secondary" />
-        <StatCard label="My Accepted" value={myDonations.length} variant="primary" />
-        <StatCard label="Delivered" value={completed} variant="accent" />
-        <StatCard label="Total Food Handled" value={totalKg.toFixed(1)} unit="kg" variant="primary" />
+        <StatCard label="Available Food Surplus" value={available.length} variant="secondary" />
+        <StatCard label="Accepted Requests" value={myDonations.length} variant="primary" />
+        <StatCard label="Completed Deliveries" value={completed} variant="accent" />
+        <StatCard label="Total Food Handled" value={`${totalKg.toFixed(1)} kg`} variant="primary" />
       </div>
 
       <div className="card mb-6" style={{ marginBottom: 'var(--space-6)' }}>
         <div className="card-header" style={{ marginBottom: 'var(--space-2)' }}>
-          <span className="card-title">Realtime Interactive Map & Pin Points</span>
+          <span className="card-title">Realtime Ecosystem Map & Network Pin Points</span>
         </div>
-        <MapView markers={mapPins} zoom={12} height="400px" showFilters={true} />
+        <MapView markers={mapPins} zoom={12} height="360px" showFilters={true} />
       </div>
 
-      <div className="card-header mb-4">
-        <span className="card-title">Recent Activity & Accepted Donations</span>
+      <div className="card-header" style={{ marginBottom: 'var(--space-4)' }}>
+        <span className="card-title">Recent Activity & Accepted Food Donations</span>
       </div>
 
       {loading ? (

@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import DashboardLayout from '../../components/DashboardLayout';
-import { StatusBadge } from '../../components/Badges';
 import { getAllUsers, toggleUserStatus, approveNgo } from '../../api/analyticsApi';
 
 export default function UserManagement() {
@@ -41,15 +40,19 @@ export default function UserManagement() {
   return (
     <DashboardLayout>
       <div className="page-header">
-        <h1>User Management</h1>
-        <p>Manage platform users and approve NGO registrations</p>
+        <h1>User Administration</h1>
+        <p>Manage ecosystem members, verify credentials, and approve NGO registrations</p>
       </div>
 
-      <div className="flex gap-2 mb-6">
+      <div style={{ display: 'flex', gap: 'var(--space-2)', flexWrap: 'wrap', marginBottom: 'var(--space-5)' }}>
         {['ALL', 'DONOR', 'NGO', 'VOLUNTEER', 'ADMIN'].map(r => (
-          <button key={r} className={`btn ${filter === r ? 'btn-primary' : 'btn-secondary'} btn-sm`}
-                  onClick={() => setFilter(r)}>
-            {r === 'ALL' ? 'All' : r}
+          <button
+            key={r}
+            className={`btn ${filter === r ? 'btn-primary' : 'btn-secondary'} btn-sm`}
+            onClick={() => setFilter(r)}
+            style={{ borderRadius: 'var(--radius-full)', padding: '6px 14px' }}
+          >
+            {r === 'ALL' ? `All Users (${users.length})` : r}
           </button>
         ))}
       </div>
@@ -62,43 +65,57 @@ export default function UserManagement() {
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Name</th>
+                <th>Member Details</th>
                 <th>Email</th>
                 <th>Role</th>
-                <th>Status</th>
+                <th>Verification Status</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {filtered.map(u => (
                 <tr key={u.id}>
-                  <td>{u.id}</td>
+                  <td style={{ fontWeight: 700, color: 'var(--color-primary)' }}>#{u.id}</td>
                   <td>
-                    <div className="font-medium">{u.name}</div>
-                    {u.organizationName && <div className="text-sm text-muted">{u.organizationName}</div>}
+                    <div style={{ fontWeight: 700, color: 'var(--color-text)' }}>{u.name}</div>
+                    {u.organizationName && (
+                      <div style={{ fontSize: '11px', color: 'var(--color-text-secondary)', marginTop: '2px' }}>
+                        {u.organizationName}
+                      </div>
+                    )}
                   </td>
-                  <td>{u.email}</td>
+                  <td style={{ fontFamily: 'monospace', fontSize: '12px' }}>{u.email}</td>
                   <td>
                     <span className="badge badge-primary">{u.role.replace('ROLE_', '')}</span>
                   </td>
                   <td>
-                    <span className={`badge ${u.isActive ? 'badge-primary' : 'badge-danger'}`}>
-                      {u.isActive ? 'Active' : 'Inactive'}
-                    </span>
-                    {u.role === 'ROLE_NGO' && (
-                      <span className={`badge ${u.isApproved ? 'badge-primary' : 'badge-accent'}`} style={{ marginLeft: '4px' }}>
-                        {u.isApproved ? 'Approved' : 'Pending'}
+                    <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+                      <span className={`badge ${u.isActive ? 'badge-primary' : 'badge-danger'}`}>
+                        {u.isActive ? 'Active' : 'Inactive'}
                       </span>
-                    )}
+                      {u.role === 'ROLE_NGO' && (
+                        <span className={`badge ${u.isApproved ? 'badge-primary' : 'badge-accent'}`}>
+                          {u.isApproved ? 'Approved' : 'Pending Verification'}
+                        </span>
+                      )}
+                    </div>
                   </td>
                   <td>
-                    <div className="flex gap-2">
-                      <button className="btn btn-secondary btn-sm" onClick={() => handleToggle(u.id)}>
+                    <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
+                      <button
+                        className="btn btn-secondary btn-sm"
+                        onClick={() => handleToggle(u.id)}
+                        style={{ minHeight: '36px' }}
+                      >
                         {u.isActive ? 'Deactivate' : 'Activate'}
                       </button>
                       {u.role === 'ROLE_NGO' && !u.isApproved && (
-                        <button className="btn btn-primary btn-sm" onClick={() => handleApprove(u.id)}>
-                          Approve
+                        <button
+                          className="btn btn-primary btn-sm"
+                          onClick={() => handleApprove(u.id)}
+                          style={{ minHeight: '36px' }}
+                        >
+                          Approve NGO
                         </button>
                       )}
                     </div>
