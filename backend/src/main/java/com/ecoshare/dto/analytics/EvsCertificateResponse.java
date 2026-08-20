@@ -23,4 +23,6 @@ public class EvsCertificateResponse {
     private Double electricityHoursEquivalency;
     private String certificateCode;
     private String issueDate;
+    private String sha256Hash;
+    private String verificationUrl;
 }

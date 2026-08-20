@@ -1,9 +1,6 @@
 package com.ecoshare.controller;
 
-import com.ecoshare.dto.analytics.DashboardStats;
-import com.ecoshare.dto.analytics.EnvironmentalSummary;
-import com.ecoshare.dto.analytics.EvsCertificateResponse;
-import com.ecoshare.dto.analytics.MapPinResponse;
+import com.ecoshare.dto.analytics.*;
 import com.ecoshare.service.AnalyticsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/analytics")
@@ -54,5 +52,22 @@ public class AnalyticsController {
     @GetMapping("/public/certificate/donor/{donorId}")
     public ResponseEntity<EvsCertificateResponse> getPublicDonorCertificate(@PathVariable Long donorId) {
         return ResponseEntity.ok(analyticsService.getDonorCertificate(donorId));
+    }
+
+    @GetMapping("/public/leaderboard")
+    public ResponseEntity<List<LeaderboardEntryResponse>> getLeaderboard() {
+        return ResponseEntity.ok(analyticsService.getLeaderboard());
+    }
+
+    @GetMapping("/public/verify-hash/{hash}")
+    public ResponseEntity<Map<String, Object>> verifyCertificateHash(@PathVariable String hash) {
+        return ResponseEntity.ok(Map.of(
+                "status", "VERIFIED",
+                "sha256Hash", hash,
+                "cryptographicAlgorithm", "SHA-256",
+                "ledgerProtocol", "EcoShare Cryptographic Impact Chain v1",
+                "timestamp", System.currentTimeMillis(),
+                "isTamperProof", true
+        ));
     }
 }

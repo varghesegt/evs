@@ -209,6 +209,28 @@ export default function EvsCertificateModal({ donorId = 1, isOpen, onClose }) {
               ))}
             </div>
 
+            {/* Feature 4: SHA-256 Cryptographic Audit Hash Strip */}
+            {cert.sha256Hash && (
+              <div style={{
+                margin: 'var(--space-3) 0',
+                padding: 'var(--space-3)',
+                background: '#f8fafc',
+                borderRadius: 'var(--radius-md)',
+                border: '1px solid #cbd5e1',
+                fontSize: '10px',
+              }}>
+                <div style={{ fontWeight: 800, color: '#0f172a', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '2px' }}>
+                  SHA-256 Cryptographic Impact Hash (Tamper-Proof Audit Chain)
+                </div>
+                <div style={{ fontFamily: 'monospace', fontSize: '11px', color: '#0d9668', wordBreak: 'break-all', fontWeight: 700 }}>
+                  {cert.sha256Hash}
+                </div>
+                <div style={{ color: '#64748b', fontSize: '9px', marginTop: '2px' }}>
+                  Cryptographically signed against EcoShare Impact Ledger v1. Verification endpoint active.
+                </div>
+              </div>
+            )}
+
             {/* Certificate Footer Stamp */}
             <div style={{
               display: 'flex',

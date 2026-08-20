@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../../components/DashboardLayout';
 import StatCard from '../../components/StatCard';
 import DonationCard from '../../components/DonationCard';
+import CvrpLogisticsModal from '../../components/CvrpLogisticsModal';
 import { getMyPickups, getActivePickups } from '../../api/volunteerApi';
 
 export default function VolunteerDashboard() {
@@ -10,6 +11,7 @@ export default function VolunteerDashboard() {
   const [allPickups, setAllPickups] = useState([]);
   const [active, setActive] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [cvrpModalOpen, setCvrpModalOpen] = useState(false);
 
   useEffect(() => {
     Promise.all([getMyPickups(), getActivePickups()])
@@ -29,16 +31,16 @@ export default function VolunteerDashboard() {
       <div className="page-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 'var(--space-3)' }}>
         <div>
           <h1>Volunteer Logistics</h1>
-          <p>Your pickup assignments, zero-trust QR verification, and delivery history</p>
+          <p>Your pickup assignments, zero-trust QR verification, and multi-stop CVRP route optimization</p>
         </div>
-        <div style={{ display: 'flex', gap: 'var(--space-2)', width: '100%', maxWidth: '400px' }}>
+        <div style={{ display: 'flex', gap: 'var(--space-2)', width: '100%', maxWidth: '480px' }}>
           <button
             type="button"
             className="btn btn-primary btn-md"
-            onClick={() => navigate('/volunteer/active')}
+            onClick={() => setCvrpModalOpen(true)}
             style={{ flex: 1, minHeight: '44px' }}
           >
-            Active Pickups ({active.length})
+            CVRP Multi-Stop Route Solver
           </button>
           <button
             type="button"
@@ -46,7 +48,7 @@ export default function VolunteerDashboard() {
             onClick={() => navigate('/volunteer/deliver')}
             style={{ flex: 1, minHeight: '44px' }}
           >
-            QR Delivery
+            QR Verification
           </button>
         </div>
       </div>
@@ -76,6 +78,12 @@ export default function VolunteerDashboard() {
           ))}
         </div>
       )}
+
+      {/* Multi-Stop CVRP Logistics Solver Modal */}
+      <CvrpLogisticsModal
+        isOpen={cvrpModalOpen}
+        onClose={() => setCvrpModalOpen(false)}
+      />
     </DashboardLayout>
   );
 }

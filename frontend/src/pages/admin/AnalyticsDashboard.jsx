@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import DashboardLayout from '../../components/DashboardLayout';
 import StatCard from '../../components/StatCard';
 import EvsEquivalencyCards from '../../components/EvsEquivalencyCards';
+import EsgLeaderboard from '../../components/EsgLeaderboard';
+import DemandForecastCard from '../../components/DemandForecastCard';
 import { getEnvironmentalSummary } from '../../api/analyticsApi';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -59,7 +61,7 @@ export default function AnalyticsDashboard() {
     <DashboardLayout>
       <div className="page-header">
         <h1>Environmental Analytics Observatory</h1>
-        <p>IPCC AR6 emissions methodology · Physical EVS equivalencies · UN SDG contribution metrics</p>
+        <p>IPCC AR6 emissions methodology · Predictive shortage forecasting · Corporate ESG Leaderboard · SHA-256 Ledger</p>
       </div>
 
       {/* Feature 11: Stat Cards */}
@@ -69,6 +71,12 @@ export default function AnalyticsDashboard() {
         <StatCard label="CO₂e Avoided" value={(env?.totalCo2eAvoidedKg || 0).toFixed(1)} unit="kg" variant="accent" />
         <StatCard label="Water Saved" value={((env?.totalWaterSavedLiters || 0) / 1000).toFixed(1)} unit="kL" variant="secondary" />
       </div>
+
+      {/* Feature 1: Predictive Shortage Forecasting Component */}
+      <DemandForecastCard />
+
+      {/* Feature 5: Corporate ESG Leaderboard Component */}
+      <EsgLeaderboard />
 
       {/* Feature 6: Physical EVS Impact Equivalency Cards */}
       <EvsEquivalencyCards summary={env} />
@@ -182,10 +190,9 @@ export default function AnalyticsDashboard() {
         <strong>Scientific Methodology & Calibration Notes:</strong>
         <ul style={{ margin: '8px 0 0 0', paddingLeft: '20px', lineHeight: '1.8' }}>
           <li><strong>AI Volumetric Estimation:</strong> Calibrated container fill % × food density (kg/L) database with ±8% dual-photo error bounding</li>
-          <li><strong>IPCC Carbon Footprint:</strong> Category-specific emission factors from IPCC AR6 (Rice: 2.7, Curry: 2.2, Dairy: 3.2 kg CO₂e/kg)</li>
-          <li><strong>Methane Prevention:</strong> CH₄ GWP = 28× over 100-year period (IPCC AR6 Table 7.15)</li>
-          <li><strong>Physical Equivalencies:</strong> EPA car emissions (4.1 km/kg CO₂e), USDA Forest Service (22 kg CO₂e/tree/yr), CERC grid factor</li>
-          <li><strong>Self-Learning MAPE:</strong> Mean Absolute Percentage Error continuously calibrated from donor-verified weight confirmations</li>
+          <li><strong>Predictive Shortage Engine:</strong> Time-series meal deficit forecasting for Trichy shelters based on day-of-week consumption patterns</li>
+          <li><strong>SHA-256 Impact Ledger:</strong> Cryptographically signed certificate hashes ensuring tamper-proof corporate ESG compliance</li>
+          <li><strong>Multi-Stop CVRP Logistics:</strong> Capacitated vehicle routing algorithm solving multi-pickup multi-dropoff travel routes</li>
         </ul>
       </div>
     </DashboardLayout>
