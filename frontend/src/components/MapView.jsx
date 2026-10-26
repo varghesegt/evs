@@ -471,7 +471,7 @@ export default function MapView({
   // Swiggy / Zomato Two-Wheeler Live Camera & Theme Controls
   const [followRider, setFollowRider] = useState(true);
   const [zoomMode, setZoomMode] = useState('street'); // 'street' (16x) | 'route' (fit bounds)
-  const [mapTheme, setMapTheme] = useState('osm'); // 'osm' (official OpenStreetMap) | 'esri' | 'hot'
+  const [mapTheme, setMapTheme] = useState('esri'); // 'esri' (super reliable, no key, no 403) | 'osm' | 'hot'
 
   // Enterprise GIS Overlays & Controls
   const [showTraffic, setShowTraffic] = useState(false);
