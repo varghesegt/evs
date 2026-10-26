@@ -3,6 +3,10 @@ import { MapContainer, TileLayer, Marker, Popup, Polyline, Circle, useMap } from
 import L from 'leaflet';
 import { getGoogleMapsNavigationUrl } from '../utils/gmapsUtils';
 import { FALLBACK_MAP_TILE_DATA_URL } from './MapView';
+import {
+  VERIFIED_MISSION_ROAD_COORDS,
+  VERIFIED_MISSION_STEPS,
+} from '../utils/trichyVerifiedRoadCorridor';
 
 function MapInvalidator() {
   const map = useMap();
@@ -33,17 +37,19 @@ function MapInvalidator() {
   return null;
 }
 
-// Waypoint coordinates representing a realistic route through Trichy
-// SRM Hotel (10.7905, 78.7047) -> Cantonment -> Central Bus Stand -> Trichy Seva Sangam (10.8120, 78.6920)
-const ROUTE_WAYPOINTS = [
-  { lat: 10.7905, lng: 78.7047, name: 'SRM Hotel Pickup Gate', speed: 0 },
-  { lat: 10.7932, lng: 78.7025, name: 'Junction Roundabout', speed: 22 },
-  { lat: 10.7970, lng: 78.6995, name: 'Cantonment Main Road', speed: 32 },
-  { lat: 10.8015, lng: 78.6960, name: 'District Collectorate Road', speed: 36 },
-  { lat: 10.8055, lng: 78.6935, name: 'Central Bus Stand Junction', speed: 26 },
-  { lat: 10.8090, lng: 78.6928, name: 'Williams Road North', speed: 28 },
-  { lat: 10.8120, lng: 78.6920, name: 'Trichy Seva Sangam Shelter Gate', speed: 0 },
-];
+// 120 Authenticated OpenStreetMap Road Waypoints for Trichy Delivery Corridor
+const ROUTE_WAYPOINTS = VERIFIED_MISSION_ROAD_COORDS.map(([lat, lng], idx) => {
+  let name = 'Tiruchchirappalli Bypass Flyover';
+  if (idx > 95) name = 'Alvarthoppu Street -> Seva Sangam';
+  else if (idx > 80) name = 'Madurai Road';
+  else if (idx > 40) name = 'Nagapattinam - Gudalur - Mysore Road (Old NH67)';
+  else if (idx === 0) name = 'SRM Hotel Pickup Gate';
+
+  const isEndpoint = idx === 0 || idx === VERIFIED_MISSION_ROAD_COORDS.length - 1;
+  const speed = isEndpoint ? 0 : Math.round(26 + Math.sin(idx * 0.35) * 8);
+
+  return { lat, lng, name, speed };
+});
 
 export default function LiveTrackingModal({ isOpen, onClose, taskData }) {
   const [waypointIndex, setWaypointIndex] = useState(0);
@@ -120,44 +126,35 @@ export default function LiveTrackingModal({ isOpen, onClose, taskData }) {
     if (!isOpen || !isSimulating) return;
 
     const interval = setInterval(() => {
-      setSubProgress((prev) => {
-        const next = prev + 0.15 * speedMultiplier;
-        if (next >= 1) {
-          setWaypointIndex((wIdx) => {
-            const nextIdx = (wIdx + 1) % (ROUTE_WAYPOINTS.length - 1);
-            return nextIdx;
-          });
-          return 0;
-        }
-        return next;
+      setWaypointIndex((wIdx) => {
+        const nextIdx = (wIdx + 1) % (ROUTE_WAYPOINTS.length - 1);
+        return nextIdx;
       });
 
       // Fluctuate telemetry values realistically
       setHaccpTemp((t) => +(4.0 + Math.sin(Date.now() / 3000) * 0.3).toFixed(1));
-      setBatteryPct((b) => (b > 10 ? +(b - 0.02 * speedMultiplier).toFixed(1) : 86));
-      setEtaSeconds((s) => (s > 5 ? s - Math.round(1.5 * speedMultiplier) : 260));
-    }, 600);
+      setBatteryPct((b) => (b > 10 ? +(b - 0.01 * speedMultiplier).toFixed(1) : 86));
+      setEtaSeconds((s) => (s > 5 ? s - Math.round(1.2 * speedMultiplier) : 260));
+    }, Math.max(80, Math.round(350 / speedMultiplier)));
 
     return () => clearInterval(interval);
   }, [isOpen, isSimulating, speedMultiplier]);
 
-  // Interpolate exact lat/lng between current and next waypoint
+  // Update exact lat/lng along authentic road waypoint vertices
   useEffect(() => {
     const p1 = ROUTE_WAYPOINTS[waypointIndex];
     const p2 = ROUTE_WAYPOINTS[waypointIndex + 1] || p1;
-    const curLat = p1.lat + (p2.lat - p1.lat) * subProgress;
-    const curLng = p1.lng + (p2.lng - p1.lng) * subProgress;
-    setCurrentCoord({ lat: curLat, lng: curLng });
+    setCurrentCoord(p1);
 
     const bearing = calculateBearing(p1, p2);
     setHeadingAngle(Math.round(bearing));
-    setSpeed(Math.round(p1.speed + (p2.speed - p1.speed) * subProgress));
+    setSpeed(p1.speed || 28);
 
     // Pan map smoothly to follow vehicle
     if (mapRef.current) {
-      mapRef.current.panTo([curLat, curLng], { animate: true, duration: 0.6 });
+      mapRef.current.panTo([p1.lat, p1.lng], { animate: true, duration: 0.3 });
     }
-  }, [waypointIndex, subProgress]);
+  }, [waypointIndex]);
 
   if (!isOpen) return null;
 
@@ -310,8 +307,9 @@ export default function LiveTrackingModal({ isOpen, onClose, taskData }) {
           >
             <MapInvalidator />
             <TileLayer
-              attribution='Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ'
-              url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}"
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              subdomains={['a', 'b', 'c']}
               errorTileUrl={FALLBACK_MAP_TILE_DATA_URL}
               maxZoom={19}
             />

@@ -5,6 +5,7 @@ import DashboardLayout from '../../components/DashboardLayout';
 import LiveTrackingModal from '../../components/LiveTrackingModal';
 import { playHaccpAlarm } from '../../utils/soundEffects';
 import { FALLBACK_MAP_TILE_DATA_URL } from '../../components/MapView';
+import { VERIFIED_MISSION_ROAD_COORDS } from '../../utils/trichyVerifiedRoadCorridor';
 
 function MapInvalidator() {
   const map = useMap();
@@ -375,8 +376,9 @@ export default function MissionControl() {
             >
               <MapInvalidator />
               <TileLayer
-                attribution='Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ'
-                url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}"
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                subdomains={['a', 'b', 'c']}
                 errorTileUrl={FALLBACK_MAP_TILE_DATA_URL}
                 maxZoom={19}
               />
@@ -452,15 +454,10 @@ export default function MissionControl() {
                 </Marker>
               ))}
 
-              {/* Active Delivery Route Polyline */}
+              {/* Active Delivery Route Polyline - 120 Verified Road Centerline Coordinates */}
               <Polyline
-                positions={[
-                  [10.7905, 78.7047],
-                  [10.7970, 78.6995],
-                  [10.8055, 78.6935],
-                  [10.8120, 78.6920],
-                ]}
-                pathOptions={{ color: '#059669', weight: 4, opacity: 0.8 }}
+                positions={VERIFIED_MISSION_ROAD_COORDS}
+                pathOptions={{ color: '#059669', weight: 4.5, opacity: 0.85, lineCap: 'round', lineJoin: 'round' }}
               />
             </MapContainer>
           </div>

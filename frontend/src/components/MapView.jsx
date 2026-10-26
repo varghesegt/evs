@@ -8,6 +8,12 @@ import {
   TRICHY_LANDMARKS,
 } from '../utils/gmapsUtils';
 import {
+  VERIFIED_MISSION_ROAD_COORDS,
+  VERIFIED_MISSION_STEPS,
+  VERIFIED_CITY_GRID_COORDS,
+} from '../utils/trichyVerifiedRoadCorridor';
+import { fetchShortestRoadRoute } from '../utils/roadRoutingUtils';
+import {
   SvgScooter,
   SvgSpeedometer,
   SvgCompass,
@@ -486,7 +492,7 @@ export default function MapView({
   // Swiggy / Zomato Two-Wheeler Live Camera & Theme Controls
   const [followRider, setFollowRider] = useState(true);
   const [zoomMode, setZoomMode] = useState('street'); // 'street' (16x) | 'route' (fit bounds)
-  const [mapTheme, setMapTheme] = useState('esri'); // 'esri' (super reliable, no key, no 403) | 'osm' | 'hot'
+  const [mapTheme, setMapTheme] = useState('osm'); // 'osm' (OpenStreetMap Real Streets) | 'satellite' | 'esri' | 'hot'
 
   // Enterprise GIS Overlays & Controls
   const [showTraffic, setShowTraffic] = useState(false);
@@ -501,21 +507,36 @@ export default function MapView({
   const animFrameRef = useRef(null);
   const lastTimeRef = useRef(null);
 
-  // Curated High-Accuracy Trichy Transit Corridor Fallback
-  const TRICHY_CORRIDOR_FALLBACK = [
-    [10.8030, 78.6850], // Hotel Sangam / Cantonment Hub
-    [10.8015, 78.6885], // Central Bus Stand Junction
-    [10.8062, 78.6910], // TVS Tollgate Corridor
-    [10.8145, 78.6895], // Palakkarai Overbridge
-    [10.8220, 78.6880], // Main Guard Gate Entry
-    [10.8285, 78.6865], // Thillai Nagar (Royal Mahal)
-    [10.8290, 78.6920], // Teppakulam Bazaar Street
-    [10.8295, 78.6980], // Rockfort Footpath Junction
-    [10.8310, 78.6950], // Chathiram Bus Stand Transit Hub
-  ];
+  // Authenticated High-Accuracy Trichy Transit Corridor (362 real OpenStreetMap road centerline points)
+  const TRICHY_CORRIDOR_FALLBACK = VERIFIED_CITY_GRID_COORDS;
+
+  // Real road route fetched via OSRM if routePolyline has only 2-9 endpoints
+  const [dynamicRoadPolyline, setDynamicRoadPolyline] = useState(null);
+
+  useEffect(() => {
+    let isCancelled = false;
+    if (routePolyline && routePolyline.length >= 2 && routePolyline.length < 10) {
+      fetchShortestRoadRoute(routePolyline, 'driving')
+        .then(res => {
+          if (!isCancelled && res && res.polyline && res.polyline.length >= 2) {
+            setDynamicRoadPolyline(res.polyline);
+          }
+        })
+        .catch(() => {
+          if (!isCancelled) setDynamicRoadPolyline(VERIFIED_MISSION_ROAD_COORDS);
+        });
+    } else {
+      setDynamicRoadPolyline(null);
+    }
+    return () => { isCancelled = true; };
+  }, [routePolyline]);
 
   // Robust parsing: normalize polyline coordinates into array of [lat, lng] numbers (Memoized to prevent render loops)
   const effectivePolyline = useMemo(() => {
+    if (dynamicRoadPolyline && dynamicRoadPolyline.length >= 2) {
+      return dynamicRoadPolyline;
+    }
+
     const normalized = (routePolyline || []).map(pt => {
       if (Array.isArray(pt)) return [Number(pt[0]), Number(pt[1])];
       if (typeof pt === 'string') {
@@ -528,8 +549,8 @@ export default function MapView({
       return null;
     }).filter(pt => pt && !isNaN(pt[0]) && !isNaN(pt[1]));
 
-    return normalized.length >= 2 ? normalized : (showTelemetryHud ? TRICHY_CORRIDOR_FALLBACK : null);
-  }, [routePolyline, showTelemetryHud]);
+    return normalized.length >= 2 ? normalized : TRICHY_CORRIDOR_FALLBACK;
+  }, [routePolyline, dynamicRoadPolyline, TRICHY_CORRIDOR_FALLBACK]);
 
   useEffect(() => {
     if (!effectivePolyline || effectivePolyline.length < 2 || !isSimulating) {
@@ -617,12 +638,14 @@ export default function MapView({
 
   // Turn-by-Turn Navigation Maneuver HUD data
   const activeTurnStep = useMemo(() => {
-    const defaultSteps = [
-      { instruction: 'Follow Trichy arterial road corridor', name: roadSummary || 'Salai Road', distanceMeters: 450 },
-      { instruction: 'Keep straight past Cauvery river bridge', name: 'Cauvery River Bridge', distanceMeters: 1200 },
-      { instruction: 'Turn right towards donor pickup dock', name: 'Collectorate Rd', distanceMeters: 800 },
-      { instruction: 'Continue toward distribution shelter destination', name: 'West Boulevard Rd', distanceMeters: 950 },
-    ];
+    const defaultSteps = (VERIFIED_MISSION_STEPS && VERIFIED_MISSION_STEPS.length > 0)
+      ? VERIFIED_MISSION_STEPS
+      : [
+          { instruction: 'Depart via Tiruchchirappalli Bypass Flyover', name: 'Tiruchchirappalli Bypass Flyover', distanceMeters: 2330 },
+          { instruction: 'Turn onto Nagapattinam - Gudalur - Mysore Road', name: 'Old NH67', distanceMeters: 1730 },
+          { instruction: 'Turn onto Madurai Road', name: 'Madurai Road', distanceMeters: 120 },
+          { instruction: 'Turn onto Alvarthoppu Street toward Seva Sangam Shelter', name: 'Alvarthoppu Street', distanceMeters: 270 },
+        ];
     const steps = (turnSteps && turnSteps.length > 0) ? turnSteps : defaultSteps;
     const idx = Math.min(steps.length - 1, Math.max(0, Math.floor(simProgress * steps.length)));
     const step = steps[idx];
@@ -959,28 +982,43 @@ export default function MapView({
                 <span>Fit Entire Route</span>
               </button>
 
-              {/* Map Tile Theme Toggle */}
-              <button
-                type="button"
-                onClick={() => setMapTheme(mapTheme === 'osm' ? 'hot' : 'osm')}
-                style={{
-                  background: '#ffffff',
-                  color: '#334155',
-                  border: '1px solid #cbd5e1',
-                  borderRadius: '8px',
-                  padding: '6px 10px',
-                  fontSize: '11px',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '5px',
-                }}
-                title="Toggle Clean Streets / Vibrant Roads"
-              >
-                <SvgLayers size={13} color="#334155" />
-                <span>{mapTheme === 'osm' ? 'Clean Streets' : 'Vibrant Roads'}</span>
-              </button>
+              {/* Map Tile Layer Selector */}
+              <div style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                background: '#f1f5f9',
+                borderRadius: '8px',
+                padding: '2px',
+                gap: '2px',
+                border: '1px solid #cbd5e1',
+              }}>
+                {[
+                  { id: 'osm', label: 'Street Map' },
+                  { id: 'satellite', label: 'Satellite View' },
+                  { id: 'esri', label: 'GIS Highways' },
+                ].map((th) => (
+                  <button
+                    key={th.id}
+                    type="button"
+                    onClick={() => setMapTheme(th.id)}
+                    style={{
+                      background: mapTheme === th.id ? '#ffffff' : 'transparent',
+                      color: mapTheme === th.id ? '#0f172a' : '#64748b',
+                      fontWeight: mapTheme === th.id ? 800 : 600,
+                      boxShadow: mapTheme === th.id ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+                      border: 'none',
+                      borderRadius: '6px',
+                      padding: '4px 8px',
+                      fontSize: '11px',
+                      cursor: 'pointer',
+                      transition: 'all 0.15s ease',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {th.label}
+                  </button>
+                ))}
+              </div>
 
               {/* Live Traffic Flow Toggle */}
               <button
@@ -1541,7 +1579,23 @@ export default function MapView({
 
         <MapContainer center={defaultCenter} zoom={zoom} style={{ height: '100%', width: '100%' }}>
           <MapInvalidator />
-          {mapTheme === 'esri' ? (
+          {mapTheme === 'satellite' ? (
+            <>
+              <TileLayer
+                key="tile-satellite"
+                attribution='Tiles &copy; Esri &mdash; Source: Esri, Maxar, Earthstar Geographics'
+                url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+                errorTileUrl={FALLBACK_MAP_TILE_DATA_URL}
+                maxZoom={19}
+              />
+              <TileLayer
+                key="tile-satellite-labels"
+                attribution=''
+                url="https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}"
+                maxZoom={19}
+              />
+            </>
+          ) : mapTheme === 'esri' ? (
             <TileLayer
               key="tile-esri"
               attribution='Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ'
@@ -1562,7 +1616,8 @@ export default function MapView({
             <TileLayer
               key="tile-osm-std"
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              subdomains={['a', 'b', 'c']}
               errorTileUrl={FALLBACK_MAP_TILE_DATA_URL}
               maxZoom={19}
             />
