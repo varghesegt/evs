@@ -4,7 +4,7 @@
 const SYNC_QUEUE_KEY = 'ecoshare_sync_queue';
 const CACHE_PREFIX = 'ecoshare_cache_';
 
-// Rich fallback datasets for Trichy ecosystem when running fully offline
+// Rich fallback datasets for Trichy ecosystem when running on GitHub Pages or fully offline
 export const OFFLINE_SEED_DATA = {
   '/analytics/map-pins': [
     { id: 1, type: 'donor', title: 'SRM Hotel & Convention Centre', subtitle: '45 kg Cooked Rice & Curry • High Freshness', lat: 10.7905, lng: 78.7047, phone: '+91 94431 12345' },
@@ -61,6 +61,25 @@ export const OFFLINE_SEED_DATA = {
       pickupLat: 10.7905,
       pickupLng: 78.7047,
       donor: { name: 'SRM Hotel', phone: '+91 94431 12345' }
+    }
+  ],
+  '/donations/all': [
+    {
+      id: 101,
+      foodName: 'South Indian Sambar Rice & Poriyal',
+      quantityKg: 35.0,
+      status: 'AVAILABLE',
+      priorityScore: 92,
+      pickupAddress: 'SRM Hotel, Trichy',
+      createdAt: new Date().toISOString()
+    },
+    {
+      id: 102,
+      foodName: 'Assorted Bakery Bread & Rolls',
+      quantityKg: 18.0,
+      status: 'DELIVERED',
+      pickupAddress: 'SRM Convention Hall, Trichy',
+      createdAt: new Date(Date.now() - 86400000).toISOString()
     }
   ],
   '/volunteer/active': [
@@ -128,7 +147,23 @@ export const OFFLINE_SEED_DATA = {
     mealsProvided: 3550,
     activeDonors: 15,
     activeNgos: 8,
-  }
+  },
+  '/analytics/public/leaderboard': [
+    { id: 1, name: 'SRM Hotel & Convention Centre', type: 'HOTEL', totalKgDiverted: 540.0, totalCo2eAvoidedKg: 1350.0, mealsProvided: 1350, rank: 1, badge: 'PLATINUM_RESCUER' },
+    { id: 2, name: 'Hotel Sangam Trichy', type: 'HOTEL', totalKgDiverted: 420.0, totalCo2eAvoidedKg: 1050.0, mealsProvided: 1050, rank: 2, badge: 'GOLD_RESCUER' },
+    { id: 3, name: 'Geetha Cafe Central', type: 'RESTAURANT', totalKgDiverted: 280.5, totalCo2eAvoidedKg: 701.25, mealsProvided: 700, rank: 3, badge: 'SILVER_RESCUER' },
+    { id: 4, name: 'Trichy Catering Guild', type: 'CATERER', totalKgDiverted: 180.0, totalCo2eAvoidedKg: 450.0, mealsProvided: 450, rank: 4, badge: 'BRONZE_RESCUER' },
+  ],
+  '/admin/users': [
+    { id: 1, name: 'SRM Hotel & Convention Centre', email: 'donor1@ecoshare.com', role: 'ROLE_DONOR', active: true, createdAt: '2026-09-01T10:00:00' },
+    { id: 2, name: 'Trichy Seva Sangam Shelter', email: 'ngo1@ecoshare.com', role: 'ROLE_NGO', active: true, ngoApproved: true, createdAt: '2026-09-02T11:00:00' },
+    { id: 3, name: 'Karthik Raja', email: 'vol1@ecoshare.com', role: 'ROLE_VOLUNTEER', active: true, createdAt: '2026-09-05T09:30:00' },
+    { id: 4, name: 'EcoShare Trichy Administrator', email: 'admin@ecoshare.com', role: 'ROLE_ADMIN', active: true, createdAt: '2026-08-15T08:00:00' },
+  ],
+  '/admin/donations': [
+    { id: 101, foodName: 'South Indian Sambar Rice & Poriyal', quantityKg: 35.0, status: 'AVAILABLE', priorityScore: 92, pickupAddress: 'SRM Hotel, Trichy', donorName: 'SRM Hotel' },
+    { id: 102, foodName: 'Assorted Bakery Bread & Rolls', quantityKg: 18.0, status: 'DELIVERED', priorityScore: 78, pickupAddress: 'SRM Convention Hall, Trichy', donorName: 'SRM Hotel' },
+  ],
 };
 
 // Check if currently online
@@ -138,21 +173,45 @@ export function isAppOnline() {
 
 // Get cached response or offline seed
 export function getCachedEndpoint(endpoint) {
+  if (!endpoint) return null;
   try {
-    const cached = localStorage.getItem(CACHE_PREFIX + endpoint);
+    const cleanUrl = endpoint.split('?')[0];
+    const cached = localStorage.getItem(CACHE_PREFIX + cleanUrl) || localStorage.getItem(CACHE_PREFIX + endpoint);
     if (cached) {
       return JSON.parse(cached);
+    }
+    if (OFFLINE_SEED_DATA[cleanUrl]) {
+      return OFFLINE_SEED_DATA[cleanUrl];
+    }
+    if (OFFLINE_SEED_DATA[endpoint]) {
+      return OFFLINE_SEED_DATA[endpoint];
+    }
+    if (cleanUrl.startsWith('/analytics/certificate/')) {
+      return {
+        certificateId: 'EVS-TRICHY-CERT-2026',
+        donorName: 'SRM Hotel & Convention Centre',
+        co2eAvoidedKg: 1350.0,
+        mealsRescued: 1350,
+        waterSavedLiters: 43200,
+        issuedDate: new Date().toLocaleDateString(),
+        signatureHash: '0x8f7b3a9c1e2d4f5a6b7c8d9e0f1a2b3c',
+        status: 'VERIFIED'
+      };
+    }
+    if (cleanUrl.startsWith('/donations/')) {
+      return OFFLINE_SEED_DATA['/donations/my'][0];
     }
   } catch (e) {
     console.warn('[OfflineCache] Read failed:', e);
   }
-  return OFFLINE_SEED_DATA[endpoint] || null;
+  return null;
 }
 
 // Save response to offline cache
 export function saveCachedEndpoint(endpoint, data) {
   try {
-    localStorage.setItem(CACHE_PREFIX + endpoint, JSON.stringify(data));
+    const cleanUrl = endpoint.split('?')[0];
+    localStorage.setItem(CACHE_PREFIX + cleanUrl, JSON.stringify(data));
   } catch (e) {
     console.warn('[OfflineCache] Write failed:', e);
   }

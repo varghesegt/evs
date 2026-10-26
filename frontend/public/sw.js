@@ -1,67 +1,104 @@
 // EcoShare AI - Progressive Web App Service Worker
-// Version 1.0.0 - Full Offline App Shell & Asset Caching
+// Version 2.0.0 - Robust GitHub Pages and Offline Shell Caching
 
-const CACHE_NAME = 'ecoshare-v1';
-const PRECACHE_ASSETS = [
-  './',
-  './index.html',
-  './manifest.json',
-  './favicon.svg',
-  './icons.svg',
-  './404.html',
-];
+const CACHE_NAME = 'ecoshare-v3';
 
-// 1. Install Event: Pre-cache core application shell
+// 1. Install Event: Pre-cache core application shell using scope base
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      console.log('[SW] Pre-caching application shell');
-      return cache.addAll(PRECACHE_ASSETS);
-    }).then(() => self.skipWaiting())
+    (async () => {
+      const cache = await caches.open(CACHE_NAME);
+      const scope = self.registration.scope; // e.g. "https://varghesegt.github.io/evs/" or "http://localhost:5173/"
+      const assets = [
+        scope,
+        scope + 'index.html',
+        scope + '404.html',
+        scope + 'manifest.json',
+        scope + 'favicon.svg',
+        scope + 'icons.svg',
+      ];
+      try {
+        await cache.addAll(assets);
+        console.log('[SW] Pre-caching completed for scope:', scope);
+      } catch (err) {
+        console.warn('[SW] Pre-caching partial warning:', err);
+      }
+      return self.skipWaiting();
+    })()
   );
 });
 
 // 2. Activate Event: Clean up old caches and claim clients immediately
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(
+    (async () => {
+      const keys = await caches.keys();
+      await Promise.all(
         keys.map((key) => {
           if (key !== CACHE_NAME) {
-            console.log('[SW] Removing old cache:', key);
+            console.log('[SW] Purging old cache:', key);
             return caches.delete(key);
           }
         })
       );
-    }).then(() => self.clients.claim())
+      return self.clients.claim();
+    })()
   );
 });
 
-// 3. Fetch Event: Intelligent offline routing & caching
+// 3. Fetch Event: Safe async response handling that NEVER resolves to undefined
 self.addEventListener('fetch', (event) => {
   const request = event.request;
   const url = new URL(request.url);
 
-  // Skip non-GET requests (e.g. POST, PUT handled by client.js outbox queue)
+  // Skip non-GET requests (e.g. POST handled by client adapter)
   if (request.method !== 'GET') {
     return;
   }
 
+  // Skip chrome-extension or external telemetry
+  if (!url.protocol.startsWith('http')) {
+    return;
+  }
+
   // A. Navigation requests (HTML pages for React Router)
-  // If offline or navigating to any client route (/donor, /volunteer, /ngo), serve index.html
   if (request.mode === 'navigate') {
     event.respondWith(
-      fetch(request).catch(() => {
-        return caches.match('/index.html') || caches.match('/');
-      })
+      (async () => {
+        const scope = self.registration.scope;
+        try {
+          const networkResponse = await fetch(request);
+          // If server returns 404 (e.g. GitHub Pages on deep routes /evs/login), serve cached index.html
+          if (networkResponse && networkResponse.status === 404) {
+            const cachedIndex = await caches.match(scope + 'index.html') ||
+                                await caches.match('./index.html') ||
+                                await caches.match('/evs/index.html') ||
+                                await caches.match(scope);
+            if (cachedIndex) return cachedIndex;
+          }
+          return networkResponse;
+        } catch (err) {
+          // Offline navigation fallback: serve cached index.html
+          const cachedIndex = await caches.match(scope + 'index.html') ||
+                              await caches.match('./index.html') ||
+                              await caches.match('/evs/index.html') ||
+                              await caches.match(scope);
+          if (cachedIndex) return cachedIndex;
+
+          return new Response(
+            '<!DOCTYPE html><html><head><title>EcoShare AI</title></head><body><h2>EcoShare AI is Offline</h2><p>Please reconnect to the network.</p></body></html>',
+            { headers: { 'Content-Type': 'text/html' } }
+          );
+        }
+      })()
     );
     return;
   }
 
-  // B. Vite Assets & Static Files (/assets/*, .js, .css, .svg, .woff2)
-  // Cache-First with Network Fallback
+  // B. Static Assets (/assets/*, .js, .css, .svg, .png, .woff2)
+  // Cache-First with Network Revalidation
   if (
-    url.pathname.startsWith('/assets/') ||
+    url.pathname.includes('/assets/') ||
     url.pathname.endsWith('.js') ||
     url.pathname.endsWith('.css') ||
     url.pathname.endsWith('.svg') ||
@@ -69,31 +106,32 @@ self.addEventListener('fetch', (event) => {
     url.pathname.endsWith('.woff2')
   ) {
     event.respondWith(
-      caches.match(request).then((cachedResponse) => {
-        if (cachedResponse) {
-          // Fetch update in background (Stale-While-Revalidate)
-          fetch(request).then((networkResponse) => {
-            if (networkResponse && networkResponse.status === 200) {
-              caches.open(CACHE_NAME).then((cache) => cache.put(request, networkResponse));
-            }
-          }).catch(() => {});
-          return cachedResponse;
+      (async () => {
+        const cached = await caches.match(request);
+        if (cached) {
+          // Revalidate in background
+          fetch(request)
+            .then(async (res) => {
+              if (res && res.status === 200) {
+                const c = await caches.open(CACHE_NAME);
+                c.put(request, res);
+              }
+            })
+            .catch(() => {});
+          return cached;
         }
 
-        return fetch(request).then((networkResponse) => {
-          if (!networkResponse || networkResponse.status !== 200) {
-            return networkResponse;
+        try {
+          const networkResponse = await fetch(request);
+          if (networkResponse && networkResponse.status === 200) {
+            const cache = await caches.open(CACHE_NAME);
+            cache.put(request, networkResponse.clone());
           }
-          const responseToCache = networkResponse.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(request, responseToCache);
-          });
           return networkResponse;
-        }).catch(() => {
-          // If totally offline and not cached yet, return empty or fallback
-          return new Response('', { status: 408, statusText: 'Offline' });
-        });
-      })
+        } catch (e) {
+          return new Response('', { status: 408, statusText: 'Asset Unavailable Offline' });
+        }
+      })()
     );
     return;
   }
@@ -101,19 +139,38 @@ self.addEventListener('fetch', (event) => {
   // C. Google Fonts / External CDN Cache
   if (url.hostname.includes('fonts.googleapis.com') || url.hostname.includes('fonts.gstatic.com')) {
     event.respondWith(
-      caches.match(request).then((cached) => {
-        return cached || fetch(request).then((res) => {
-          const resClone = res.clone();
-          caches.open(CACHE_NAME).then((c) => c.put(request, resClone));
+      (async () => {
+        const cached = await caches.match(request);
+        if (cached) return cached;
+        try {
+          const res = await fetch(request);
+          if (res && res.status === 200) {
+            const c = await caches.open(CACHE_NAME);
+            c.put(request, res.clone());
+          }
           return res;
-        }).catch(() => caches.match(request));
-      })
+        } catch (e) {
+          const fallback = await caches.match(request);
+          return fallback || new Response('', { status: 200, headers: { 'Content-Type': 'text/css' } });
+        }
+      })()
     );
     return;
   }
 
-  // D. Default network request
+  // D. General Network Request with Guaranteed Non-Undefined Fallback
   event.respondWith(
-    fetch(request).catch(() => caches.match(request))
+    (async () => {
+      try {
+        return await fetch(request);
+      } catch (e) {
+        const cached = await caches.match(request);
+        if (cached) return cached;
+        return new Response(JSON.stringify({ offline: true }), {
+          status: 503,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+    })()
   );
 });

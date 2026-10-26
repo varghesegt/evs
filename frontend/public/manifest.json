@@ -2,14 +2,15 @@
   "name": "EcoShare AI - Food Rescue & Logistics",
   "short_name": "EcoShare",
   "description": "Intelligent Food Waste Prevention and Real-Time Logistics Redistribution Platform",
-  "start_url": "/",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#059669",
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/favicon.svg",
+      "src": "favicon.svg",
       "sizes": "192x192 512x512",
       "type": "image/svg+xml",
       "purpose": "any maskable"
