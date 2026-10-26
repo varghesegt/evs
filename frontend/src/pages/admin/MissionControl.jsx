@@ -338,10 +338,10 @@ export default function MissionControl() {
           </div>
         </div>
 
-        {/* Main Command Room Grid: Live Radar Map (68%) & Fleet Telematics (32%) */}
+        {/* Main Command Room Grid: Live Radar Map (60%) & Fleet Telematics (40%) */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'minmax(0, 2fr) minmax(360px, 1fr)',
+          gridTemplateColumns: 'minmax(0, 1.35fr) minmax(380px, 1fr)',
           gap: 'var(--space-5)',
         }}>
           {/* Live Full-City Radar Map */}
@@ -351,7 +351,7 @@ export default function MissionControl() {
               padding: 0,
               overflow: 'hidden',
               borderRadius: 'var(--radius-xl)',
-              height: '540px',
+              height: '560px',
               position: 'relative',
               border: '1px solid var(--color-border)',
               boxShadow: 'var(--shadow-sm)',
@@ -484,11 +484,14 @@ export default function MissionControl() {
           </div>
 
           {/* Right Fleet Telemetry & HACCP Oscilloscope Panel */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)', height: '560px' }}>
             {/* Live Fleet Roster */}
             <div className="card" style={{
               padding: '18px',
               flex: 1,
+              minHeight: 0,
+              display: 'flex',
+              flexDirection: 'column',
               borderRadius: 'var(--radius-xl)',
               border: '1px solid var(--color-border)',
               boxShadow: 'var(--shadow-sm)',
@@ -507,7 +510,7 @@ export default function MissionControl() {
                 </span>
               </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', flex: 1, overflowY: 'auto', paddingRight: '4px' }}>
                 {fleet.map((u) => (
                   <div
                     key={u.id}
@@ -565,7 +568,8 @@ export default function MissionControl() {
 
             {/* Live HACCP Rolling Telemetry Graph */}
             <div className="card" style={{
-              padding: '18px',
+              padding: '14px 18px',
+              flexShrink: 0,
               borderRadius: 'var(--radius-xl)',
               border: '1px solid var(--color-border)',
               boxShadow: 'var(--shadow-sm)',

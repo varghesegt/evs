@@ -150,14 +150,16 @@ a:hover {
   padding-top: var(--navbar-height);
   min-height: 100vh;
   width: 100%;
+  box-sizing: border-box;
   transition: margin-left var(--transition-base);
 }
 
 .page-content {
-  padding: var(--space-4) var(--space-4);
-  max-width: 1720px;
-  margin: 0 auto;
+  padding: var(--space-4) clamp(16px, 2vw, 36px);
   width: 100%;
+  max-width: 100%;
+  margin: 0;
+  box-sizing: border-box;
 }
 
 /* Page Header */
@@ -1214,9 +1216,16 @@ a:hover {
 @media (min-width: 768px) {
   .app-main {
     margin-left: var(--sidebar-width);
+    width: calc(100% - var(--sidebar-width));
+    box-sizing: border-box;
   }
   .navbar {
     left: var(--sidebar-width);
+    width: calc(100% - var(--sidebar-width));
+  }
+  .navbar-brand,
+  .hide-desktop {
+    display: none !important;
   }
   .mobile-menu-btn {
     display: none;
@@ -1232,7 +1241,10 @@ a:hover {
     display: block;
   }
   .page-content {
-    padding: var(--space-5) clamp(16px, 2.5vw, 36px);
+    padding: var(--space-5) clamp(16px, 2vw, 36px);
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
   }
   .page-header {
     flex-direction: row;
@@ -1240,7 +1252,7 @@ a:hover {
     justify-content: space-between;
   }
   .map-container {
-    height: 420px;
+    height: 440px;
   }
   .charts-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -1268,7 +1280,10 @@ a:hover {
 /* Large Screens (>= 1440px) */
 @media (min-width: 1440px) {
   .page-content {
-    padding: var(--space-6) clamp(20px, 3vw, 48px);
+    padding: var(--space-5) clamp(20px, 2.5vw, 42px);
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
   }
 }
 

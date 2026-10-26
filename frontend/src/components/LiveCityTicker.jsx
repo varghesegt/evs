@@ -28,7 +28,7 @@ export default function LiveCityTicker({ onTriggerRadar }) {
       style={{
         background: 'linear-gradient(90deg, #064e3b 0%, #065f46 50%, #047857 100%)',
         color: '#ffffff',
-        padding: '7px 16px',
+        padding: '7px clamp(16px, 2vw, 36px)',
         fontSize: '12px',
         fontWeight: 600,
         display: 'flex',
@@ -36,7 +36,9 @@ export default function LiveCityTicker({ onTriggerRadar }) {
         justifyContent: 'space-between',
         overflow: 'hidden',
         borderBottom: '1px solid rgba(255,255,255,0.15)',
-        boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
+        boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
+        width: '100%',
+        boxSizing: 'border-box',
       }}
     >
       {/* Left Badge */}

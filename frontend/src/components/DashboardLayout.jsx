@@ -14,12 +14,12 @@ export default function DashboardLayout({ children }) {
   return (
     <div className="app-layout">
       <Navbar onToggleMobileMenu={toggleMobileMenu} isMobileMenuOpen={mobileMenuOpen} />
-      <LiveCityTicker onTriggerRadar={() => setRadarModalOpen(true)} />
       <Sidebar isOpen={mobileMenuOpen} onClose={closeMobileMenu} />
       {mobileMenuOpen && (
         <div className="sidebar-overlay" onClick={closeMobileMenu}></div>
       )}
       <main className="app-main">
+        <LiveCityTicker onTriggerRadar={() => setRadarModalOpen(true)} />
         <div className="page-content">
           {children}
         </div>

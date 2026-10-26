@@ -19,7 +19,7 @@ export default function Navbar({ onToggleMobileMenu, isMobileMenuOpen }) {
             )}
           </svg>
         </button>
-        <div className="navbar-brand">EcoShare AI</div>
+        <div className="navbar-brand hide-desktop">EcoShare AI</div>
       </div>
       <div className="navbar-user">
         <div className="navbar-user-info">
