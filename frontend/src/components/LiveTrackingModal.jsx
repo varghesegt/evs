@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Polyline, Circle, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import { getGoogleMapsNavigationUrl } from '../utils/gmapsUtils';
+import { FALLBACK_MAP_TILE_DATA_URL } from './MapView';
 
 function MapInvalidator() {
   const map = useMap();
@@ -311,6 +312,7 @@ export default function LiveTrackingModal({ isOpen, onClose, taskData }) {
             <TileLayer
               attribution='Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ'
               url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}"
+              errorTileUrl={FALLBACK_MAP_TILE_DATA_URL}
               maxZoom={19}
             />
 

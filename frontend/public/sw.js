@@ -1,9 +1,22 @@
 // EcoShare AI - Progressive Web App Service Worker
 // Version 3.0.0 - Rock-Solid GitHub Pages, Tile Fallback, and Offline Reliability
 
-const CACHE_NAME = 'ecoshare-v5';
+const CACHE_NAME = 'ecoshare-v6';
 
-// 1x1 transparent PNG buffer for offline map tiles & image fallbacks
+// Crisp vector street grid fallback tile for offline map tiles & failed network requests
+const FALLBACK_TILE_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <rect width="256" height="256" fill="#f8fafc"/>
+  <path d="M0,64 L256,64 M0,192 L256,192" stroke="#e2e8f0" stroke-width="4"/>
+  <path d="M64,0 L64,256 M192,0 L192,256" stroke="#e2e8f0" stroke-width="4"/>
+  <path d="M0,128 L256,128" stroke="#cbd5e1" stroke-width="8"/>
+  <path d="M128,0 L128,256" stroke="#cbd5e1" stroke-width="8"/>
+  <path d="M0,128 L256,128" stroke="#ffffff" stroke-width="5"/>
+  <path d="M128,0 L128,256" stroke="#ffffff" stroke-width="5"/>
+  <path d="M0,40 Q128,80 256,40" stroke="#fde047" stroke-width="3" fill="none" opacity="0.75"/>
+  <path d="M40,256 Q80,128 40,0" stroke="#38bdf8" stroke-width="2.5" fill="none" opacity="0.6"/>
+</svg>`;
+
+// 1x1 transparent PNG buffer for general image fallbacks
 const TRANSPARENT_PNG = new Uint8Array([
   0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d, 0x49, 0x48, 0x44, 0x52,
   0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01, 0x08, 0x06, 0x00, 0x00, 0x00, 0x1f, 0x15, 0xc4,
@@ -106,7 +119,11 @@ self.addEventListener('fetch', (event) => {
   }
 
   // B. External Map Tiles (OpenStreetMap, Esri, etc.)
-  if (url.hostname.includes('tile.openstreetmap.org') || url.hostname.includes('arcgisonline.com')) {
+  if (
+    url.hostname.includes('tile.openstreetmap.org') ||
+    url.hostname.includes('openstreetmap.fr') ||
+    url.hostname.includes('arcgisonline.com')
+  ) {
     event.respondWith(
       (async () => {
         try {
@@ -118,11 +135,11 @@ self.addEventListener('fetch', (event) => {
           }
           const cached = await caches.match(request);
           if (cached) return cached;
-          return new Response(TRANSPARENT_PNG, { status: 200, headers: { 'Content-Type': 'image/png' } });
+          return new Response(FALLBACK_TILE_SVG, { status: 200, headers: { 'Content-Type': 'image/svg+xml' } });
         } catch {
           const cached = await caches.match(request);
           if (cached) return cached;
-          return new Response(TRANSPARENT_PNG, { status: 200, headers: { 'Content-Type': 'image/png' } });
+          return new Response(FALLBACK_TILE_SVG, { status: 200, headers: { 'Content-Type': 'image/svg+xml' } });
         }
       })()
     );

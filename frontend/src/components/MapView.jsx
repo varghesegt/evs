@@ -36,6 +36,21 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
 });
 
+// Lightweight dynamic offline vector grid fallback tile (prevents grey boxes when offline)
+export const FALLBACK_MAP_TILE_DATA_URL = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">' +
+  '<rect width="256" height="256" fill="#f8fafc"/>' +
+  '<path d="M0,64 L256,64 M0,192 L256,192" stroke="#e2e8f0" stroke-width="4"/>' +
+  '<path d="M64,0 L64,256 M192,0 L192,256" stroke="#e2e8f0" stroke-width="4"/>' +
+  '<path d="M0,128 L256,128" stroke="#cbd5e1" stroke-width="8"/>' +
+  '<path d="M128,0 L128,256" stroke="#cbd5e1" stroke-width="8"/>' +
+  '<path d="M0,128 L256,128" stroke="#ffffff" stroke-width="5"/>' +
+  '<path d="M128,0 L128,256" stroke="#ffffff" stroke-width="5"/>' +
+  '<path d="M0,40 Q128,80 256,40" stroke="#fde047" stroke-width="3" fill="none" opacity="0.75"/>' +
+  '<path d="M40,256 Q80,128 40,0" stroke="#38bdf8" stroke-width="2.5" fill="none" opacity="0.6"/>' +
+  '</svg>'
+);
+
 // Custom SVG Icons per pin type
 function createCustomIcon(color, symbol, isPulse = false) {
   return new L.DivIcon({
@@ -1251,7 +1266,7 @@ export default function MapView({
           border: '1px solid var(--color-border)',
           fontSize: 'var(--font-size-xs)',
         }}>
-          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '8px', width: '100%', minWidth: 0 }}>
             {/* Category Filter Chips */}
             <div className="map-filter-chips" style={{
               display: 'flex',
@@ -1261,6 +1276,8 @@ export default function MapView({
               paddingBottom: '4px',
               WebkitOverflowScrolling: 'touch',
               scrollbarWidth: 'none',
+              flex: 1,
+              minWidth: 0,
               maxWidth: '100%',
             }}>
               {[
@@ -1317,6 +1334,8 @@ export default function MapView({
               WebkitOverflowScrolling: 'touch',
               scrollbarWidth: 'none',
               maxWidth: '100%',
+              width: '100%',
+              minWidth: 0,
             }}>
               <span style={{ fontSize: '10px', fontWeight: 700, color: 'var(--color-text-muted)', textTransform: 'uppercase', whiteSpace: 'nowrap', flexShrink: 0 }}>
                 Quick Trichy Hubs:
@@ -1527,6 +1546,7 @@ export default function MapView({
               key="tile-esri"
               attribution='Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ'
               url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}"
+              errorTileUrl={FALLBACK_MAP_TILE_DATA_URL}
               maxZoom={19}
             />
           ) : mapTheme === 'hot' ? (
@@ -1535,6 +1555,7 @@ export default function MapView({
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
               url="https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
               subdomains={['a', 'b', 'c']}
+              errorTileUrl={FALLBACK_MAP_TILE_DATA_URL}
               maxZoom={19}
             />
           ) : (
@@ -1542,6 +1563,7 @@ export default function MapView({
               key="tile-osm-std"
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+              errorTileUrl={FALLBACK_MAP_TILE_DATA_URL}
               maxZoom={19}
             />
           )}

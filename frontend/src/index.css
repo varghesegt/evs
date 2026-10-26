@@ -833,13 +833,17 @@ a:hover {
   border-radius: var(--radius-xl);
   overflow: hidden;
   border: 1px solid var(--color-border);
-  height: 300px;
+  height: 380px;
   width: 100%;
+  max-width: 100%;
 }
 
-.map-container .leaflet-container {
+.map-container .leaflet-container,
+.leaflet-container {
   height: 100%;
   width: 100%;
+  background-color: #f8fafc !important;
+  font-family: inherit;
 }
 
 /* ==========================================================
@@ -1318,9 +1322,14 @@ a:hover {
   width: 100%;
 }
 
+.desktop-split-60-40 > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
 @media (min-width: 1024px) {
   .desktop-split-60-40 {
-    grid-template-columns: 60% 1fr;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
     gap: var(--space-5);
     align-items: start;
   }
