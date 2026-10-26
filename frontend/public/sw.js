@@ -3,11 +3,12 @@
 
 const CACHE_NAME = 'ecoshare-v1';
 const PRECACHE_ASSETS = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/favicon.svg',
-  '/icons.svg',
+  './',
+  './index.html',
+  './manifest.json',
+  './favicon.svg',
+  './icons.svg',
+  './404.html',
 ];
 
 // 1. Install Event: Pre-cache core application shell
