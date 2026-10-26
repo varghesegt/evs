@@ -7,6 +7,8 @@ export const getMapPins = () => client.get('/analytics/map-pins');
 export const getDonorCertificate = (donorId) => client.get(`/analytics/certificate/donor/${donorId}`);
 export const getCorporateLeaderboard = () => client.get('/analytics/public/leaderboard');
 export const verifyCertificateHash = (hash) => client.get(`/analytics/public/verify-hash/${hash}`);
+export const getDmrvCredential = (donationId) => client.get(`/analytics/public/dmrv-credential/${donationId}`);
+
 
 // Admin
 export const getAllUsers = () => client.get('/admin/users');

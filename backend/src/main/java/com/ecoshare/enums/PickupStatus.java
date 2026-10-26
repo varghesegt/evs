@@ -7,5 +7,6 @@ public enum PickupStatus {
     PICKED_UP,
     DELIVERING,
     DELIVERED,
-    FAILED
+    FAILED,
+    DIVERTED_TO_COMPOST
 }

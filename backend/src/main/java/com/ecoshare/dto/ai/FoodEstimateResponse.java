@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -26,4 +28,29 @@ public class FoodEstimateResponse {
     private String priorityReason;
     private Double historicalModelErrorRate; // e.g. 3.8%
     private String scientificNote;
+
+    // --- Enhanced Computer Vision & Deep Telemetry ---
+    private List<String> dominantColors;
+    private String visualTexturePattern;
+    private Double opticalDetectedFillPercentage;
+    private String detectedContainerType;
+    private Double calorieEstimateKcal;
+    private Double nutritionalProteinGrams;
+    private Double nutritionalCarbsGrams;
+    private Double nutritionalFatGrams;
+    private Double avoidedCo2eKg;
+    private Double avoidedWaterLiters;
+    private Double avoidedMethaneGwp28Kg;
+    private List<String> deepAnalysisSteps;
+    private Boolean photoAnalyzed;
+
+    // Advanced Optical Geometry & Visual Segmentation Telemetry
+    private List<Double> detectedBoundingBox; // [ymin, xmin, ymax, xmax] 0.0 to 1.0
+    private List<Double> containerRimCenter;   // [cx, cy]
+    private Double containerRimRadius;
+    private Double spectralWarmthRatio;
+    private Double surfaceGranularityIndex;
+    private Double confidenceP10Kg;
+    private Double confidenceP90Kg;
 }
+

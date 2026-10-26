@@ -36,13 +36,13 @@ export default function EvsCertificateModal({ donorId = 1, isOpen, onClose }) {
       zIndex: 3000,
       padding: 'var(--space-4)',
     }}>
-      <div className="card" style={{
+      <div className="card modal-card" style={{
         maxWidth: '750px',
         width: '100%',
         background: '#ffffff',
-        border: '8px solid #0d9668',
-        borderRadius: 'var(--radius-lg)',
-        padding: 'var(--space-6)',
+        border: 'min(6px, 1.5vw) solid #0d9668',
+        borderRadius: 'var(--radius-xl)',
+        padding: 'clamp(14px, 3vw, 28px)',
         boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
         position: 'relative',
         maxHeight: '90vh',
@@ -100,7 +100,7 @@ export default function EvsCertificateModal({ donorId = 1, isOpen, onClose }) {
             {/* Primary Impact Grid */}
             <div style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))',
               gap: 'var(--space-3)',
               background: '#f0fdf4',
               padding: 'var(--space-4)',
@@ -139,7 +139,7 @@ export default function EvsCertificateModal({ donorId = 1, isOpen, onClose }) {
             {/* Physical Equivalencies */}
             <div style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))',
               gap: 'var(--space-3)',
               margin: 'var(--space-3) 0',
               textAlign: 'center',
@@ -236,6 +236,8 @@ export default function EvsCertificateModal({ donorId = 1, isOpen, onClose }) {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
+              flexWrap: 'wrap',
+              gap: 'var(--space-3)',
               paddingTop: 'var(--space-4)',
               borderTop: '2px dashed #cbd5e1',
               fontSize: '11px',

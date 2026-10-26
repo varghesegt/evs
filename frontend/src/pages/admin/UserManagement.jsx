@@ -73,8 +73,8 @@ export default function UserManagement() {
               </tr>
             </thead>
             <tbody>
-              {filtered.map(u => (
-                <tr key={u.id}>
+              {filtered.map((u, index) => (
+                <tr key={`user-row-${u.id}-${index}`}>
                   <td style={{ fontWeight: 700, color: 'var(--color-primary)' }}>#{u.id}</td>
                   <td>
                     <div style={{ fontWeight: 700, color: 'var(--color-text)' }}>{u.name}</div>

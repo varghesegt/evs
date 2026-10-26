@@ -45,8 +45,8 @@ export default function Reports() {
               </tr>
             </thead>
             <tbody>
-              {donations.map(d => (
-                <tr key={d.id}>
+              {donations.map((d, index) => (
+                <tr key={`report-row-${d.id}-${index}`}>
                   <td>{d.id}</td>
                   <td>
                     <div className="font-medium">{d.foodName}</div>

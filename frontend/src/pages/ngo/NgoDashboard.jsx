@@ -4,6 +4,8 @@ import DashboardLayout from '../../components/DashboardLayout';
 import StatCard from '../../components/StatCard';
 import DonationCard from '../../components/DonationCard';
 import MapView from '../../components/MapView';
+import CvrpLogisticsModal from '../../components/CvrpLogisticsModal';
+import SurgeEscalationBanner from '../../components/SurgeEscalationBanner';
 import { getNgoDonations } from '../../api/ngoApi';
 import { getAvailableDonations } from '../../api/donationApi';
 import { getMapPins } from '../../api/analyticsApi';
@@ -14,6 +16,7 @@ export default function NgoDashboard() {
   const [available, setAvailable] = useState([]);
   const [mapPins, setMapPins] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [cvrpModalOpen, setCvrpModalOpen] = useState(false);
 
   useEffect(() => {
     Promise.all([getNgoDonations(), getAvailableDonations(), getMapPins()])
@@ -34,24 +37,32 @@ export default function NgoDashboard() {
       <div className="page-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 'var(--space-3)' }}>
         <div>
           <h1>NGO Operations</h1>
-          <p>Manage incoming food requests, view live pins, and coordinate volunteers</p>
+          <p>Manage incoming food requests, view live pins, and dispatch multi-vehicle logistics</p>
         </div>
-        <div style={{ display: 'flex', gap: 'var(--space-2)', width: '100%', maxWidth: '400px' }}>
+        <div style={{ display: 'flex', gap: 'var(--space-2)', flexWrap: 'wrap' }}>
           <button
             type="button"
             className="btn btn-primary btn-md"
             onClick={() => navigate('/ngo/incoming')}
-            style={{ flex: 1, minHeight: '44px' }}
+            style={{ minHeight: '44px' }}
           >
-            Incoming Requests ({available.length})
+            Incoming ({available.length})
           </button>
           <button
             type="button"
             className="btn btn-secondary btn-md"
             onClick={() => navigate('/ngo/assign')}
-            style={{ flex: 1, minHeight: '44px' }}
+            style={{ minHeight: '44px' }}
           >
             Assign Volunteers
+          </button>
+          <button
+            type="button"
+            className="btn btn-accent btn-md"
+            onClick={() => setCvrpModalOpen(true)}
+            style={{ minHeight: '44px' }}
+          >
+            VRPTW Fleet Optimizer
           </button>
         </div>
       </div>
@@ -62,6 +73,9 @@ export default function NgoDashboard() {
         <StatCard label="Completed Deliveries" value={completed} variant="accent" />
         <StatCard label="Total Food Handled" value={`${totalKg.toFixed(1)} kg`} variant="primary" />
       </div>
+
+      {/* Code-Red Perishability Surge Escalation Banner */}
+      <SurgeEscalationBanner onSelectBatch={() => navigate('/ngo/assign')} />
 
       <div className="card mb-6" style={{ marginBottom: 'var(--space-6)' }}>
         <div className="card-header" style={{ marginBottom: 'var(--space-2)' }}>
@@ -83,11 +97,16 @@ export default function NgoDashboard() {
         </div>
       ) : (
         <div className="donation-cards-grid">
-          {myDonations.slice(0, 6).map(d => (
-            <DonationCard key={d.id} donation={d} />
+          {myDonations.slice(0, 6).map((d, index) => (
+            <DonationCard key={`ngo-donation-${d.id}-${index}`} donation={d} />
           ))}
         </div>
       )}
+
+      <CvrpLogisticsModal
+        isOpen={cvrpModalOpen}
+        onClose={() => setCvrpModalOpen(false)}
+      />
     </DashboardLayout>
   );
 }

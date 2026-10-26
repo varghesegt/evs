@@ -25,3 +25,8 @@ desktop.ini
 .env
 .env.local
 *.log
+
+# Executables & Binaries
+*.exe
+cloudflared.exe
+

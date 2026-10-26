@@ -6,18 +6,23 @@ import DonationCard from '../../components/DonationCard';
 import MapView from '../../components/MapView';
 import EvsCertificateModal from '../../components/EvsCertificateModal';
 import { getMyDonations } from '../../api/donationApi';
+import { getMapPins } from '../../api/analyticsApi';
 import { useAuth } from '../../context/AuthContext';
 
 export default function DonorDashboard() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [donations, setDonations] = useState([]);
+  const [mapPins, setMapPins] = useState([]);
   const [loading, setLoading] = useState(true);
   const [certModalOpen, setCertModalOpen] = useState(false);
 
   useEffect(() => {
-    getMyDonations()
-      .then(res => setDonations(res.data))
+    Promise.all([getMyDonations(), getMapPins()])
+      .then(([donationsRes, pinsRes]) => {
+        setDonations(donationsRes.data || []);
+        setMapPins(pinsRes.data || []);
+      })
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
@@ -27,24 +32,39 @@ export default function DonorDashboard() {
   const totalKg = donations.reduce((sum, d) => sum + (d.quantityKg || 0), 0);
   const totalCo2e = Math.round(totalKg * 2.5 * 10) / 10;
 
-  const markers = donations
+  // Donor's own donations pinned
+  const myDonationPins = donations
     .filter(d => d.pickupLat && d.pickupLng)
     .map(d => ({
+      uniqueKey: `my-donor-${d.id}-${d.pickupLat}-${d.pickupLng}`,
+      id: `my-${d.id}`,
       lat: d.pickupLat,
       lng: d.pickupLng,
-      type: 'donor',
-      title: d.foodName,
-      subtitle: `${d.quantityKg} kg - ${d.status}`,
+      type: 'donation',
+      title: `[Your Donation] ${d.foodName}`,
+      subtitle: `${d.quantityKg} kg • ${d.status}`,
+      phone: user?.phone,
     }));
+
+  // Combine with live Trichy ecosystem pins (shelters, volunteers, donors)
+  const combinedPins = [
+    ...myDonationPins,
+    ...mapPins
+      .filter(p => !donations.some(d => d.id === p.id && p.type === 'donation'))
+      .map(p => ({
+        ...p,
+        uniqueKey: `ecosystem-${p.type}-${p.id}-${p.lat}-${p.lng}`,
+      })),
+  ];
 
   return (
     <DashboardLayout>
       <div className="page-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 'var(--space-3)' }}>
         <div>
           <h1>Donor Overview</h1>
-          <p>Track surplus food donations, AI priority routing, and carbon offsets</p>
+          <p>Track surplus food donations, live Trichy recipient shelters, AI priority routing, and carbon offsets</p>
         </div>
-        <div style={{ display: 'flex', gap: 'var(--space-2)', width: '100%', maxWidth: '400px' }}>
+        <div style={{ display: 'flex', gap: 'var(--space-2)', flexWrap: 'wrap', width: '100%', maxWidth: '420px' }}>
           <button
             type="button"
             className="btn btn-primary btn-md"
@@ -71,14 +91,19 @@ export default function DonorDashboard() {
         <StatCard label="CO₂e Avoided" value={`${totalCo2e} kg`} variant="primary" />
       </div>
 
-      {markers.length > 0 && (
-        <div className="card mb-6" style={{ marginBottom: 'var(--space-6)' }}>
-          <div className="card-header">
-            <span className="card-title">Donation GPS Radar</span>
-          </div>
-          <MapView markers={markers} zoom={12} height="320px" />
+      {/* Live Trichy Ecosystem Radar Card */}
+      <div className="card mb-6" style={{ marginBottom: 'var(--space-6)' }}>
+        <div className="card-header" style={{ marginBottom: 'var(--space-2)' }}>
+          <span className="card-title">Live Trichy Food Rescue Radar & Recipient Shelters</span>
         </div>
-      )}
+        <MapView
+          markers={combinedPins.length > 0 ? combinedPins : mapPins}
+          zoom={13}
+          height="380px"
+          showFilters={true}
+          title="Surrounding NGO Shelters, Food Banks & Active Batches in Trichy"
+        />
+      </div>
 
       <div className="card-header" style={{ marginBottom: 'var(--space-4)' }}>
         <span className="card-title">Recent Food Donations</span>
@@ -93,8 +118,8 @@ export default function DonorDashboard() {
         </div>
       ) : (
         <div className="donation-cards-grid">
-          {donations.slice(0, 6).map(d => (
-            <DonationCard key={d.id} donation={d} />
+          {donations.slice(0, 6).map((d, index) => (
+            <DonationCard key={`donor-donation-${d.id}-${index}`} donation={d} />
           ))}
         </div>
       )}

@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import OfflineBanner from './components/OfflineBanner';
 
 import Landing from './pages/Landing';
 import Login from './pages/Login';
@@ -51,7 +52,7 @@ function AppRoutes() {
       {/* Admin routes */}
       <Route path="/admin" element={<ProtectedRoute roles={['ROLE_ADMIN']}><AdminDashboard /></ProtectedRoute>} />
       <Route path="/admin/users" element={<ProtectedRoute roles={['ROLE_ADMIN']}><UserManagement /></ProtectedRoute>} />
-      <Route path="/admin/analytics" element={<ProtectedRoute roles={['ROLE_ADMIN']}><AnalyticsDashboard /></ProtectedRoute>} />
+      <Route path="/admin/analytics" element={<ProtectedRoute roles={['ROLE_ADMIN', 'ROLE_NGO', 'ROLE_DONOR', 'ROLE_VOLUNTEER']}><AnalyticsDashboard /></ProtectedRoute>} />
       <Route path="/admin/reports" element={<ProtectedRoute roles={['ROLE_ADMIN']}><Reports /></ProtectedRoute>} />
 
       {/* Fallback */}
@@ -74,6 +75,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
+        <OfflineBanner />
         <AppRoutes />
       </AuthProvider>
     </BrowserRouter>

@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
 import DashboardLayout from '../../components/DashboardLayout';
+import StatCard from '../../components/StatCard';
 import DonationCard from '../../components/DonationCard';
 import EvsCertificateModal from '../../components/EvsCertificateModal';
+import DmrvCredentialModal from '../../components/DmrvCredentialModal';
+import HaccpMonitorModal from '../../components/HaccpMonitorModal';
 import { getMyDonations } from '../../api/donationApi';
 import { useAuth } from '../../context/AuthContext';
 
@@ -11,6 +14,9 @@ export default function DonorHistory() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('ALL');
   const [certModalOpen, setCertModalOpen] = useState(false);
+  const [dmrvModalOpen, setDmrvModalOpen] = useState(false);
+  const [haccpModalOpen, setHaccpModalOpen] = useState(false);
+  const [selectedDonationId, setSelectedDonationId] = useState(1);
 
   useEffect(() => {
     getMyDonations()
@@ -51,75 +57,44 @@ export default function DonorHistory() {
           <p>Track your surplus food donations, status progression, and verified carbon offsets</p>
         </div>
 
-        <button
-          type="button"
-          className="btn btn-accent btn-lg"
-          onClick={() => setCertModalOpen(true)}
-          style={{
-            minHeight: '48px',
-            fontSize: '13px',
-            fontWeight: 700,
-            borderRadius: 'var(--radius-lg)',
-            boxShadow: '0 4px 12px rgba(217, 119, 6, 0.25)',
-            width: '100%',
-            maxWidth: '340px',
-          }}
-        >
-          Download Official EVS Carbon Certificate
-        </button>
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+          <button
+            type="button"
+            className="btn btn-accent"
+            onClick={() => setCertModalOpen(true)}
+            style={{
+              minHeight: '44px',
+              fontSize: '12px',
+              fontWeight: 700,
+              borderRadius: 'var(--radius-lg)',
+              boxShadow: '0 4px 12px rgba(217, 119, 6, 0.25)',
+            }}
+          >
+            EVS Carbon Certificate
+          </button>
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={() => { setSelectedDonationId(donations[0]?.id || 1); setDmrvModalOpen(true); }}
+            style={{
+              minHeight: '44px',
+              fontSize: '12px',
+              fontWeight: 700,
+              borderRadius: 'var(--radius-lg)',
+              boxShadow: '0 4px 12px rgba(2, 132, 199, 0.25)',
+            }}
+          >
+            W3C dMRV Credential
+          </button>
+        </div>
       </div>
 
-      {/* Mobile Environmental Impact Summary Cards */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))',
-        gap: 'var(--space-3)',
-        marginBottom: 'var(--space-5)',
-      }}>
-        <div className="card" style={{ padding: 'var(--space-3)', textAlign: 'center', borderLeft: '4px solid var(--color-primary)' }}>
-          <div style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--color-text-muted)', letterSpacing: '0.05em', fontWeight: 700 }}>
-            Total Batches
-          </div>
-          <div style={{ fontSize: 'var(--font-size-xl)', fontWeight: 800, color: 'var(--color-primary-dark)', margin: '2px 0' }}>
-            {donations.length}
-          </div>
-        </div>
-
-        <div className="card" style={{ padding: 'var(--space-3)', textAlign: 'center', borderLeft: '4px solid #0284c7' }}>
-          <div style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--color-text-muted)', letterSpacing: '0.05em', fontWeight: 700 }}>
-            Food Rescued
-          </div>
-          <div style={{ fontSize: 'var(--font-size-xl)', fontWeight: 800, color: '#0284c7', margin: '2px 0' }}>
-            {totalKgRescued.toFixed(1)} <span style={{ fontSize: '11px', fontWeight: 500 }}>kg</span>
-          </div>
-        </div>
-
-        <div className="card" style={{ padding: 'var(--space-3)', textAlign: 'center', borderLeft: '4px solid #0d9668' }}>
-          <div style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--color-text-muted)', letterSpacing: '0.05em', fontWeight: 700 }}>
-            CO₂e Avoided
-          </div>
-          <div style={{ fontSize: 'var(--font-size-xl)', fontWeight: 800, color: '#0d9668', margin: '2px 0' }}>
-            {totalCo2e} <span style={{ fontSize: '11px', fontWeight: 500 }}>kg</span>
-          </div>
-        </div>
-
-        <div className="card" style={{ padding: 'var(--space-3)', textAlign: 'center', borderLeft: '4px solid #d97706' }}>
-          <div style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--color-text-muted)', letterSpacing: '0.05em', fontWeight: 700 }}>
-            Meals Provided
-          </div>
-          <div style={{ fontSize: 'var(--font-size-xl)', fontWeight: 800, color: '#d97706', margin: '2px 0' }}>
-            {totalMeals}
-          </div>
-        </div>
-
-        <div className="card" style={{ padding: 'var(--space-3)', textAlign: 'center', borderLeft: '4px solid #7c3aed' }}>
-          <div style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--color-text-muted)', letterSpacing: '0.05em', fontWeight: 700 }}>
-            Trees Equivalent
-          </div>
-          <div style={{ fontSize: 'var(--font-size-xl)', fontWeight: 800, color: '#7c3aed', margin: '2px 0' }}>
-            {totalTrees} <span style={{ fontSize: '11px', fontWeight: 500 }}>trees/yr</span>
-          </div>
-        </div>
+      {/* Decongested High-Clarity Environmental Impact Cards */}
+      <div className="stats-grid">
+        <StatCard label="Total Batches" value={donations.length} variant="primary" />
+        <StatCard label="Food Rescued" value={totalKgRescued.toFixed(1)} unit="kg" variant="secondary" />
+        <StatCard label="CO2e Avoided" value={totalCo2e} unit="kg" variant="accent" />
+        <StatCard label="Meals Provided" value={totalMeals} variant="primary" />
       </div>
 
       {/* Status Filter Chips Container (Flex Wrap - No Scroll) */}
@@ -157,8 +132,31 @@ export default function DonorHistory() {
         </div>
       ) : (
         <div className="donation-cards-grid">
-          {filtered.map(d => (
-            <DonationCard key={d.id} donation={d} />
+          {filtered.map((d, index) => (
+            <DonationCard
+              key={`history-don-${d.id}-${index}`}
+              donation={d}
+              actions={
+                <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginTop: '6px' }}>
+                  <button
+                    type="button"
+                    className="btn btn-outline btn-xs"
+                    onClick={() => { setSelectedDonationId(d.id); setDmrvModalOpen(true); }}
+                    style={{ fontSize: '11px', padding: '4px 10px', color: '#0284c7', borderColor: '#38bdf8', fontWeight: 600 }}
+                  >
+                    dMRV Claim
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-outline btn-xs"
+                    onClick={() => { setSelectedDonationId(d.id); setHaccpModalOpen(true); }}
+                    style={{ fontSize: '11px', padding: '4px 10px', color: '#059669', borderColor: '#6ee7b7', fontWeight: 600 }}
+                  >
+                    Cold-Chain IoT Log
+                  </button>
+                </div>
+              }
+            />
           ))}
         </div>
       )}
@@ -168,6 +166,20 @@ export default function DonorHistory() {
         donorId={user?.id || 1}
         isOpen={certModalOpen}
         onClose={() => setCertModalOpen(false)}
+      />
+
+      {/* W3C dMRV Credential Modal */}
+      <DmrvCredentialModal
+        donationId={selectedDonationId}
+        isOpen={dmrvModalOpen}
+        onClose={() => setDmrvModalOpen(false)}
+      />
+
+      {/* HACCP Cold-Chain IoT Telemetry Modal */}
+      <HaccpMonitorModal
+        donationId={selectedDonationId}
+        isOpen={haccpModalOpen}
+        onClose={() => setHaccpModalOpen(false)}
       />
     </DashboardLayout>
   );

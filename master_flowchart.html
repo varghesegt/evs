@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoShare AI — Unified Master Architecture Flowchart</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --surface: #111827;
+      --surface-border: #1f2937;
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --emerald: #10b981;
+      --amber: #f59e0b;
+      --rose: #ef4444;
+      --purple: #a855f7;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --mono: 'JetBrains Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      line-height: 1.6;
+      padding-bottom: 80px;
+    }
+
+    header {
+      background: linear-gradient(180deg, #111827 0%, rgba(17,24,39,0.8) 100%);
+      border-bottom: 1px solid var(--surface-border);
+      padding: 36px 40px 28px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(12px);
+    }
+
+    .header-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34d399;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .sub-heading {
+      color: var(--text-muted);
+      font-size: 15px;
+      margin-top: 4px;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn {
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      border: none;
+    }
+    .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
+
+    .btn-secondary {
+      background: #1e293b;
+      color: #e2e8f0;
+      border: 1px solid #334155;
+    }
+    .btn-secondary:hover { background: #334155; }
+
+    main {
+      max-width: 1400px;
+      margin: 32px auto 0;
+      padding: 0 40px;
+    }
+
+    .stage-nav {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 16px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--surface-border);
+    }
+
+    .stage-chip {
+      padding: 8px 16px;
+      background: var(--surface);
+      border: 1px solid var(--surface-border);
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    .stage-chip:hover, .stage-chip.active {
+      color: white;
+      border-color: var(--primary);
+      background: rgba(59, 130, 246, 0.1);
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--surface-border);
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 32px;
+    }
+
+    .card-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .img-container {
+      background: #0f172a;
+      border-radius: 12px;
+      border: 1px solid #1e293b;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .img-container img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    }
+
+    /* Decision Grid */
+    .decision-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 20px;
+      margin-top: 24px;
+    }
+
+    .decision-card {
+      background: #131d2e;
+      border: 1px solid #23354e;
+      border-radius: 12px;
+      padding: 20px;
+      position: relative;
+    }
+
+    .decision-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      font-family: var(--mono);
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      color: #fbbf24;
+      margin-bottom: 10px;
+    }
+
+    .decision-name {
+      font-size: 17px;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 10px;
+    }
+
+    .branch-box {
+      margin-top: 10px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .branch-yes {
+      background: rgba(16, 185, 129, 0.1);
+      border-left: 3px solid #10b981;
+      color: #a7f3d0;
+    }
+
+    .branch-no {
+      background: rgba(239, 68, 68, 0.1);
+      border-left: 3px solid #ef4444;
+      color: #fecaca;
+    }
+
+    .formula-tag {
+      font-family: var(--mono);
+      font-size: 12px;
+      background: #1e293b;
+      padding: 2px 8px;
+      border-radius: 4px;
+      color: #38bdf8;
+      display: inline-block;
+      margin-top: 6px;
+    }
+
+    .mermaid-box {
+      background: #0f172a;
+      border-radius: 12px;
+      padding: 24px;
+      overflow-x: auto;
+      border: 1px solid #1e293b;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-content">
+      <div>
+        <div class="badge-pill">
+          <span>●</span> MASTER ARCHITECTURE FLOWCHART
+        </div>
+        <h1>EcoShare AI — Complete Project Decision Flowchart</h1>
+        <p class="sub-heading">End-to-End Cyber-Physical Redistribution Pipeline with 7 Automated Decision Gates & Multi-Gas Ledger</p>
+      </div>
+      <div class="btn-group">
+        <a href="ecoshare_complete_master_flowchart.png" download class="btn btn-primary">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+          Download High-Res PNG (300 DPI)
+        </a>
+        <a href="EcoShare_AI_Master_Architecture_Flowchart.docx" download class="btn btn-secondary">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+          Download Patent Word Doc
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Visual Image Container -->
+    <div class="card">
+      <div class="card-title">
+        <svg width="22" height="22" fill="none" stroke="#3b82f6" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+        Master Architecture Flowchart (Ultra-Resolution 2700 × 5980)
+      </div>
+      <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">
+        Click the image to view in full resolution. Every operational stage, decision diamond, failure mitigation branch, and feedback loop is rendered with publication-grade clarity.
+      </p>
+      <div class="img-container">
+        <a href="ecoshare_complete_master_flowchart.png" target="_blank" title="Click to view full size">
+          <img src="ecoshare_complete_master_flowchart.png" alt="EcoShare AI Master Flowchart">
+        </a>
+      </div>
+    </div>
+
+    <!-- The 7 Automated Decision Points Breakdown -->
+    <div class="card">
+      <div class="card-title">
+        <svg width="22" height="22" fill="none" stroke="#f59e0b" stroke-width="2" viewBox="0 0 24 24"><polygon points="12 2 2 12 12 22 22 12"></polygon></svg>
+        The 7 Critical Automated Decision Diamonds (Proper Decision Making & Branching)
+      </div>
+      <p style="color: var(--text-muted); font-size: 14px;">
+        Unlike simple linear pipelines, EcoShare AI employs strict algorithmic decision gates to guarantee food safety, payload efficiency, and cryptographic accountability:
+      </p>
+
+      <div class="decision-grid">
+        <!-- Decision 1 -->
+        <div class="decision-card">
+          <div class="decision-badge">DECISION D1 • AUTHENTICATION</div>
+          <div class="decision-name">Donor Profile & JWT Session Authenticated?</div>
+          <div class="branch-box branch-yes">
+            <strong>YES [Authenticated]:</strong> Proceed to Volumetric Computer Vision surface extraction.
+          </div>
+          <div class="branch-box branch-no">
+            <strong>NO [Unauthenticated]:</strong> Redirect to Spring Security registration; issue 24h HMAC-SHA512 token and loop back into intake pipeline.
+          </div>
+          <div class="formula-tag">Bearer JWT / HS512 Signature</div>
+        </div>
+
+        <!-- Decision 2 -->
+        <div class="decision-card">
+          <div class="decision-badge">DECISION D2 • VOLUMETRICS</div>
+          <div class="decision-name">Standard Calibrated Receptacle Identified?</div>
+          <div class="branch-box branch-yes">
+            <strong>YES [Calibrated]:</strong> Reference 5L/10L/20L/50L matrix. Apply +5% repeatability boost (89% confidence, ±8% error margin).
+          </div>
+          <div class="branch-box branch-no">
+            <strong>NO [Custom Receptacle]:</strong> Heuristic volume calculation using fill %; baseline 82% confidence, ±12% statistical uncertainty.
+          </div>
+          <div class="formula-tag">V_eff = V_container × (Fill% / 100)</div>
+        </div>
+
+        <!-- Decision 3 -->
+        <div class="decision-card">
+          <div class="decision-badge">DECISION D3 • BIO-SAFETY GATE</div>
+          <div class="decision-name">Microbiological Safety: Is Food Safe (t_rem > 0)?</div>
+          <div class="branch-box branch-yes">
+            <strong>YES [Fresh]:</strong> Batch approved for human consumption pipeline; trigger priority urgency calculator.
+          </div>
+          <div class="branch-box branch-no">
+            <strong>NO [Expired / Biohazard]:</strong> Circuit breaker trips! Lock status to BIO_DIVERTED; automatically divert to municipal composting / biogas (GWP 28× Methane credit).
+          </div>
+          <div class="formula-tag">t_rem = T_shelf - Δt_elapsed > 0</div>
+        </div>
+
+        <!-- Decision 4 -->
+        <div class="decision-card">
+          <div class="decision-badge">DECISION D4 • PRIORITY LEVEL</div>
+          <div class="decision-name">Urgency Critical? (P ≥ 75 OR t_rem ≤ 2h)</div>
+          <div class="branch-box branch-yes">
+            <strong>YES [Critical]:</strong> Emergency Dispatch Protocol: push real-time alert to nearby high-capacity shelters with 10-minute SLA.
+          </div>
+          <div class="branch-box branch-no">
+            <strong>NO [Standard]:</strong> Enqueue into standard regional redistribution pool for scheduled pickup clustering.
+          </div>
+          <div class="formula-tag">P = 0.3·S_qty + 0.5·S_fresh + 0.2·S_time</div>
+        </div>
+
+        <!-- Decision 5 -->
+        <div class="decision-card">
+          <div class="decision-badge">DECISION D5 • NGO MATCHING</div>
+          <div class="decision-name">Primary NGO Accepts within Response SLA (15m)?</div>
+          <div class="branch-box branch-yes">
+            <strong>YES [Accepted]:</strong> Lock reservation; update status to ACCEPTED; assign capable volunteer transport agent.
+          </div>
+          <div class="branch-box branch-no">
+            <strong>NO [SLA Timeout]:</strong> Auto-escalate reservation lock; pop next ranked NGO in spatial queue; cascade notification with urgency boost.
+          </div>
+          <div class="formula-tag">S_ngo = 0.4/Dist + 0.35·Cap + 0.25·Speed</div>
+        </div>
+
+        <!-- Decision 6 -->
+        <div class="decision-card">
+          <div class="decision-badge">DECISION D6 • CVRP CAPACITY</div>
+          <div class="decision-name">Cumulative Payload Exceeds Vehicle Limit (C_max)?</div>
+          <div class="branch-box branch-yes">
+            <strong>YES [Overflow]:</strong> Capacity Split Resolution: automatically insert intermediate depot dropoff before remaining pickups.
+          </div>
+          <div class="branch-box branch-no">
+            <strong>NO [Feasible]:</strong> Continuous multi-stop tour execution; saves 28.5% transit distance and transport CO2e emissions.
+          </div>
+          <div class="formula-tag">Current_Load + M_batch ≤ C_max</div>
+        </div>
+
+        <!-- Decision 7 -->
+        <div class="decision-card">
+          <div class="decision-badge">DECISION D7 • ZERO-TRUST GATE</div>
+          <div class="decision-name">Scanned Token Matches Database (τ_scan == τ_stored)?</div>
+          <div class="branch-box branch-yes">
+            <strong>YES [Verified Handshake]:</strong> Transition to DELIVERED; trigger closed-loop MAPE recalibration and commit SHA-256 ledger digest.
+          </div>
+          <div class="branch-box branch-no">
+            <strong>NO [Tamper / Fraud]:</strong> Zero-Trust Security Freeze: reject handover; lock volunteer session; flag audit incident to platform admin.
+          </div>
+          <div class="formula-tag">τ = randomUUID().substring(0,8)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mermaid Interactive Diagram -->
+    <div class="card">
+      <div class="card-title">
+        <svg width="22" height="22" fill="none" stroke="#a855f7" stroke-width="2" viewBox="0 0 24 24"><path d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+        Mermaid Code & Live Interactive Representation
+      </div>
+      <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 16px;">
+        This diagram can be directly copied into GitHub markdown, Notion, Mermaid Live Editor, or academic papers.
+      </p>
+      <div class="mermaid-box">
+        <pre class="mermaid">
+flowchart TD
+    classDef startEnd fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#065f46;
+    classDef process fill:#eff6ff,stroke:#2563eb,stroke-width:2px,color:#1e3a8a;
+    classDef decision fill:#fef3c7,stroke:#d97706,stroke-width:2px,color:#92400e;
+    classDef danger fill:#fef2f2,stroke:#ef4444,stroke-width:2px,color:#991b1b;
+    classDef purple fill:#faf5ff,stroke:#9333ea,stroke-width:2px,color:#581c87;
+
+    START(["START: Donor Initiates Donation Telemetry"]):::startEnd --> S1["1. Ingest Food Details, Timestamp, GPS & Photos"]:::process
+    S1 --> D1{"D1: Donor Profile &<br>JWT Authenticated?"}:::decision
+    
+    D1 -- "NO [Unauthenticated]" --> D1_NO["1B. Prompt Registration / Issue HS512 JWT (24h)"]:::danger
+    D1_NO --> S1
+    D1 -- "YES [Authenticated]" --> S2["2. Volumetric Computer Vision Surface Analysis"]:::process
+    
+    S2 --> D2{"D2: Standard Calibrated<br>Container Identified?"}:::decision
+    D2 -- "YES" --> S2A["2A. Matrix Lookup: 5L/10L/20L/50L<br>(±8% Uncertainty, +5% Conf)"]:::process
+    D2 -- "NO" --> S2B["2B. Custom Heuristic Calculation<br>(±12% Uncertainty, 82% Conf)"]:::process
+    
+    S2A --> S3["3. Bulk Density Physics: M = V × ρ<br>& Portion Calculation"]:::process
+    S2B --> S3
+    
+    S3 --> S4["4. Freshness Predictor: t_rem = T_shelf - Δt"]:::process
+    S4 --> D3{"D3: Is Food Safe to Consume?<br>(t_rem > 0)"}:::decision
+    
+    D3 -- "NO [Spoiled / Hazard]" --> BIO1["4B. BIOHAZARD SHUTOFF: Mark BIO_DIVERTED"]:::danger
+    BIO1 --> BIO2["4C. Divert to Composting / Biogas (CH4 GWP 28×)"]:::danger
+    BIO2 --> BIO_END(["TERMINAL: Safe Ecological Diversion"]):::danger
+    
+    D3 -- "YES [Safe]" --> S5["5. Priority Score: P = 0.3·Qty + 0.5·Fresh + 0.2·Time"]:::process
+    S5 --> D4{"D4: Critical Urgency?<br>(P ≥ 75 OR t_rem ≤ 2h)"}:::decision
+    
+    D4 -- "YES" --> S5A["5A. EMERGENCY DISPATCH: Immediate Push Notification"]:::danger
+    D4 -- "NO" --> S5B["5B. STANDARD DISPATCH: Regional Redistribution Pool"]:::process
+    
+    S5A --> S6["6. Time-Series Deficit Forecasting (Cap × 2.2 × Trend)"]:::process
+    S5B --> S6
+    
+    S6 --> S7["7. NGO Multi-Criteria Haversine Proximity Ranking"]:::process
+    S7 --> D5{"D5: Primary NGO Accepts<br>Within SLA Window (15m)?"}:::decision
+    
+    D5 -- "NO [Timeout]" --> D5_NO["7B. Auto-Escalate to Rank-2 NGO in Cluster"]:::decision
+    D5_NO --> S7
+    D5 -- "YES [Accepted]" --> S8["8. Lock NGO Reservation & Assign Capable Volunteer"]:::process
+    
+    S8 --> S9["9. Multi-Stop CVRP Route Solver (Nearest-Neighbor)"]:::purple
+    S9 --> D6{"D6: Gross Vehicle Payload Limit<br>Exceeded? (L + M > C_max)"}:::decision
+    
+    D6 -- "YES [Overflow]" --> S9A["9A. Capacity Split: Insert Intermediate Dropoff"]:::decision
+    D6 -- "NO [Feasible]" --> S9B["9B. Consolidated Tour (28.5% Distance Saved)"]:::purple
+    
+    S9A --> S10["10. Dispatch Manifest & Generate Secure QR Token (τ)"]:::purple
+    S9B --> S10
+    
+    S10 --> S11["11. Volunteer Origin Handover: Scan Donor QR -> PICKED_UP"]:::purple
+    S11 --> S12["12. Shelter Depot Arrival: Scale Mass Check & QR Scan"]:::purple
+    
+    S12 --> D7{"D7: Scanned Token Matches<br>Database? (τ_scan == τ_stored)"}:::decision
+    
+    D7 -- "NO [Tamper]" --> D7_NO["12B. ZERO-TRUST FRAUD LOCKOUT: Freeze State & Flag Admin"]:::danger
+    D7_NO --> D7_END(["TERMINAL: Custody Breach Incident Logged"]):::danger
+    
+    D7 -- "YES [Verified]" --> S13["13. Validated Handover -> DELIVERED<br>& Closed-Loop MAPE AI Calibration"]:::process
+    S13 --> S14["14. IPCC Nexus: CO2e (1.9kg), Water (1400L)<br>& SHA-256 Cryptographic Digest Commitment"]:::purple
+    S14 --> END(["TERMINAL: Food Redistribution Completed & Verified"]):::startEnd
+        </pre>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'dark',
+      themeVariables: {
+        darkMode: true,
+        background: '#0f172a',
+        primaryColor: '#3b82f6',
+        edgeLabelBackground: '#1e293b'
+      }
+    });
+  </script>
+</body>
+</html>

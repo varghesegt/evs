@@ -59,6 +59,16 @@ public class AnalyticsController {
         return ResponseEntity.ok(analyticsService.getLeaderboard());
     }
 
+    @GetMapping("/dmrv-credential/{donationId}")
+    public ResponseEntity<Map<String, Object>> getDmrvCredential(@PathVariable Long donationId) {
+        return ResponseEntity.ok(analyticsService.getDmrvCredential(donationId));
+    }
+
+    @GetMapping("/public/dmrv-credential/{donationId}")
+    public ResponseEntity<Map<String, Object>> getPublicDmrvCredential(@PathVariable Long donationId) {
+        return ResponseEntity.ok(analyticsService.getDmrvCredential(donationId));
+    }
+
     @GetMapping("/public/verify-hash/{hash}")
     public ResponseEntity<Map<String, Object>> verifyCertificateHash(@PathVariable String hash) {
         return ResponseEntity.ok(Map.of(

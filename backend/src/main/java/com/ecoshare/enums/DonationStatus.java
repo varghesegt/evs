@@ -9,5 +9,6 @@ public enum DonationStatus {
     PICKED_UP,
     DELIVERED,
     EXPIRED,
-    CANCELLED
+    CANCELLED,
+    BIO_DIVERTED
 }

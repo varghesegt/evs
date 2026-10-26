@@ -47,8 +47,8 @@ export default function IncomingRequests() {
         </div>
       ) : (
         <div className="donation-cards-grid">
-          {donations.map(d => (
-            <DonationCard key={d.id} donation={d} actions={
+          {donations.map((d, index) => (
+            <DonationCard key={`incoming-${d.id}-${index}`} donation={d} actions={
               <button className="btn btn-primary btn-sm"
                       disabled={accepting === d.id}
                       onClick={() => handleAccept(d.id)}>

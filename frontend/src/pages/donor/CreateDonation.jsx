@@ -1,9 +1,10 @@
-import { useState, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../../components/DashboardLayout';
 import MapView from '../../components/MapView';
 import AiQuantityEstimator from '../../components/AiQuantityEstimator';
 import { createDonation } from '../../api/donationApi';
+import { getMapPins } from '../../api/analyticsApi';
 
 const FOOD_CATEGORIES = [
   'COOKED_RICE', 'COOKED_CURRY', 'COOKED_VEGETABLES', 'BREAD_BAKERY',
@@ -33,6 +34,17 @@ export default function CreateDonation() {
     pickupLng: '',
   });
 
+  const [ecosystemShelters, setEcosystemShelters] = useState([]);
+
+  useEffect(() => {
+    getMapPins()
+      .then(res => {
+        const shelters = (res.data || []).filter(p => p.type === 'ngo');
+        setEcosystemShelters(shelters);
+      })
+      .catch(() => {});
+  }, []);
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -46,16 +58,24 @@ export default function CreateDonation() {
     }));
   };
 
-  const handleConfirmAiEstimate = ({ quantityKg, foodCategory, estimatedServings, aiEstimatedMassKg }) => {
+  const handleConfirmAiEstimate = ({ quantityKg, foodCategory, foodName, estimatedServings, aiEstimatedMassKg, containerType, confidenceScore }) => {
+    const containerLabel = containerType === 'STANDARD_5L' ? '5L Chafing Dish'
+      : containerType === 'STANDARD_10L' ? '10L Catering Pot'
+      : containerType === 'STANDARD_20L' ? '20L Feast Drum'
+      : containerType === 'STANDARD_50L' ? '50L Large Cauldron'
+      : 'Calibrated Vessel';
+
     setForm(prev => ({
       ...prev,
       quantityKg: quantityKg.toString(),
+      foodName: prev.foodName || foodName || (foodCategory ? formatCategoryLabel(foodCategory) : ''),
       foodCategory: foodCategory || prev.foodCategory,
+      packagingType: prev.packagingType || containerLabel,
       description: prev.description
-        ? `${prev.description}\n[AI Quantity: ${quantityKg} kg, ~${estimatedServings} meals]`
-        : `AI Volumetric Estimate: ${quantityKg} kg (estimated ~${estimatedServings} servings). AI Midpoint: ${aiEstimatedMassKg} kg.`,
+        ? `${prev.description}\n[AI Vision: ${quantityKg} kg, ~${estimatedServings} meals, ${confidenceScore || 95}% Confidence]`
+        : `AI Volumetric Vision: ${quantityKg} kg (~${estimatedServings} servings). AI Midpoint: ${aiEstimatedMassKg} kg in ${containerLabel}. Confidence: ${confidenceScore || 95}%.`,
     }));
-    setSuccess(`AI Estimate of ${quantityKg} kg (~${estimatedServings} meals) confirmed. Proceeding to Step 2.`);
+    setSuccess(`AI Vision Estimate of ${quantityKg} kg (~${estimatedServings} meals) confirmed. Step 2 details auto-filled!`);
     setActiveStep(2);
     setTimeout(() => {
       formSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -97,7 +117,7 @@ export default function CreateDonation() {
       {/* Page Header */}
       <div className="page-header" style={{ marginBottom: 'var(--space-4)' }}>
         <h1>Create Food Donation</h1>
-        <p>Mobile-first AI volumetric quantity estimation & real-time GPS location picker</p>
+        <p>AI-assisted volumetric estimation and GPS pickup coordination</p>
       </div>
 
       {/* Mobile-First Step Progress Indicator Bar */}
@@ -196,7 +216,7 @@ export default function CreateDonation() {
               style={{ width: '100%', minHeight: '48px', fontWeight: 600 }}
               onClick={() => setActiveStep(2)}
             >
-              Skip AI Estimation → Enter Details Manually
+              Skip AI Estimation and Enter Details Manually
             </button>
           </div>
         </div>
@@ -329,10 +349,37 @@ export default function CreateDonation() {
                 <span className="badge badge-secondary" style={{ fontSize: '10px' }}>OpenStreetMap GPS</span>
               </div>
 
+              {/* Quick Trichy Landmark Location Presets */}
+              <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '8px' }}>
+                <span style={{ fontSize: '11px', color: '#64748b', fontWeight: 700, alignSelf: 'center', marginRight: '4px' }}>
+                  Quick Trichy Hubs:
+                </span>
+                {[
+                  { name: 'Hotel Sangam, Cantonment', lat: 10.8055, lng: 78.6850, addr: 'Collector Office Road, Cantonment, Trichy' },
+                  { name: 'SRM Hotel, TVS Tollgate', lat: 10.7985, lng: 78.6890, addr: 'Race Course Road, TVS Tollgate, Trichy' },
+                  { name: 'Royal Mahal, Thillai Nagar', lat: 10.8295, lng: 78.6865, addr: 'Main Road, Thillai Nagar, Trichy' },
+                  { name: 'A2B, Chathiram', lat: 10.8310, lng: 78.6940, addr: 'Chathiram Bus Stand Area, Trichy' },
+                  { name: 'Central Bus Stand', lat: 10.7985, lng: 78.6815, addr: 'Central Bus Stand Terminal, Trichy' },
+                  { name: 'Golden Palm, KK Nagar', lat: 10.7760, lng: 78.7050, addr: 'KK Nagar Main Road, Trichy' },
+                  { name: 'NIT Trichy, Thuvakudi', lat: 10.7600, lng: 78.8150, addr: 'Tanjore Main Road, Thuvakudi, Trichy' },
+                ].map((preset) => (
+                  <button
+                    key={preset.name}
+                    type="button"
+                    className="btn btn-sm btn-secondary"
+                    style={{ padding: '2px 8px', fontSize: '11px', minHeight: '26px' }}
+                    onClick={() => handleLocationSelect({ lat: preset.lat, lng: preset.lng, address: preset.addr })}
+                  >
+                    {preset.name}
+                  </button>
+                ))}
+              </div>
+
               <MapView
-                height="300px"
+                height="320px"
                 interactivePicker={true}
                 showFilters={false}
+                markers={ecosystemShelters}
                 selectedLocation={{
                   lat: form.pickupLat ? parseFloat(form.pickupLat) : null,
                   lng: form.pickupLng ? parseFloat(form.pickupLng) : null,
@@ -429,7 +476,7 @@ export default function CreateDonation() {
                 onClick={() => setActiveStep(1)}
                 style={{ minHeight: '48px', fontSize: '14px', fontWeight: 600 }}
               >
-                ← Back to Step 1 (AI Estimator)
+                Back to Step 1 (AI Estimator)
               </button>
             </div>
           </form>

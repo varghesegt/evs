@@ -56,10 +56,10 @@ export default function EsgLeaderboard() {
               </tr>
             </thead>
             <tbody>
-              {leaderboard.map(item => {
+              {leaderboard.map((item, idx) => {
                 const badge = getTierBadge(item.tierBadge);
                 return (
-                  <tr key={item.donorId} style={{ background: item.rank === 1 ? '#f0fdf4' : 'transparent' }}>
+                  <tr key={`esg-leader-${item.donorId || idx}-${idx}`} style={{ background: item.rank === 1 ? '#f0fdf4' : 'transparent' }}>
                     <td style={{ textAlign: 'center', fontWeight: 800, fontSize: '15px', color: item.rank === 1 ? '#065f46' : '#475569' }}>
                       #{item.rank}
                     </td>
