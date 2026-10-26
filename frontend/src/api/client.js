@@ -18,13 +18,62 @@ const client = axios.create({
 const OFFLINE_USERS = {
   'donor1@ecoshare.com': { id: 1, name: 'SRM Hotel & Convention Centre', email: 'donor1@ecoshare.com', role: 'ROLE_DONOR' },
   'donor@ecoshare.com': { id: 1, name: 'SRM Hotel & Convention Centre', email: 'donor1@ecoshare.com', role: 'ROLE_DONOR' },
+  'donor': { id: 1, name: 'SRM Hotel & Convention Centre', email: 'donor1@ecoshare.com', role: 'ROLE_DONOR' },
+
   'ngo1@ecoshare.com': { id: 2, name: 'Trichy Seva Sangam Shelter', email: 'ngo1@ecoshare.com', role: 'ROLE_NGO' },
   'ngo@ecoshare.com': { id: 2, name: 'Trichy Seva Sangam Shelter', email: 'ngo1@ecoshare.com', role: 'ROLE_NGO' },
-  'vol1@ecoshare.com': { id: 3, name: 'Karthik Raja', email: 'vol1@ecoshare.com', role: 'ROLE_VOLUNTEER' },
-  'volunteer@ecoshare.com': { id: 3, name: 'Karthik Raja', email: 'vol1@ecoshare.com', role: 'ROLE_VOLUNTEER' },
+  'ngo': { id: 2, name: 'Trichy Seva Sangam Shelter', email: 'ngo1@ecoshare.com', role: 'ROLE_NGO' },
+
+  'vol1@ecoshare.com': { id: 3, name: 'Karthik Raja (Courier)', email: 'vol1@ecoshare.com', role: 'ROLE_VOLUNTEER' },
+  'vol@ecoshare.com': { id: 3, name: 'Karthik Raja (Courier)', email: 'vol1@ecoshare.com', role: 'ROLE_VOLUNTEER' },
+  'volunteer@ecoshare.com': { id: 3, name: 'Karthik Raja (Courier)', email: 'vol1@ecoshare.com', role: 'ROLE_VOLUNTEER' },
+  'volunteer': { id: 3, name: 'Karthik Raja (Courier)', email: 'vol1@ecoshare.com', role: 'ROLE_VOLUNTEER' },
+
   'admin@ecoshare.com': { id: 4, name: 'EcoShare Trichy Administrator', email: 'admin@ecoshare.com', role: 'ROLE_ADMIN' },
   'admin': { id: 4, name: 'EcoShare Trichy Administrator', email: 'admin@ecoshare.com', role: 'ROLE_ADMIN' },
 };
+
+function extractPayload(data) {
+  if (!data) return {};
+  if (typeof data === 'object') return data;
+  if (typeof data === 'string') {
+    try {
+      return JSON.parse(data);
+    } catch {
+      return {};
+    }
+  }
+  return {};
+}
+
+function resolveOfflineUser(payload) {
+  const email = (payload.email || '').toLowerCase().trim();
+  const explicitRole = payload.role;
+
+  if (OFFLINE_USERS[email]) {
+    return OFFLINE_USERS[email];
+  }
+
+  if (explicitRole === 'ROLE_ADMIN' || email.includes('admin')) {
+    return OFFLINE_USERS['admin@ecoshare.com'];
+  }
+  if (explicitRole === 'ROLE_NGO' || email.includes('ngo')) {
+    return OFFLINE_USERS['ngo1@ecoshare.com'];
+  }
+  if (explicitRole === 'ROLE_VOLUNTEER' || email.includes('vol')) {
+    return OFFLINE_USERS['vol1@ecoshare.com'];
+  }
+  if (explicitRole === 'ROLE_DONOR' || email.includes('donor')) {
+    return OFFLINE_USERS['donor1@ecoshare.com'];
+  }
+
+  return {
+    id: 1,
+    name: email ? email.split('@')[0].toUpperCase() : 'EcoShare Member',
+    email: email || 'user@ecoshare.com',
+    role: explicitRole || 'ROLE_DONOR',
+  };
+}
 
 // Check if running on GitHub Pages (where no Spring Boot server exists)
 const isStaticHost = typeof window !== 'undefined' && (
@@ -62,19 +111,8 @@ client.interceptors.request.use(async (config) => {
 
     // 2. Auth Login
     if (config.url === '/auth/login') {
-      let payload = {};
-      try {
-        payload = JSON.parse(config.data || '{}');
-      } catch (e) {
-        payload = {};
-      }
-      const email = (payload.email || '').toLowerCase().trim();
-      const demoUser = OFFLINE_USERS[email] || {
-        id: 1,
-        name: email ? email.split('@')[0].toUpperCase() : 'Demo User',
-        email: email || 'demo@ecoshare.com',
-        role: email.includes('ngo') ? 'ROLE_NGO' : email.includes('vol') ? 'ROLE_VOLUNTEER' : email.includes('admin') ? 'ROLE_ADMIN' : 'ROLE_DONOR',
-      };
+      const payload = extractPayload(config.data);
+      const demoUser = resolveOfflineUser(payload);
       const authData = {
         ...demoUser,
         token: 'OFFLINE_JWT_' + Date.now(),
@@ -92,8 +130,7 @@ client.interceptors.request.use(async (config) => {
 
     // 3. Register
     if (config.url === '/auth/register') {
-      let payload = {};
-      try { payload = JSON.parse(config.data || '{}'); } catch (e) {}
+      const payload = extractPayload(config.data);
       const authData = {
         id: Date.now(),
         name: payload.name || 'New Member',
@@ -114,8 +151,7 @@ client.interceptors.request.use(async (config) => {
 
     // 4. Create Donation
     if (config.url === '/donations/create') {
-      let payload = {};
-      try { payload = JSON.parse(config.data || '{}'); } catch (e) {}
+      const payload = extractPayload(config.data);
       const offlineDonation = {
         ...payload,
         id: 'offline-' + Date.now(),
@@ -183,15 +219,64 @@ client.interceptors.request.use(async (config) => {
       });
       return config;
     }
+
+    // 7. AI Quantity Estimator
+    if (config.url === '/ai/estimate-quantity') {
+      const payload = extractPayload(config.data);
+      const densityMap = {
+        COOKED_RICE: 0.85,
+        COOKED_CURRY: 1.05,
+        COOKED_VEGETABLES: 0.70,
+        BREAD_BAKERY: 0.45,
+        MIXED_MEAL: 0.75,
+        RAW_VEGETABLES: 0.50,
+        FRUITS: 0.65,
+        DAIRY: 1.02,
+        SWEETS_DESSERTS: 1.10,
+        OTHER: 0.80,
+      };
+      const volumeMap = {
+        STANDARD_5L: 5,
+        STANDARD_10L: 10,
+        STANDARD_20L: 20,
+        STANDARD_50L: 50,
+        CUSTOM: payload.customVolumeLiters || 15,
+      };
+      const vol = volumeMap[payload.containerType] || 20;
+      const fillPct = (payload.fillPercentage || 80) / 100;
+      const density = densityMap[payload.foodCategory] || 0.85;
+      const massMidpoint = Math.round(vol * fillPct * density * 10) / 10;
+      const servings = Math.round(massMidpoint * 2.5);
+
+      const aiResponse = {
+        estimatedVolumeLiters: Math.round(vol * fillPct * 10) / 10,
+        estimatedMassMidpointKg: massMidpoint,
+        estimatedMassMinKg: Math.round(massMidpoint * 0.9 * 10) / 10,
+        estimatedMassMaxKg: Math.round(massMidpoint * 1.1 * 10) / 10,
+        estimatedServingsMidpoint: servings,
+        confidenceScore: 94.5,
+        detectedFoodCategory: payload.foodCategory || 'COOKED_RICE',
+        foodDisplayName: payload.foodCategory ? payload.foodCategory.replace(/_/g, ' ') : 'Cooked Surplus Food',
+      };
+
+      config.adapter = () => Promise.resolve({
+        data: aiResponse,
+        status: 200,
+        statusText: 'OK (AI Vision Simulated)',
+        headers: {},
+        config,
+      });
+      return config;
+    }
   }
 
   return config;
-});
+}, (error) => Promise.reject(error));
 
-// Response interceptor: automatically cache successful GETs and catch any 404/405/network errors
+// Response interceptor: auto-cache GET requests, and provide fallback when backend is unreachable
 client.interceptors.response.use(
   (response) => {
-    if (response.config?.method?.toLowerCase() === 'get' && response.data) {
+    if (response.config.method?.toLowerCase() === 'get' && response.data) {
       saveCachedEndpoint(response.config.url, response.data);
     }
     return response;
@@ -227,88 +312,57 @@ client.interceptors.response.use(
 
       // 2. Auth Login fallback
       if (config.url === '/auth/login') {
-        try {
-          const payload = JSON.parse(config.data || '{}');
-          const email = (payload.email || '').toLowerCase().trim();
-          const demoUser = OFFLINE_USERS[email] || {
-            id: 1,
-            name: email ? email.split('@')[0].toUpperCase() : 'Demo User',
-            email: email || 'demo@ecoshare.com',
-            role: email.includes('ngo') ? 'ROLE_NGO' : email.includes('vol') ? 'ROLE_VOLUNTEER' : email.includes('admin') ? 'ROLE_ADMIN' : 'ROLE_DONOR',
-          };
-          const authData = {
-            ...demoUser,
-            token: 'OFFLINE_JWT_' + Date.now(),
-            type: 'Bearer',
-          };
-          return {
-            data: authData,
-            status: 200,
-            statusText: 'OK (Demo Login)',
-            config,
-            headers: {},
-            offline: true,
-          };
-        } catch (e) {
-          console.warn('[DemoMode] Login fallback error:', e);
-        }
+        const payload = extractPayload(config.data);
+        const demoUser = resolveOfflineUser(payload);
+        const authData = {
+          ...demoUser,
+          token: 'OFFLINE_JWT_' + Date.now(),
+          type: 'Bearer',
+        };
+        return {
+          data: authData,
+          status: 200,
+          statusText: 'OK (Demo Login)',
+          config,
+          headers: {},
+          offline: true,
+        };
       }
 
       // 3. Create Donation fallback
       if (config.url === '/donations/create') {
-        try {
-          const payload = JSON.parse(config.data || '{}');
-          const offlineDonation = {
-            ...payload,
-            id: 'offline-' + Date.now(),
-            status: 'AVAILABLE',
-            priorityScore: 90,
-            freshnessHoursRemaining: 6.0,
-            qrCode: 'ECO-OFFLINE-' + Math.random().toString(36).substr(2, 6).toUpperCase(),
-            createdAt: new Date().toISOString(),
-            isOfflineDraft: true,
-          };
-          addToSyncQueue({
-            type: 'CREATE_DONATION',
-            payload,
-            summary: `Donation: ${payload.foodName} (${payload.quantityKg} kg)`
-          });
-          const currentCached = getCachedEndpoint('/donations/my') || [];
-          saveCachedEndpoint('/donations/my', [offlineDonation, ...currentCached]);
+        const payload = extractPayload(config.data);
+        const offlineDonation = {
+          ...payload,
+          id: 'offline-' + Date.now(),
+          status: 'AVAILABLE',
+          priorityScore: 90,
+          freshnessHoursRemaining: 6.0,
+          qrCode: 'ECO-OFFLINE-' + Math.random().toString(36).substr(2, 6).toUpperCase(),
+          createdAt: new Date().toISOString(),
+          isOfflineDraft: true,
+        };
+        addToSyncQueue({
+          type: 'CREATE_DONATION',
+          payload,
+          summary: `Donation: ${payload.foodName} (${payload.quantityKg} kg)`
+        });
+        const currentCached = getCachedEndpoint('/donations/my') || [];
+        saveCachedEndpoint('/donations/my', [offlineDonation, ...currentCached]);
 
-          return {
-            data: offlineDonation,
-            status: 201,
-            statusText: 'Created (Demo Outbox)',
-            config,
-            headers: {},
-            offline: true,
-          };
-        } catch (e) {
-          console.warn('[DemoMode] Create donation fallback error:', e);
-        }
+        return {
+          data: offlineDonation,
+          status: 201,
+          statusText: 'Created (Demo Outbox)',
+          config,
+          headers: {},
+          offline: true,
+        };
       }
-    }
-
-    // Redirect to login on 401 only if not running on static host
-    if (response?.status === 401 && !isStaticHost && navigator.onLine) {
-      localStorage.removeItem('ecoshare_token');
-      localStorage.removeItem('ecoshare_user');
-      window.location.href = '/login';
     }
 
     return Promise.reject(error);
   }
 );
-
-// Listen to online events and auto-sync
-if (typeof window !== 'undefined') {
-  window.addEventListener('online', () => {
-    if (!isStaticHost) {
-      console.info('[Network] Device came online. Triggering sync...');
-      processSyncQueue(client);
-    }
-  });
-}
 
 export default client;
