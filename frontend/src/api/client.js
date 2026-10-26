@@ -115,6 +115,44 @@ client.interceptors.request.use(async (config) => {
         });
         return config;
       }
+
+      // On static hosts (GitHub Pages), resolve immediately so browser never makes a doomed 404 request
+      if (isStaticHost) {
+        let fallbackData = [];
+        if (config.url?.includes('surge')) {
+          fallbackData = {
+            activeSurgeAlert: false,
+            surgeLevel: 'NORMAL',
+            elevatedCount: 0,
+            criticalBatches: [],
+            systemStatus: 'ONLINE',
+            lastScanTimestamp: new Date().toISOString()
+          };
+        } else if (config.url?.includes('forecast')) {
+          fallbackData = {
+            forecastRegion: 'Tiruchirappalli Metro',
+            forecastPeriod: 'Next 24 Hours',
+            totalForecastedMealsDeficit: 320,
+            totalExpectedSurplusMeals: 485,
+            deficitCoveragePercentage: 151,
+            shelterPredictions: [],
+            aiRecommendation: 'Normal operating levels across Trichy.'
+          };
+        } else if (config.url?.includes('accuracy')) {
+          fallbackData = { totalEstimations: 148, meanAbsoluteErrorPct: 6.2, confidenceScoreAvg: 94.8 };
+        } else if (config.url?.includes('summary') || config.url?.includes('dashboard') || config.url?.includes('environmental')) {
+          fallbackData = { totalFoodRescuedKg: 1420.5, totalMealsSupported: 3550, totalCo2eAvoidedKg: 3551.2, totalWaterSavedLiters: 113640 };
+        }
+
+        config.adapter = () => Promise.resolve({
+          data: fallbackData,
+          status: 200,
+          statusText: 'OK (Static Host Fallback)',
+          headers: {},
+          config,
+        });
+        return config;
+      }
     }
 
     // 2. Auth Login
@@ -312,6 +350,18 @@ client.interceptors.request.use(async (config) => {
       });
       return config;
     }
+
+    // 8. General Mutating Request Fallback for GitHub Pages
+    if (isStaticHost) {
+      config.adapter = () => Promise.resolve({
+        data: { success: true, message: 'Action processed on static host' },
+        status: 200,
+        statusText: 'OK (Static Host Processed)',
+        headers: {},
+        config,
+      });
+      return config;
+    }
   }
 
   return config;
@@ -341,17 +391,29 @@ client.interceptors.response.use(
       // 1. GET requests: serve cached endpoint or seed
       if (method === 'get') {
         const cached = getCachedEndpoint(config.url);
-        if (cached !== null) {
-          console.info(`[DemoMode] Serving fallback data for ${config.url}`);
-          return {
-            data: cached,
-            status: 200,
-            statusText: 'OK (Fallback Cache)',
-            config,
-            headers: {},
-            offline: true,
-          };
+        let fallbackData = cached;
+        if (fallbackData === null) {
+          if (config.url?.includes('surge')) {
+            fallbackData = {
+              activeSurgeAlert: false,
+              surgeLevel: 'NORMAL',
+              elevatedCount: 0,
+              criticalBatches: [],
+              systemStatus: 'ONLINE',
+              lastScanTimestamp: new Date().toISOString()
+            };
+          } else {
+            fallbackData = [];
+          }
         }
+        return {
+          data: fallbackData,
+          status: 200,
+          statusText: 'OK (Fallback Cache)',
+          config,
+          headers: {},
+          offline: true,
+        };
       }
 
       // 2. Auth Login fallback
@@ -403,6 +465,28 @@ client.interceptors.response.use(
           offline: true,
         };
       }
+
+      if (isStaticHost) {
+        return {
+          data: { success: true, offline: true },
+          status: 200,
+          statusText: 'OK (Static Host Recovery)',
+          config,
+          headers: {},
+          offline: true,
+        };
+      }
+    }
+
+    if (isStaticHost) {
+      return Promise.resolve({
+        data: { success: true, offline: true },
+        status: 200,
+        statusText: 'OK (Static Host Clean)',
+        config: config || {},
+        headers: {},
+        offline: true,
+      });
     }
 
     return Promise.reject(error);

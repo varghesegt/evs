@@ -420,6 +420,34 @@ export const OFFLINE_SEED_DATA = {
       sha256Hash: '0x9a3d6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a',
     },
   ],
+  '/ai/surge-status': {
+    activeSurgeAlert: false,
+    surgeLevel: 'NORMAL',
+    elevatedCount: 0,
+    criticalBatches: [],
+    systemStatus: 'ONLINE',
+    lastScanTimestamp: new Date().toISOString(),
+  },
+  '/ai/accuracy-stats': {
+    totalEstimations: 148,
+    meanAbsoluteErrorPct: 6.2,
+    confidenceScoreAvg: 94.8,
+    visionModelVersion: 'YOLOv8-FoodResNet-Trichy-v2.1',
+    sensorIntegrationsActive: ['BLE_CORE_PROBE', 'WEIGHT_CELL_LID'],
+  },
+  '/ai/demand-forecast': {
+    forecastRegion: 'Tiruchirappalli Metro',
+    forecastPeriod: 'Next 24 Hours',
+    totalForecastedMealsDeficit: 320,
+    totalExpectedSurplusMeals: 485,
+    deficitCoveragePercentage: 151,
+    shelterPredictions: [
+      { ngoId: 4, ngoName: 'Trichy Seva Sangam Shelter', estimatedMealsNeeded: 140, foodNeededKg: 56.0, peakDeficitTime: '7:30 PM - 9:00 PM', urgencyLevel: 'ELEVATED' },
+      { ngoId: 5, ngoName: 'Anbalayam Children Home', estimatedMealsNeeded: 95, foodNeededKg: 38.0, peakDeficitTime: '12:30 PM - 2:00 PM', urgencyLevel: 'MODERATE' },
+      { ngoId: 6, ngoName: 'Blossom Care Community Kitchen', estimatedMealsNeeded: 85, foodNeededKg: 34.0, peakDeficitTime: '8:00 PM - 9:30 PM', urgencyLevel: 'MODERATE' }
+    ],
+    aiRecommendation: 'Sufficient banquet surplus projected from Cantonment hotels. Prioritize evening cooked rice dispatch to Seva Sangam.'
+  },
 };
 
 // Check if currently online

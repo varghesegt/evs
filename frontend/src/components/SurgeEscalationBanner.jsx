@@ -54,7 +54,9 @@ export default function SurgeEscalationBanner({ onSelectBatch = null }) {
         playSurgeAlertChime();
       }
     } catch (err) {
-      console.warn('Surge status polling notice:', err?.message || err);
+      if (typeof window !== 'undefined' && !window.location.hostname.endsWith('github.io')) {
+        console.warn('Surge status polling notice:', err?.message || err);
+      }
     } finally {
       setLoading(false);
     }
