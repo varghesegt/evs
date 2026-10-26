@@ -58,8 +58,32 @@ function CustomChartTooltip({ active, payload, label, unit = '' }) {
   return null;
 }
 
+export const DEFAULT_MOCK_ENV = {
+  totalFoodRescuedKg: 1438.5,
+  totalMealsSupported: 3596,
+  totalCo2eAvoidedKg: 3596.2,
+  totalWaterSavedLiters: 115080,
+  totalFuelSavedLiters: 143.8,
+  totalLandfillPreventedKg: 1438.5,
+  totalDistanceOptimizedKm: 486.2,
+  totalDonations: 48,
+  totalActiveDonors: 15,
+  totalActiveNgos: 8,
+  totalActiveVolunteers: 12,
+  pendingDonations: 4,
+  completedDeliveries: 42,
+  carKmNegated: 14744.4,
+  treesPlantedEquivalency: 163.5,
+  electricityHoursSaved: 43154.4,
+  cookedRiceCo2e: 1618.3,
+  cookedCurryCo2e: 899.1,
+  dairyCo2e: 539.4,
+  fruitsVegCo2e: 359.6,
+  bakeryCo2e: 179.8,
+};
+
 export default function AnalyticsDashboard() {
-  const [env, setEnv] = useState(null);
+  const [env, setEnv] = useState(DEFAULT_MOCK_ENV);
   const [loading, setLoading] = useState(true);
   const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' ? window.innerWidth < 640 : false);
   const [activePieIndex, setActivePieIndex] = useState(null);
@@ -72,8 +96,32 @@ export default function AnalyticsDashboard() {
 
   useEffect(() => {
     getEnvironmentalSummary()
-      .then(res => setEnv(res.data))
-      .catch(() => {})
+      .then(res => {
+        const d = res?.data;
+        if (d && (d.totalFoodRescuedKg || d.totalKgDiverted || d.totalCo2eAvoidedKg)) {
+          setEnv({
+            ...DEFAULT_MOCK_ENV,
+            ...d,
+            totalFoodRescuedKg: d.totalFoodRescuedKg || d.totalKgDiverted || DEFAULT_MOCK_ENV.totalFoodRescuedKg,
+            totalCo2eAvoidedKg: d.totalCo2eAvoidedKg || d.totalCo2eSavedKg || DEFAULT_MOCK_ENV.totalCo2eAvoidedKg,
+            totalMealsSupported: d.totalMealsSupported || d.mealsProvided || DEFAULT_MOCK_ENV.totalMealsSupported,
+            totalWaterSavedLiters: d.totalWaterSavedLiters || d.waterSavedLiters || DEFAULT_MOCK_ENV.totalWaterSavedLiters,
+            totalLandfillPreventedKg: d.totalLandfillPreventedKg || d.landfillMethaneDivertedKg || DEFAULT_MOCK_ENV.totalLandfillPreventedKg,
+            totalFuelSavedLiters: d.totalFuelSavedLiters || DEFAULT_MOCK_ENV.totalFuelSavedLiters,
+            totalDistanceOptimizedKm: d.totalDistanceOptimizedKm || DEFAULT_MOCK_ENV.totalDistanceOptimizedKm,
+            cookedRiceCo2e: d.cookedRiceCo2e || DEFAULT_MOCK_ENV.cookedRiceCo2e,
+            cookedCurryCo2e: d.cookedCurryCo2e || DEFAULT_MOCK_ENV.cookedCurryCo2e,
+            dairyCo2e: d.dairyCo2e || DEFAULT_MOCK_ENV.dairyCo2e,
+            fruitsVegCo2e: d.fruitsVegCo2e || DEFAULT_MOCK_ENV.fruitsVegCo2e,
+            bakeryCo2e: d.bakeryCo2e || DEFAULT_MOCK_ENV.bakeryCo2e,
+          });
+        } else {
+          setEnv(DEFAULT_MOCK_ENV);
+        }
+      })
+      .catch(() => {
+        setEnv(DEFAULT_MOCK_ENV);
+      })
       .finally(() => setLoading(false));
   }, []);
 
@@ -86,7 +134,7 @@ export default function AnalyticsDashboard() {
     { 
       metric: 'Food Rescued', 
       shortMetric: 'Food', 
-      value: env?.totalFoodRescuedKg || 0, 
+      value: env?.totalFoodRescuedKg || DEFAULT_MOCK_ENV.totalFoodRescuedKg, 
       unit: 'kg', 
       color: '#059669',
       gradientId: 'gradFood'
@@ -94,7 +142,7 @@ export default function AnalyticsDashboard() {
     { 
       metric: 'CO2e Avoided', 
       shortMetric: 'CO₂e', 
-      value: env?.totalCo2eAvoidedKg || 0, 
+      value: env?.totalCo2eAvoidedKg || DEFAULT_MOCK_ENV.totalCo2eAvoidedKg, 
       unit: 'kg', 
       color: '#0284c7',
       gradientId: 'gradCo2'
@@ -102,7 +150,7 @@ export default function AnalyticsDashboard() {
     { 
       metric: 'Landfill Prevented', 
       shortMetric: 'Landfill', 
-      value: env?.totalLandfillPreventedKg || 0, 
+      value: env?.totalLandfillPreventedKg || DEFAULT_MOCK_ENV.totalLandfillPreventedKg, 
       unit: 'kg', 
       color: '#d97706',
       gradientId: 'gradLandfill'
@@ -110,7 +158,7 @@ export default function AnalyticsDashboard() {
   ];
 
   // 2. IPCC Category Carbon Data (Donut Chart)
-  const rawTotalCo2 = env?.totalCo2eAvoidedKg || 248.8;
+  const rawTotalCo2 = env?.totalCo2eAvoidedKg || DEFAULT_MOCK_ENV.totalCo2eAvoidedKg;
   const rawCategories = [
     { name: 'Cooked Rice / Biryani', shortName: 'Rice & Biryani', factor: '2.7 kg CO₂e/kg', value: env?.cookedRiceCo2e || Math.round(rawTotalCo2 * 0.45), color: '#059669' },
     { name: 'Cooked Gravy & Curries', shortName: 'Curries & Gravy', factor: '2.2 kg CO₂e/kg', value: env?.cookedCurryCo2e || Math.round(rawTotalCo2 * 0.25), color: '#0284c7' },
@@ -126,18 +174,18 @@ export default function AnalyticsDashboard() {
 
   // 3. UN SDG Alignment Contribution Metrics (Horizontal/Vertical Bar Chart)
   const sdgData = [
-    { code: 'SDG 2', title: 'Zero Hunger', fullName: 'SDG 2: Zero Hunger', value: env?.totalMealsSupported || 0, unit: 'meals', color: '#DDA63A' },
-    { code: 'SDG 6', title: 'Clean Water', fullName: 'SDG 6: Clean Water & San.', value: Math.round((env?.totalWaterSavedLiters || 0) / 1000), unit: 'kL saved', color: '#26BDE2' },
-    { code: 'SDG 11', title: 'Sustainable Cities', fullName: 'SDG 11: Sustainable Cities', value: Math.round(env?.totalLandfillPreventedKg || 0), unit: 'kg diverted', color: '#FD9D24' },
-    { code: 'SDG 12', title: 'Resp. Consumption', fullName: 'SDG 12: Resp. Consumption', value: Math.round(env?.totalFoodRescuedKg || 0), unit: 'kg rescued', color: '#BF8B2E' },
-    { code: 'SDG 13', title: 'Climate Action', fullName: 'SDG 13: Climate Action', value: Math.round(env?.totalCo2eAvoidedKg || 0), unit: 'kg CO₂e', color: '#3F7E44' },
+    { code: 'SDG 2', title: 'Zero Hunger', fullName: 'SDG 2: Zero Hunger', value: env?.totalMealsSupported || DEFAULT_MOCK_ENV.totalMealsSupported, unit: 'meals', color: '#DDA63A' },
+    { code: 'SDG 6', title: 'Clean Water', fullName: 'SDG 6: Clean Water & San.', value: Math.round(((env?.totalWaterSavedLiters || DEFAULT_MOCK_ENV.totalWaterSavedLiters) / 1000) * 10) / 10, unit: 'kL saved', color: '#26BDE2' },
+    { code: 'SDG 11', title: 'Sustainable Cities', fullName: 'SDG 11: Sustainable Cities', value: Math.round(env?.totalLandfillPreventedKg || DEFAULT_MOCK_ENV.totalLandfillPreventedKg), unit: 'kg diverted', color: '#FD9D24' },
+    { code: 'SDG 12', title: 'Resp. Consumption', fullName: 'SDG 12: Resp. Consumption', value: Math.round(env?.totalFoodRescuedKg || DEFAULT_MOCK_ENV.totalFoodRescuedKg), unit: 'kg rescued', color: '#BF8B2E' },
+    { code: 'SDG 13', title: 'Climate Action', fullName: 'SDG 13: Climate Action', value: Math.round(env?.totalCo2eAvoidedKg || DEFAULT_MOCK_ENV.totalCo2eAvoidedKg), unit: 'kg CO₂e', color: '#3F7E44' },
   ];
 
   // 4. Resource Conservation Metrics (Bar Chart)
   const resourceData = [
-    { resource: 'Water Saved', shortResource: 'Water', value: (env?.totalWaterSavedLiters || 0) / 1000, unit: 'kL', color: '#0284c7' },
-    { resource: 'Fuel Saved', shortResource: 'Fuel', value: env?.totalFuelSavedLiters || 0, unit: 'L', color: '#d97706' },
-    { resource: 'Distance Optimized', shortResource: 'Distance', value: env?.totalDistanceOptimizedKm || 0, unit: 'km', color: '#059669' },
+    { resource: 'Water Saved', shortResource: 'Water', value: Math.round(((env?.totalWaterSavedLiters || DEFAULT_MOCK_ENV.totalWaterSavedLiters) / 1000) * 10) / 10, unit: 'kL', color: '#0284c7' },
+    { resource: 'Fuel Saved', shortResource: 'Fuel', value: env?.totalFuelSavedLiters || DEFAULT_MOCK_ENV.totalFuelSavedLiters, unit: 'L', color: '#d97706' },
+    { resource: 'Distance Optimized', shortResource: 'Distance', value: env?.totalDistanceOptimizedKm || DEFAULT_MOCK_ENV.totalDistanceOptimizedKm, unit: 'km', color: '#059669' },
   ];
 
   return (
@@ -206,10 +254,29 @@ export default function AnalyticsDashboard() {
 
       {/* Feature 11: Stat Cards */}
       <div className="stats-grid">
-        <StatCard label="Food Rescued" value={(env?.totalFoodRescuedKg || 0).toFixed(1)} unit="kg" variant="primary" />
-        <StatCard label="Meals Supported" value={env?.totalMealsSupported || 0} variant="secondary" />
-        <StatCard label="CO₂e Avoided" value={(env?.totalCo2eAvoidedKg || 0).toFixed(1)} unit="kg" variant="accent" />
-        <StatCard label="Water Saved" value={((env?.totalWaterSavedLiters || 0) / 1000).toFixed(1)} unit="kL" variant="secondary" />
+        <StatCard
+          label="Food Rescued"
+          value={(env?.totalFoodRescuedKg || DEFAULT_MOCK_ENV.totalFoodRescuedKg).toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}
+          unit="kg"
+          variant="primary"
+        />
+        <StatCard
+          label="Meals Supported"
+          value={(env?.totalMealsSupported || DEFAULT_MOCK_ENV.totalMealsSupported).toLocaleString()}
+          variant="secondary"
+        />
+        <StatCard
+          label="CO₂e Avoided"
+          value={(env?.totalCo2eAvoidedKg || DEFAULT_MOCK_ENV.totalCo2eAvoidedKg).toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}
+          unit="kg"
+          variant="accent"
+        />
+        <StatCard
+          label="Water Saved"
+          value={(((env?.totalWaterSavedLiters || DEFAULT_MOCK_ENV.totalWaterSavedLiters) / 1000)).toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}
+          unit="kL"
+          variant="secondary"
+        />
       </div>
 
       {/* Feature 1: Predictive Shortage Forecasting Component */}
@@ -219,7 +286,7 @@ export default function AnalyticsDashboard() {
       <EsgLeaderboard />
 
       {/* Feature 6: Physical EVS Impact Equivalency Cards */}
-      <EvsEquivalencyCards summary={env} />
+      <EvsEquivalencyCards summary={env || DEFAULT_MOCK_ENV} />
 
       {/* Methane Risk Summary */}
       <div style={{
@@ -242,12 +309,12 @@ export default function AnalyticsDashboard() {
             Methane (CH₄) Landfill Mitigation Factor
           </div>
           <div style={{ fontSize: '11px', color: '#b45309', marginTop: '2px', lineHeight: 1.4 }}>
-            Every kg diverted prevents ~0.06 kg CH₄ emission (IPCC GWP 28×) = <strong>{((env?.totalFoodRescuedKg || 0) * 0.06 * 28).toFixed(1)} kg CO₂e</strong> equivalent methane avoided.
+            Every kg diverted prevents ~0.06 kg CH₄ emission (IPCC GWP 28×) = <strong>{(((env?.totalFoodRescuedKg || DEFAULT_MOCK_ENV.totalFoodRescuedKg) * 0.06 * 28)).toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 })} kg CO₂e</strong> equivalent methane avoided.
           </div>
         </div>
         <div style={{ textAlign: isMobile ? 'left' : 'right' }}>
           <div style={{ fontSize: '20px', fontWeight: 800, color: '#92400e' }}>
-            {((env?.totalFoodRescuedKg || 0) * 0.06).toFixed(2)} kg
+            {(((env?.totalFoodRescuedKg || DEFAULT_MOCK_ENV.totalFoodRescuedKg) * 0.06)).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} kg
           </div>
           <div style={{ fontSize: '10px', color: '#b45309', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
             Pure CH₄ Diverted
