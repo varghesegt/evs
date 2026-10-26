@@ -840,13 +840,6 @@ a:hover {
 .map-container .leaflet-container {
   height: 100%;
   width: 100%;
-  z-index: 1 !important;
-}
-
-.map-container .leaflet-pane,
-.map-container .leaflet-top,
-.map-container .leaflet-bottom {
-  z-index: 10 !important;
 }
 
 /* ==========================================================

@@ -1,7 +1,36 @@
 import { useState, useEffect, useRef } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, Polyline, Circle } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, Polyline, Circle, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import { getGoogleMapsNavigationUrl } from '../utils/gmapsUtils';
+
+function MapInvalidator() {
+  const map = useMap();
+  useEffect(() => {
+    const t0 = setTimeout(() => { try { map.invalidateSize(); } catch {} }, 60);
+    const t1 = setTimeout(() => { try { map.invalidateSize(); } catch {} }, 250);
+    const t2 = setTimeout(() => { try { map.invalidateSize(); } catch {} }, 600);
+    let ro = null;
+    try {
+      const container = map.getContainer();
+      if (container && typeof ResizeObserver !== 'undefined') {
+        ro = new ResizeObserver(() => { try { map.invalidateSize(); } catch {} });
+        ro.observe(container);
+      }
+    } catch {}
+    const handleResize = () => { try { map.invalidateSize(); } catch {} };
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', handleResize);
+    return () => {
+      clearTimeout(t0);
+      clearTimeout(t1);
+      clearTimeout(t2);
+      if (ro) ro.disconnect();
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', handleResize);
+    };
+  }, [map]);
+  return null;
+}
 
 // Waypoint coordinates representing a realistic route through Trichy
 // SRM Hotel (10.7905, 78.7047) -> Cantonment -> Central Bus Stand -> Trichy Seva Sangam (10.8120, 78.6920)
@@ -278,9 +307,12 @@ export default function LiveTrackingModal({ isOpen, onClose, taskData }) {
             style={{ height: '100%', width: '100%' }}
             ref={mapRef}
           >
+            <MapInvalidator />
             <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/">CARTO</a>'
+              url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+              subdomains={['a', 'b', 'c', 'd']}
+              maxZoom={20}
             />
 
             {/* Complete Planned Route */}

@@ -357,6 +357,44 @@ function MapFlyToController({ targetLocation }) {
   return null;
 }
 
+// Real-Time Viewport & Tile Layout Invalidation Engine
+// Guarantees Leaflet recalculates tile geometry across all mobile viewport resizes, orientation shifts, and CSS flex/grid layout passes
+function MapInvalidator() {
+  const map = useMap();
+
+  useEffect(() => {
+    const t0 = setTimeout(() => { try { map.invalidateSize(); } catch {} }, 50);
+    const t1 = setTimeout(() => { try { map.invalidateSize(); } catch {} }, 200);
+    const t2 = setTimeout(() => { try { map.invalidateSize(); } catch {} }, 500);
+    const t3 = setTimeout(() => { try { map.invalidateSize(); } catch {} }, 1200);
+
+    let ro = null;
+    try {
+      const container = map.getContainer();
+      if (container && typeof ResizeObserver !== 'undefined') {
+        ro = new ResizeObserver(() => { try { map.invalidateSize(); } catch {} });
+        ro.observe(container);
+      }
+    } catch {}
+
+    const handleResize = () => { try { map.invalidateSize(); } catch {} };
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', handleResize);
+
+    return () => {
+      clearTimeout(t0);
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+      if (ro) ro.disconnect();
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', handleResize);
+    };
+  }, [map]);
+
+  return null;
+}
+
 // Auto-bounds utility component: Runs strictly ONCE when route or markers change, NEVER on animation ticks
 function MapBoundsUpdater({ markers, routePolyline, center, isFollowing }) {
   const map = useMap();
@@ -375,7 +413,8 @@ function MapBoundsUpdater({ markers, routePolyline, center, isFollowing }) {
       try {
         const bounds = L.latLngBounds(routePolyline);
         if (bounds.isValid()) {
-          map.fitBounds(bounds, { padding: [50, 50], maxZoom: 14 });
+          map.fitBounds(bounds, { padding: [40, 40], maxZoom: 14 });
+          map.invalidateSize();
           return;
         }
       } catch (err) {
@@ -389,7 +428,8 @@ function MapBoundsUpdater({ markers, routePolyline, center, isFollowing }) {
       try {
         const bounds = L.latLngBounds(markers.map(m => [m.lat, m.lng]));
         if (bounds.isValid()) {
-          map.fitBounds(bounds, { padding: [50, 50], maxZoom: 14 });
+          map.fitBounds(bounds, { padding: [40, 40], maxZoom: 14 });
+          map.invalidateSize();
           return;
         }
       } catch (err) {
@@ -398,6 +438,7 @@ function MapBoundsUpdater({ markers, routePolyline, center, isFollowing }) {
     } else if (center && !routeKey && markersCount === 0 && prevMarkersCountRef.current === -1) {
       prevMarkersCountRef.current = 0;
       map.setView(center, 13);
+      map.invalidateSize();
     }
   }, [routeKey, markers?.length, center, isFollowing, map]);
 
@@ -430,7 +471,7 @@ export default function MapView({
   // Swiggy / Zomato Two-Wheeler Live Camera & Theme Controls
   const [followRider, setFollowRider] = useState(true);
   const [zoomMode, setZoomMode] = useState('street'); // 'street' (16x) | 'route' (fit bounds)
-  const [mapTheme, setMapTheme] = useState('osm'); // 'osm' (standard streets) | 'hot' (vibrant roads)
+  const [mapTheme, setMapTheme] = useState('voyager'); // 'voyager' (fast CartoDB) | 'osm' | 'hot'
 
   // Enterprise GIS Overlays & Controls
   const [showTraffic, setShowTraffic] = useState(false);
@@ -1212,7 +1253,16 @@ export default function MapView({
         }}>
           <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
             {/* Category Filter Chips */}
-            <div className="map-filter-chips" style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+            <div className="map-filter-chips" style={{
+              display: 'flex',
+              gap: '6px',
+              overflowX: 'auto',
+              flexWrap: 'nowrap',
+              paddingBottom: '4px',
+              WebkitOverflowScrolling: 'touch',
+              scrollbarWidth: 'none',
+              maxWidth: '100%',
+            }}>
               {[
                 { id: 'ALL', label: `All Network (${markers.length})` },
                 { id: 'DONATIONS', label: `Food Surplus (${countDonations})`, color: '#ea580c' },
@@ -1230,6 +1280,8 @@ export default function MapView({
                     fontWeight: 600,
                     minHeight: '28px',
                     borderColor: filterType === chip.id ? undefined : 'var(--color-border)',
+                    whiteSpace: 'nowrap',
+                    flexShrink: 0,
                   }}
                   onClick={() => setFilterType(chip.id)}
                 >
@@ -1243,7 +1295,7 @@ export default function MapView({
               <button
                 type="button"
                 className="btn btn-sm btn-accent"
-                style={{ padding: '3px 12px', fontSize: '11px', fontWeight: 700, minHeight: '28px' }}
+                style={{ padding: '3px 12px', fontSize: '11px', fontWeight: 700, minHeight: '28px', whiteSpace: 'nowrap', flexShrink: 0 }}
                 onClick={handleGetCurrentLocation}
                 disabled={isLocating}
               >
@@ -1258,11 +1310,15 @@ export default function MapView({
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
-              flexWrap: 'wrap',
+              overflowX: 'auto',
+              flexWrap: 'nowrap',
               paddingTop: '6px',
               borderTop: '1px dashed var(--color-border)',
+              WebkitOverflowScrolling: 'touch',
+              scrollbarWidth: 'none',
+              maxWidth: '100%',
             }}>
-              <span style={{ fontSize: '10px', fontWeight: 700, color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>
+              <span style={{ fontSize: '10px', fontWeight: 700, color: 'var(--color-text-muted)', textTransform: 'uppercase', whiteSpace: 'nowrap', flexShrink: 0 }}>
                 Quick Trichy Hubs:
               </span>
               {TRICHY_LANDMARKS.map((lm) => (
@@ -1273,11 +1329,13 @@ export default function MapView({
                     background: 'none',
                     border: '1px solid var(--color-border)',
                     borderRadius: '12px',
-                    padding: '1px 8px',
+                    padding: '2px 8px',
                     fontSize: '10px',
                     color: 'var(--color-text-secondary)',
                     cursor: 'pointer',
                     transition: 'all 0.15s ease',
+                    whiteSpace: 'nowrap',
+                    flexShrink: 0,
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.background = '#e0f2fe';
@@ -1463,19 +1521,30 @@ export default function MapView({
         )}
 
         <MapContainer center={defaultCenter} zoom={zoom} style={{ height: '100%', width: '100%' }}>
+          <MapInvalidator />
           {mapTheme === 'hot' ? (
             <TileLayer
               key="tile-osm-hot"
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, Tiles courtesy of <a href="https://www.hotosm.org/">Humanitarian OSM</a>'
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
               url="https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
+              subdomains={['a', 'b', 'c']}
               maxZoom={19}
             />
-          ) : (
+          ) : mapTheme === 'osm' ? (
             <TileLayer
               key="tile-osm-std"
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              subdomains={['a', 'b', 'c']}
               maxZoom={19}
+            />
+          ) : (
+            <TileLayer
+              key="tile-carto-voyager"
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/">CARTO</a>'
+              url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+              subdomains={['a', 'b', 'c', 'd']}
+              maxZoom={20}
             />
           )}
 
@@ -1483,7 +1552,7 @@ export default function MapView({
             markers={filteredMarkers}
             routePolyline={effectivePolyline}
             center={defaultCenter}
-            isFollowing={followRider && zoomMode === 'street'}
+            isFollowing={Boolean(vehicleState && followRider && zoomMode === 'street')}
           />
           <MapFlyToController targetLocation={flyTarget} />
           <RiderFollowController

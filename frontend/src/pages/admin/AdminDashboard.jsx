@@ -145,13 +145,8 @@ export default function AdminDashboard() {
         />
       </div>
 
-      {/* Desktop Split View: Map (65%) & Live Activity Telemetry (35%) */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'minmax(0, 1.8fr) minmax(0, 1fr)',
-        gap: 'var(--space-5)',
-        marginBottom: 'var(--space-6)',
-      }}>
+      {/* Desktop Split View: Map (60%) & Live Activity Telemetry (40%) - Responsive Stacking on Mobile */}
+      <div className="desktop-split-60-40" style={{ marginBottom: 'var(--space-6)' }}>
         {/* Left: Expansive Interactive Ecosystem Map */}
         <div className="card" style={{
           padding: '20px',
@@ -242,7 +237,7 @@ export default function AdminDashboard() {
                   transition: 'background 0.15s ease',
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', flexWrap: 'wrap' }}>
                   <div style={{ fontWeight: 800, fontSize: '13px', color: '#0f172a' }}>
                     {item.title}
                   </div>

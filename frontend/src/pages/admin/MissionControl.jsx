@@ -1,9 +1,38 @@
 import { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import DashboardLayout from '../../components/DashboardLayout';
 import LiveTrackingModal from '../../components/LiveTrackingModal';
 import { playHaccpAlarm } from '../../utils/soundEffects';
+
+function MapInvalidator() {
+  const map = useMap();
+  useEffect(() => {
+    const t0 = setTimeout(() => { try { map.invalidateSize(); } catch {} }, 60);
+    const t1 = setTimeout(() => { try { map.invalidateSize(); } catch {} }, 250);
+    const t2 = setTimeout(() => { try { map.invalidateSize(); } catch {} }, 600);
+    let ro = null;
+    try {
+      const container = map.getContainer();
+      if (container && typeof ResizeObserver !== 'undefined') {
+        ro = new ResizeObserver(() => { try { map.invalidateSize(); } catch {} });
+        ro.observe(container);
+      }
+    } catch {}
+    const handleResize = () => { try { map.invalidateSize(); } catch {} };
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', handleResize);
+    return () => {
+      clearTimeout(t0);
+      clearTimeout(t1);
+      clearTimeout(t2);
+      if (ro) ro.disconnect();
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', handleResize);
+    };
+  }, [map]);
+  return null;
+}
 
 const TRICHY_CENTER = [10.8050, 78.6950];
 
@@ -291,12 +320,8 @@ export default function MissionControl() {
           </div>
         </div>
 
-        {/* Main Command Room Grid: Live Radar Map (60%) & Fleet Telematics (40%) */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'minmax(0, 1.35fr) minmax(380px, 1fr)',
-          gap: 'var(--space-5)',
-        }}>
+        {/* Main Command Room Grid: Live Radar Map (60%) & Fleet Telematics (40%) - Responsive Stacking on Mobile */}
+        <div className="desktop-split-60-40" style={{ gap: 'var(--space-5)' }}>
           {/* Live Full-City Radar Map */}
           <div
             className="card"
@@ -347,9 +372,12 @@ export default function MissionControl() {
               scrollWheelZoom={true}
               style={{ height: '100%', width: '100%' }}
             >
+              <MapInvalidator />
               <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/">CARTO</a>'
+                url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+                subdomains={['a', 'b', 'c', 'd']}
+                maxZoom={20}
               />
 
               {/* Donor Markers */}
