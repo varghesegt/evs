@@ -17,9 +17,13 @@ const client = axios.create({
 // Demo accounts for instant login anywhere
 const OFFLINE_USERS = {
   'donor1@ecoshare.com': { id: 1, name: 'SRM Hotel & Convention Centre', email: 'donor1@ecoshare.com', role: 'ROLE_DONOR' },
+  'donor@ecoshare.com': { id: 1, name: 'SRM Hotel & Convention Centre', email: 'donor1@ecoshare.com', role: 'ROLE_DONOR' },
   'ngo1@ecoshare.com': { id: 2, name: 'Trichy Seva Sangam Shelter', email: 'ngo1@ecoshare.com', role: 'ROLE_NGO' },
+  'ngo@ecoshare.com': { id: 2, name: 'Trichy Seva Sangam Shelter', email: 'ngo1@ecoshare.com', role: 'ROLE_NGO' },
   'vol1@ecoshare.com': { id: 3, name: 'Karthik Raja', email: 'vol1@ecoshare.com', role: 'ROLE_VOLUNTEER' },
+  'volunteer@ecoshare.com': { id: 3, name: 'Karthik Raja', email: 'vol1@ecoshare.com', role: 'ROLE_VOLUNTEER' },
   'admin@ecoshare.com': { id: 4, name: 'EcoShare Trichy Administrator', email: 'admin@ecoshare.com', role: 'ROLE_ADMIN' },
+  'admin': { id: 4, name: 'EcoShare Trichy Administrator', email: 'admin@ecoshare.com', role: 'ROLE_ADMIN' },
 };
 
 // Check if running on GitHub Pages (where no Spring Boot server exists)

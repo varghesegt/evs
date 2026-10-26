@@ -50,15 +50,16 @@ export function AuthProvider({ children }) {
     return roleMap[user.role] || user.role;
   };
 
-  const getDashboardPath = () => {
-    if (!user) return '/login';
+  const getDashboardPath = (optionalRole) => {
+    const roleToUse = optionalRole || user?.role;
+    if (!roleToUse) return '/login';
     const pathMap = {
       ROLE_DONOR: '/donor',
       ROLE_NGO: '/ngo',
       ROLE_VOLUNTEER: '/volunteer',
       ROLE_ADMIN: '/admin',
     };
-    return pathMap[user.role] || '/';
+    return pathMap[roleToUse] || '/';
   };
 
   return (

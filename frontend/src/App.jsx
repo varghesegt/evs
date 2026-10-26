@@ -31,9 +31,9 @@ function AppRoutes() {
   return (
     <Routes>
       {/* Public routes */}
-      <Route path="/" element={user ? <Navigate to={getPath(user.role)} /> : <Landing />} />
-      <Route path="/login" element={user ? <Navigate to={getPath(user.role)} /> : <Login />} />
-      <Route path="/register" element={user ? <Navigate to={getPath(user.role)} /> : <Register />} />
+      <Route path="/" element={user ? <Navigate to={getPath(user.role)} replace /> : <Landing />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={user ? <Navigate to={getPath(user.role)} replace /> : <Register />} />
 
       {/* Donor routes */}
       <Route path="/donor" element={<ProtectedRoute roles={['ROLE_DONOR']}><DonorDashboard /></ProtectedRoute>} />
