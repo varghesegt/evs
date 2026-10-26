@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { login } from '../api/authApi';
 import { useAuth } from '../context/AuthContext';
 
@@ -9,6 +9,21 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const { loginUser, getDashboardPath } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const getDestinationPath = (role) => {
+    const fromPath = location.state?.from?.pathname;
+    if (fromPath && fromPath !== '/login' && fromPath !== '/') {
+      return fromPath;
+    }
+    const pathMap = {
+      ROLE_DONOR: '/donor',
+      ROLE_NGO: '/ngo',
+      ROLE_VOLUNTEER: '/volunteer',
+      ROLE_ADMIN: '/admin',
+    };
+    return pathMap[role] || '/';
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,17 +33,8 @@ export default function Login() {
     try {
       const res = await login(form);
       loginUser(res.data);
-      const path = getDashboardPath();
-      // Use setTimeout to ensure state is updated
       setTimeout(() => {
-        const user = res.data;
-        const pathMap = {
-          ROLE_DONOR: '/donor',
-          ROLE_NGO: '/ngo',
-          ROLE_VOLUNTEER: '/volunteer',
-          ROLE_ADMIN: '/admin',
-        };
-        navigate(pathMap[user.role] || '/');
+        navigate(getDestinationPath(res.data.role));
       }, 100);
     } catch (err) {
       setError(err.response?.data?.message || 'Invalid email or password');
@@ -45,15 +51,8 @@ export default function Login() {
     try {
       const res = await login({ email, password });
       loginUser(res.data);
-      const user = res.data;
-      const pathMap = {
-        ROLE_DONOR: '/donor',
-        ROLE_NGO: '/ngo',
-        ROLE_VOLUNTEER: '/volunteer',
-        ROLE_ADMIN: '/admin',
-      };
       setTimeout(() => {
-        navigate(pathMap[user.role] || '/');
+        navigate(getDestinationPath(res.data.role));
       }, 100);
     } catch (err) {
       setError(err.response?.data?.message || 'Quick login failed');
