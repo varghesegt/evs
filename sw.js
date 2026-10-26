@@ -1,7 +1,7 @@
 // EcoShare AI - Progressive Web App Service Worker
 // Version 3.0.0 - Rock-Solid GitHub Pages, Tile Fallback, and Offline Reliability
 
-const CACHE_NAME = 'ecoshare-v4';
+const CACHE_NAME = 'ecoshare-v5';
 
 // 1x1 transparent PNG buffer for offline map tiles & image fallbacks
 const TRANSPARENT_PNG = new Uint8Array([
@@ -105,18 +105,23 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // B. External Map Tiles (OpenStreetMap, etc.)
-  // Network-first with silent transparent fallback so 408 is NEVER thrown
-  if (url.hostname.includes('tile.openstreetmap.org')) {
+  // B. External Map Tiles (OpenStreetMap, Esri, etc.)
+  if (url.hostname.includes('tile.openstreetmap.org') || url.hostname.includes('arcgisonline.com')) {
     event.respondWith(
       (async () => {
         try {
           const res = await fetch(request);
           if (res && res.status === 200) {
+            const tileCache = await caches.open('ecoshare-tiles-v1');
+            tileCache.put(request, res.clone()).catch(() => {});
             return res;
           }
+          const cached = await caches.match(request);
+          if (cached) return cached;
           return new Response(TRANSPARENT_PNG, { status: 200, headers: { 'Content-Type': 'image/png' } });
         } catch {
+          const cached = await caches.match(request);
+          if (cached) return cached;
           return new Response(TRANSPARENT_PNG, { status: 200, headers: { 'Content-Type': 'image/png' } });
         }
       })()
