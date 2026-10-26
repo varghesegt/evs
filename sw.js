@@ -1,7 +1,7 @@
 // EcoShare AI - Progressive Web App Service Worker
 // Version 3.0.0 - Rock-Solid GitHub Pages, Tile Fallback, and Offline Reliability
 
-const CACHE_NAME = 'ecoshare-v6';
+const CACHE_NAME = 'ecoshare-v7';
 
 // Crisp vector street grid fallback tile for offline map tiles & failed network requests
 const FALLBACK_TILE_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
@@ -118,28 +118,33 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // B. External Map Tiles (OpenStreetMap, Esri, etc.)
+  // B. External Map Tiles (OpenStreetMap, Esri, Carto, etc.)
   if (
-    url.hostname.includes('tile.openstreetmap.org') ||
+    url.hostname.includes('openstreetmap.org') ||
     url.hostname.includes('openstreetmap.fr') ||
-    url.hostname.includes('arcgisonline.com')
+    url.hostname.includes('arcgisonline.com') ||
+    url.hostname.includes('cartocdn.com')
   ) {
     event.respondWith(
       (async () => {
         try {
           const res = await fetch(request);
-          if (res && res.status === 200) {
-            const tileCache = await caches.open('ecoshare-tiles-v1');
+          // Standard and opaque cross-origin image responses (res.type === 'opaque' has status 0)
+          if (res && (res.status === 200 || res.type === 'opaque' || res.ok)) {
+            const tileCache = await caches.open('ecoshare-tiles-v2');
             tileCache.put(request, res.clone()).catch(() => {});
             return res;
           }
           const cached = await caches.match(request);
           if (cached) return cached;
-          return new Response(FALLBACK_TILE_SVG, { status: 200, headers: { 'Content-Type': 'image/svg+xml' } });
+          return res;
         } catch {
           const cached = await caches.match(request);
           if (cached) return cached;
-          return new Response(FALLBACK_TILE_SVG, { status: 200, headers: { 'Content-Type': 'image/svg+xml' } });
+          return new Response(FALLBACK_TILE_SVG, {
+            status: 200,
+            headers: { 'Content-Type': 'image/svg+xml' },
+          });
         }
       })()
     );
