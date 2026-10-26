@@ -275,7 +275,7 @@ export default function AdminDashboard() {
             </p>
           </div>
           <Link to="/admin/analytics" style={{ fontSize: '13px', fontWeight: 700, color: '#0284c7' }}>
-            View Full Analytics Charts ➔
+            View Full Analytics Charts &rarr;
           </Link>
         </div>
 

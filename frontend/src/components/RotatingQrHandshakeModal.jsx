@@ -93,7 +93,7 @@ export default function RotatingQrHandshakeModal({ isOpen, onClose, mode = 'dono
               fontWeight: 800,
             }}
           >
-            🛡️ DYNAMIC ANTI-FRAUD HANDSHAKE
+            DYNAMIC ANTI-FRAUD HANDSHAKE
           </span>
           <h2 style={{ fontSize: '20px', fontWeight: 800, margin: '8px 0 4px', color: 'var(--color-text-primary)' }}>
             {mode === 'donor' ? 'Donor Proof-of-Transfer' : 'Volunteer QR Verification'}
@@ -122,7 +122,7 @@ export default function RotatingQrHandshakeModal({ isOpen, onClose, mode = 'dono
                 boxShadow: '0 0 20px rgba(22, 163, 74, 0.3)',
               }}
             >
-              ✓
+              Verified
             </div>
             <h3 style={{ margin: '0 0 6px', color: '#15803d', fontSize: '18px', fontWeight: 800 }}>
               Transfer Handshake Verified!
@@ -205,7 +205,7 @@ export default function RotatingQrHandshakeModal({ isOpen, onClose, mode = 'dono
                 {/* Center EcoShare Logo Badge */}
                 <circle cx="90" cy="90" r="16" fill="#059669" />
                 <text x="90" y="95" textAnchor="middle" fill="#ffffff" fontSize="14" fontWeight="bold">
-                  🌱
+                  
                 </text>
               </svg>
 
@@ -264,7 +264,7 @@ export default function RotatingQrHandshakeModal({ isOpen, onClose, mode = 'dono
                 className="btn btn-primary"
                 style={{ padding: '10px', fontWeight: 800 }}
               >
-                {scanning ? 'Verifying...' : '⚡ Simulate Volunteer Scan'}
+                {scanning ? 'Verifying...' : 'Simulate Volunteer Scan'}
               </button>
             </div>
           </div>

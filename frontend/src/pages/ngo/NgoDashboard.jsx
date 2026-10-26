@@ -151,7 +151,7 @@ export default function NgoDashboard() {
                     onClick={() => navigate('/ngo/assign')}
                     style={{ fontWeight: 800, fontSize: '11px', padding: '6px 12px' }}
                   >
-                    Assign Volunteer ➔
+                    Assign Volunteer &rarr;
                   </button>
                 </div>
               ))}

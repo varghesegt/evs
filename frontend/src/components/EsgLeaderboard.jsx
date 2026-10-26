@@ -130,7 +130,7 @@ export default function EsgLeaderboard() {
                           }}
                           title="Copy SHA-256 Hash"
                         >
-                          {isCopied ? '✓ Copied' : 'Copy'}
+                          {isCopied ? 'Copied' : 'Copy'}
                         </button>
                       </div>
                     </td>

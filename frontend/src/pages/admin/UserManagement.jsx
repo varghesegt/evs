@@ -183,14 +183,14 @@ export default function UserManagement() {
             style={{ padding: '9px 16px', fontWeight: 700, fontSize: '13px' }}
             title="Refresh user list"
           >
-            ↻ Refresh Roster
+            Refresh Roster
           </button>
           <button
             onClick={handleExportCSV}
             className="btn btn-primary"
             style={{ padding: '9px 16px', fontWeight: 700, fontSize: '13px' }}
           >
-            ⬇ Export Directory CSV
+            Export Directory CSV
           </button>
         </div>
       </div>
@@ -255,7 +255,7 @@ export default function UserManagement() {
               fontSize: '15px',
               pointerEvents: 'none',
             }}>
-              🔍
+              Search
             </span>
             <input
               type="text"
@@ -287,7 +287,7 @@ export default function UserManagement() {
                   fontSize: '14px',
                 }}
               >
-                ✕
+                &times;
               </button>
             )}
           </div>
@@ -385,7 +385,7 @@ export default function UserManagement() {
               fontSize: '12px',
               fontWeight: 700,
             }}>
-              <span>⚠️</span>
+              
               <span>{pendingNgoCount} NGO Shelter awaiting license verification</span>
             </div>
           )}
@@ -395,7 +395,7 @@ export default function UserManagement() {
           <div className="loading-spinner"><div className="spinner"></div></div>
         ) : filteredUsers.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '48px 20px', color: '#64748b' }}>
-            <div style={{ fontSize: '36px', marginBottom: '8px' }}>🔍</div>
+            <div style={{ fontSize: '36px', marginBottom: '8px' }}>Search</div>
             <div style={{ fontSize: '16px', fontWeight: 800, color: '#1e293b' }}>No members match your criteria</div>
             <p style={{ fontSize: '13px', marginTop: '4px' }}>Try clearing the search query or changing your filter criteria.</p>
             <button
@@ -480,8 +480,8 @@ export default function UserManagement() {
                           {u.email}
                         </div>
                         <div style={{ fontSize: '11px', color: '#64748b', marginTop: '2px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          <span>📞 {u.phone || '+91 94431 00000'}</span>
-                          <span>📍 {u.cityZone || 'Trichy'}</span>
+                          <span>Tel: {u.phone || '+91 94431 00000'}</span>
+                          <span>Zone: {u.cityZone || 'Trichy'}</span>
                         </div>
                       </td>
 
@@ -535,7 +535,7 @@ export default function UserManagement() {
                               color: u.isApproved ? '#1d4ed8' : '#b45309',
                               border: `1px solid ${u.isApproved ? '#bfdbfe' : '#fde68a'}`,
                             }}>
-                              {u.isApproved ? '✓ License Approved' : '⏳ Pending Audit'}
+                              {u.isApproved ? 'License Approved' : 'Pending Audit'}
                             </span>
                           )}
                         </div>
@@ -568,7 +568,7 @@ export default function UserManagement() {
                               }}
                               title="Verify NGO legal registration and approve for surplus intake"
                             >
-                              ✓ Approve
+                              Approve
                             </button>
                           )}
 
@@ -685,7 +685,7 @@ export default function UserManagement() {
                   fontSize: '14px',
                 }}
               >
-                ✕
+                &times;
               </button>
             </div>
 
@@ -745,7 +745,7 @@ export default function UserManagement() {
                   }}
                   style={{ padding: '8px 16px', fontWeight: 800 }}
                 >
-                  ✓ Approve NGO License
+                  Approve NGO License
                 </button>
               )}
             </div>

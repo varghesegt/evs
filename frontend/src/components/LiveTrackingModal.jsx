@@ -45,7 +45,7 @@ export default function LiveTrackingModal({ isOpen, onClose, taskData }) {
         border-radius: 50%;
         box-shadow: 0 4px 16px rgba(5, 150, 105, 0.5), 0 0 0 6px rgba(5, 150, 105, 0.2);
       ">
-        <span style="font-size: 22px;">🛵</span>
+        <span style="font-size: 13px; font-weight: 800; color: #0284c7;">COURIER</span>
       </div>
     `,
     iconSize: [44, 44],
@@ -56,7 +56,7 @@ export default function LiveTrackingModal({ isOpen, onClose, taskData }) {
     className: 'pickup-flag-icon',
     html: `
       <div style="background: #2563eb; color: #fff; padding: 4px 8px; border-radius: 999px; font-size: 11px; font-weight: 800; border: 2px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 4px;">
-        🏨 Pickup
+        Pickup
       </div>
     `,
     iconSize: [60, 24],
@@ -67,7 +67,7 @@ export default function LiveTrackingModal({ isOpen, onClose, taskData }) {
     className: 'shelter-flag-icon',
     html: `
       <div style="background: #ea580c; color: #fff; padding: 4px 8px; border-radius: 999px; font-size: 11px; font-weight: 800; border: 2px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 4px;">
-        🏠 Shelter
+        Shelter
       </div>
     `,
     iconSize: [64, 24],
@@ -220,7 +220,7 @@ export default function LiveTrackingModal({ isOpen, onClose, taskData }) {
               justifyContent: 'center',
             }}
           >
-            ✕
+            &times;
           </button>
         </div>
 
@@ -240,7 +240,7 @@ export default function LiveTrackingModal({ isOpen, onClose, taskData }) {
               Live ETA
             </span>
             <div style={{ fontSize: '18px', fontWeight: 800, color: 'var(--color-primary)' }}>
-              ⏱️ {formatEta(etaSeconds)}
+              ETA: {formatEta(etaSeconds)}
             </div>
           </div>
           <div style={{ textAlign: 'center' }}>
@@ -248,7 +248,7 @@ export default function LiveTrackingModal({ isOpen, onClose, taskData }) {
               Current Speed
             </span>
             <div style={{ fontSize: '18px', fontWeight: 800, color: 'var(--color-text-primary)' }}>
-              ⚡ {speed} km/h
+              {speed} km/h
             </div>
           </div>
           <div style={{ textAlign: 'center' }}>
@@ -256,7 +256,7 @@ export default function LiveTrackingModal({ isOpen, onClose, taskData }) {
               EV Battery
             </span>
             <div style={{ fontSize: '18px', fontWeight: 800, color: batteryPct < 20 ? '#ef4444' : '#10b981' }}>
-              🔋 {batteryPct}%
+              Battery: {batteryPct}%
             </div>
           </div>
           <div style={{ textAlign: 'center' }}>
@@ -264,7 +264,7 @@ export default function LiveTrackingModal({ isOpen, onClose, taskData }) {
               HACCP Cold-Chain
             </span>
             <div style={{ fontSize: '18px', fontWeight: 800, color: '#0284c7' }}>
-              ❄️ {haccpTemp}°C
+              Temp: {haccpTemp}°C
             </div>
           </div>
         </div>
@@ -363,7 +363,7 @@ export default function LiveTrackingModal({ isOpen, onClose, taskData }) {
                 cursor: 'pointer',
               }}
             >
-              {isSimulating ? '⏸️ Pause GPS' : '▶️ Resume GPS'}
+              {isSimulating ? 'Pause GPS' : 'Resume GPS'}
             </button>
 
             <span style={{ color: 'var(--color-text-muted)' }}>Speed:</span>
@@ -416,14 +416,14 @@ export default function LiveTrackingModal({ isOpen, onClose, taskData }) {
               className="btn btn-secondary"
               style={{ fontSize: '13px', padding: '8px 14px', textDecoration: 'none' }}
             >
-              🗺️ Open in Google Maps
+              Open in Google Maps
             </a>
             <button
               onClick={() => alert('Calling Karthik Raja (+91 97890 11223)...')}
               className="btn btn-primary"
               style={{ fontSize: '13px', padding: '8px 16px' }}
             >
-              📞 Call Driver
+              Call Driver
             </button>
           </div>
         </div>

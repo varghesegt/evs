@@ -66,7 +66,7 @@ export default function EvsCertificateModal({ donorId = 1, isOpen, onClose }) {
             color: '#64748b',
           }}
         >
-          ✕
+          &times;
         </button>
 
         {loading ? (

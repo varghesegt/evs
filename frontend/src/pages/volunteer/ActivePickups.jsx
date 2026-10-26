@@ -83,7 +83,6 @@ export default function ActivePickups() {
               minHeight: '44px',
             }}
           >
-            <span>📡</span>
             <span>Live GPS Telemetry</span>
           </button>
 
@@ -101,7 +100,6 @@ export default function ActivePickups() {
               minHeight: '44px',
             }}
           >
-            <span>🛡️</span>
             <span>Scan Donor QR</span>
           </button>
 
@@ -188,7 +186,7 @@ export default function ActivePickups() {
                   style={{ borderColor: '#059669', color: '#059669' }}
                   onClick={() => { setSelectedTask(d); setTrackingModalOpen(true); }}
                 >
-                  📡 Live GPS
+                  Live GPS
                 </button>
 
                 <button
@@ -197,7 +195,7 @@ export default function ActivePickups() {
                   style={{ borderColor: '#d97706', color: '#d97706' }}
                   onClick={() => { setSelectedTask(d); setHandshakeModalOpen(true); }}
                 >
-                  🛡️ QR Handshake
+                  QR Handshake
                 </button>
 
                 <button

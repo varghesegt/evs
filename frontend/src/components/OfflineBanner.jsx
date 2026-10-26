@@ -82,9 +82,13 @@ export default function OfflineBanner() {
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-        <span style={{ fontSize: '15px' }}>
-          {!isOnline ? '⚡' : isSyncing ? '🔄' : '✓'}
-        </span>
+        <span style={{
+          display: 'inline-block',
+          width: '8px',
+          height: '8px',
+          borderRadius: '50%',
+          backgroundColor: !isOnline ? '#ef4444' : isSyncing ? '#f59e0b' : '#10b981',
+        }} />
         <span>
           {!isOnline
             ? `Offline Mode • Viewing cached data${pendingCount > 0 ? ` (${pendingCount} pending)` : ''}`

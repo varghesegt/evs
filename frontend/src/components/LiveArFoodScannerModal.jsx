@@ -217,7 +217,7 @@ export default function LiveArFoodScannerModal({ isOpen, onClose, onEstimateCapt
               cursor: 'pointer',
             }}
           >
-            ✕
+            &times;
           </button>
         </div>
 
@@ -251,7 +251,7 @@ export default function LiveArFoodScannerModal({ isOpen, onClose, onEstimateCapt
                 textAlign: 'center',
               }}
             >
-              <div style={{ fontSize: '56px', marginBottom: '8px' }}>🍲</div>
+              
               <h4 style={{ margin: '0 0 6px', color: '#f8fafc' }}>AI Stereoscopic Volumetric Detection</h4>
               <p style={{ margin: 0, fontSize: '13px', color: '#94a3b8', maxWidth: '340px' }}>
                 {cameraError || 'Target calibrated catering vessel inside the green frame'}
@@ -294,7 +294,7 @@ export default function LiveArFoodScannerModal({ isOpen, onClose, onEstimateCapt
               color: '#ffffff',
             }}
           >
-            <span>🎯</span>
+            
             <span>Target: 20L Feast Drum • 94.8% Match</span>
           </div>
 
@@ -320,7 +320,7 @@ export default function LiveArFoodScannerModal({ isOpen, onClose, onEstimateCapt
                 Estimated Category
               </div>
               <div style={{ fontSize: '15px', fontWeight: 800, color: '#38bdf8' }}>
-                🍛 South Indian Sambar Rice
+                South Indian Sambar Rice
               </div>
             </div>
 
@@ -396,7 +396,7 @@ export default function LiveArFoodScannerModal({ isOpen, onClose, onEstimateCapt
               boxShadow: '0 4px 14px rgba(5, 150, 105, 0.4)',
             }}
           >
-            <span>📷</span>
+            
             <span>{isCapturing ? 'Auto-Filling...' : 'Capture & Auto-Fill'}</span>
           </button>
         </div>

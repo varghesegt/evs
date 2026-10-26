@@ -3,7 +3,6 @@ import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet'
 import L from 'leaflet';
 import DashboardLayout from '../../components/DashboardLayout';
 import LiveTrackingModal from '../../components/LiveTrackingModal';
-import LiveDispatchRadarModal from '../../components/LiveDispatchRadarModal';
 import { playHaccpAlarm } from '../../utils/soundEffects';
 
 const TRICHY_CENTER = [10.8050, 78.6950];
@@ -133,10 +132,12 @@ export default function MissionControl() {
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 18px;
+          font-size: 11px;
+          font-weight: 800;
+          color: #ffffff;
           cursor: pointer;
         ">
-          ${unit.vehicle.includes('Van') ? '🚐' : '🛵'}
+          ${unit.vehicle.includes('Van') ? 'VAN' : 'EV'}
         </div>
       `,
       iconSize: [38, 38],
@@ -162,62 +163,15 @@ export default function MissionControl() {
           }}
         >
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
-              <span
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  padding: '4px 10px',
-                  background: '#ecfdf5',
-                  color: '#065f46',
-                  borderRadius: '9999px',
-                  fontSize: '11px',
-                  fontWeight: 800,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.04em',
-                  border: '1px solid #a7f3d0',
-                }}
-              >
-                <span
-                  style={{
-                    width: '7px',
-                    height: '7px',
-                    borderRadius: '50%',
-                    background: '#10b981',
-                    animation: 'pulse 1.2s infinite',
-                  }}
-                />
-                Live Satellite Radar Active
-              </span>
-              <span style={{ fontSize: '12px', color: '#64748b', fontWeight: 600 }}>
-                Tiruchirappalli Autonomous Telematics Grid
-              </span>
-            </div>
             <h1 style={{ fontSize: '26px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-              Mission Control & City Dispatch Radar
+              Mission Control & Fleet Command
             </h1>
             <p style={{ margin: '4px 0 0 0', fontSize: '14px', color: '#64748b' }}>
-              Real-time fleet telematics, cold-chain HACCP monitoring, and autonomous dispatch command
+              Real-time fleet telematics, cold-chain HACCP monitoring, and autonomous logistics command
             </p>
           </div>
 
           <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-            <button
-              onClick={() => setRadarModalOpen(true)}
-              className="btn btn-primary"
-              style={{
-                fontSize: '13px',
-                padding: '10px 18px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                fontWeight: 800,
-              }}
-            >
-              <span>🎯</span>
-              <span>Trigger Dispatch Radar</span>
-            </button>
             <button
               onClick={haccpAlert ? clearHaccpEmergency : triggerHaccpEmergency}
               className="btn"
@@ -232,7 +186,7 @@ export default function MissionControl() {
                 cursor: 'pointer',
               }}
             >
-              {haccpAlert ? '✓ Resolve HACCP Breach' : '⚠️ Test Cold-Chain Breach'}
+              {haccpAlert ? 'Resolve HACCP Breach' : 'Test Cold-Chain Breach'}
             </button>
           </div>
         </div>
@@ -255,7 +209,6 @@ export default function MissionControl() {
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <span style={{ fontSize: '32px' }}>🚨</span>
               <div>
                 <strong style={{ fontSize: '16px', display: 'block' }}>
                   CRITICAL HACCP COLD-CHAIN BREACH DETECTED!
@@ -282,7 +235,7 @@ export default function MissionControl() {
                 cursor: 'pointer',
               }}
             >
-              ⚡ Autonomous Emergency Reroute
+              Autonomous Emergency Reroute
             </button>
           </div>
         )}
@@ -302,7 +255,7 @@ export default function MissionControl() {
             <div style={{ fontSize: '28px', fontWeight: 900, color: 'var(--color-primary)', margin: '4px 0' }}>
               4 / 4 Online
             </div>
-            <span style={{ fontSize: '12px', color: '#10b981', fontWeight: 700 }}>● 100% Operational In Trichy</span>
+            <span style={{ fontSize: '12px', color: '#10b981', fontWeight: 700 }}>100% Operational In Trichy</span>
           </div>
 
           <div className="card" style={{ padding: '18px', textAlign: 'center' }}>
@@ -330,7 +283,7 @@ export default function MissionControl() {
               HACCP Cargo Temp
             </span>
             <div style={{ fontSize: '28px', fontWeight: 900, color: haccpAlert ? '#ef4444' : '#0284c7', margin: '4px 0' }}>
-              {haccpAlert ? '13.5°C ⚠️' : '4.2°C ❄️'}
+              {haccpAlert ? '13.5°C' : '4.2°C'}
             </div>
             <span style={{ fontSize: '12px', color: haccpAlert ? '#ef4444' : '#059669', fontWeight: 700 }}>
               {haccpAlert ? 'BREACH ALERT DETECTED' : 'Optimal Cold-Chain Compliance'}
@@ -464,7 +417,7 @@ export default function MissionControl() {
                         cursor: 'pointer',
                       }}
                     >
-                      📡 View Live GPS Tracker
+                      View Live GPS Tracker
                     </button>
                   </Popup>
                 </Marker>
@@ -544,7 +497,7 @@ export default function MissionControl() {
 
                     <div style={{ textAlign: 'right' }}>
                       <div style={{ fontSize: '12px', fontWeight: 800, color: u.battery < 20 ? '#ef4444' : '#10b981' }}>
-                        🔋 {u.battery}%
+                        {u.battery}%
                       </div>
                       <span
                         style={{
@@ -697,14 +650,13 @@ export default function MissionControl() {
                     <td style={{ padding: '14px 16px' }}>
                       <div style={{ fontWeight: 800, color: '#0f172a' }}>{unit.name}</div>
                       <div style={{ fontSize: '11px', color: '#64748b', marginTop: '2px' }}>
-                        📞 {unit.phone}
+                        Tel: {unit.phone}
                       </div>
                     </td>
 
                     {/* Vehicle */}
                     <td style={{ padding: '14px 16px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 700, color: '#1e293b' }}>
-                        <span>{unit.vehicle.includes('Van') ? '🚐' : '🛵'}</span>
                         <span>{unit.vehicle}</span>
                       </div>
                     </td>
@@ -715,7 +667,7 @@ export default function MissionControl() {
                         {unit.currentPayload}
                       </div>
                       <div style={{ fontSize: '11px', color: '#64748b', marginTop: '2px' }}>
-                        {unit.origin} ➔ {unit.destination}
+                        {unit.origin} to {unit.destination}
                       </div>
                     </td>
 
@@ -740,7 +692,7 @@ export default function MissionControl() {
                         color: (unit.id === 'EV-101' && haccpAlert) ? '#ef4444' : '#0369a1',
                         border: `1px solid ${(unit.id === 'EV-101' && haccpAlert) ? '#fecaca' : '#bae6fd'}`,
                       }}>
-                        {(unit.id === 'EV-101' && haccpAlert) ? '13.5°C ⚠️' : `${unit.temp}°C ❄️`}
+                        {(unit.id === 'EV-101' && haccpAlert) ? '13.5°C (Alert)' : `${unit.temp}°C`}
                       </span>
                     </td>
 
@@ -778,7 +730,7 @@ export default function MissionControl() {
                           fontWeight: 700,
                         }}
                       >
-                        📡 Live GPS
+                        Live GPS
                       </button>
                     </td>
                   </tr>
@@ -793,14 +745,6 @@ export default function MissionControl() {
           isOpen={trackingModalOpen}
           onClose={() => setTrackingModalOpen(false)}
           taskData={selectedUnit}
-        />
-
-        <LiveDispatchRadarModal
-          isOpen={radarModalOpen}
-          onClose={() => setRadarModalOpen(false)}
-          onAcceptTask={(task) => {
-            alert(`Task #${task.id} (${task.foodName}) successfully assigned to Karthik Raja!`);
-          }}
         />
       </div>
     </DashboardLayout>

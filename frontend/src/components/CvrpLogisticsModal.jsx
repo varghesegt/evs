@@ -142,11 +142,11 @@ export default function CvrpLogisticsModal({ isOpen, onClose }) {
   };
 
   const handleDispatchRouteWhatsApp = (route, routeGmapsUrl) => {
-    let text = `🚚 *ECOSHARE AI - FLEET TOUR DISPATCH* 🚚\n`;
+    let text = `*ECOSHARE AI - FLEET TOUR DISPATCH*\n`;
     text += `━━━━━━━━━━━━━━━━━━━━━\n`;
-    text += `📋 *Vehicle:* ${route.vehicleId || 'Vehicle'} (${(route.vehicleType || 'Fleet').replace(/_/g, ' ')})\n`;
-    text += `⚖️ *Peak Payload:* ${route.peakLoadKg ?? 0} / ${route.vehicleCapacityKg ?? 0} kg\n`;
-    text += `🛣️ *Tour Distance:* ${route.tourDistanceKm ?? 0} km\n`;
+    text += `*Vehicle:* ${route.vehicleId || 'Vehicle'} (${(route.vehicleType || 'Fleet').replace(/_/g, ' ')})\n`;
+    text += `*Peak Payload:* ${route.peakLoadKg ?? 0} / ${route.vehicleCapacityKg ?? 0} kg\n`;
+    text += `*Tour Distance:* ${route.tourDistanceKm ?? 0} km\n`;
     text += `━━━━━━━━━━━━━━━━━━━━━\n`;
     text += `*STOPS & TIME WINDOWS:*\n`;
     const schedule = route.schedule || route.stops || [];
@@ -154,7 +154,7 @@ export default function CvrpLogisticsModal({ isOpen, onClose }) {
       text += `• Stop #${s.sequenceOrder || 1} [${s.stopType || 'STOP'}]: ${s.name || ''} (${s.address || ''}) | Window: ${s.timeWindow || '-'} | ETA: ${s.estimatedArrivalTime || '-'}\n`;
     });
     text += `━━━━━━━━━━━━━━━━━━━━━\n`;
-    text += `🧭 *Google Maps Turn-by-Turn Navigation:*\n${routeGmapsUrl}\n`;
+    text += `*Google Maps Turn-by-Turn Navigation:*\n${routeGmapsUrl}\n`;
     text += `━━━━━━━━━━━━━━━━━━━━━\n`;
     text += `*Tap link to start turn-by-turn navigation in Google Maps App.*`;
 
@@ -162,17 +162,17 @@ export default function CvrpLogisticsModal({ isOpen, onClose }) {
   };
 
   const handleDispatchCvrpWhatsApp = (stops, routeGmapsUrl) => {
-    let text = `🚚 *ECOSHARE AI - SINGLE VOLUNTEER CVRP TOUR* 🚚\n`;
+    let text = `*ECOSHARE AI - SINGLE VOLUNTEER CVRP TOUR*\n`;
     text += `━━━━━━━━━━━━━━━━━━━━━\n`;
-    text += `⚖️ *Vehicle Capacity:* ${capacityKg} kg\n`;
-    text += `🛣️ *Optimized Tour Stops:* ${stops.length} stops\n`;
+    text += `*Vehicle Capacity:* ${capacityKg} kg\n`;
+    text += `*Optimized Tour Stops:* ${stops.length} stops\n`;
     text += `━━━━━━━━━━━━━━━━━━━━━\n`;
     text += `*STOPS & PICKUPS:*\n`;
     stops.forEach(s => {
       text += `• Stop #${s.stopOrder || 1} [${s.nodeType || 'NODE'}]: ${s.name || ''} (${s.address || ''}) | Load: ${s.loadKg || 0} kg\n`;
     });
     text += `━━━━━━━━━━━━━━━━━━━━━\n`;
-    text += `🧭 *Google Maps Turn-by-Turn Navigation:*\n${routeGmapsUrl}\n`;
+    text += `*Google Maps Turn-by-Turn Navigation:*\n${routeGmapsUrl}\n`;
     text += `━━━━━━━━━━━━━━━━━━━━━\n`;
     text += `*Tap link to start turn-by-turn navigation in Google Maps App.*`;
 
@@ -221,7 +221,7 @@ export default function CvrpLogisticsModal({ isOpen, onClose }) {
             color: '#64748b',
           }}
         >
-          ✕
+          &times;
         </button>
 
         {/* Modal Header */}
@@ -461,7 +461,7 @@ export default function CvrpLogisticsModal({ isOpen, onClose }) {
                                     </td>
                                     <td style={{ color: '#0284c7', fontWeight: 600 }}>{stop.timeWindow || '-'}</td>
                                     <td style={{ fontWeight: 700, color: stop.windowSatisfied ? '#059669' : '#dc2626' }}>
-                                      {stop.estimatedArrivalTime || '-'} {stop.windowSatisfied ? '✓' : '(Delayed)'}
+                                      {stop.estimatedArrivalTime || '-'} {stop.windowSatisfied ? '(On Time)' : '(Delayed)'}
                                     </td>
                                     <td style={{ fontWeight: 600 }}>{stop.loadCarriedKg ?? 0} kg</td>
                                     <td style={{ fontWeight: 600, color: 'var(--color-primary)' }}>{stop.cumulativeDistanceKm ?? 0} km</td>
@@ -473,7 +473,7 @@ export default function CvrpLogisticsModal({ isOpen, onClose }) {
                                         style={{ color: '#1a73e8', fontWeight: 700, textDecoration: 'none' }}
                                         title="Open individual stop in Google Maps App"
                                       >
-                                        Directions ↗
+                                        Directions &rarr;
                                       </a>
                                     </td>
                                   </tr>
@@ -654,7 +654,7 @@ export default function CvrpLogisticsModal({ isOpen, onClose }) {
                                 style={{ color: '#1a73e8', fontWeight: 700, textDecoration: 'none' }}
                                 title="Open this stop in Google Maps App"
                               >
-                                Directions ↗
+                                Directions &rarr;
                               </a>
                             </td>
                           </tr>

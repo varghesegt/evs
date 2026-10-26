@@ -81,7 +81,7 @@ export default function DonorDashboard() {
             onClick={() => setHandshakeModalOpen(true)}
             style={{ minHeight: '44px', fontWeight: 700 }}
           >
-            🛡️ Dynamic QR Handshake
+            Dynamic QR Handshake
           </button>
           <button
             type="button"

@@ -10,36 +10,36 @@ import { playSuccessChime, playRadarChime } from '../../utils/soundEffects';
 import { openInGoogleMaps, getGoogleMapsNavigationUrl } from '../../utils/gmapsUtils';
 
 const FOOD_CATEGORIES = [
-  { id: 'COOKED_RICE', label: 'Rice & Biryani', icon: '🍚', desc: 'Biryani, Pulao, Steamed Rice', density: '0.85 kg/L' },
-  { id: 'COOKED_CURRY', label: 'Curry & Gravy', icon: '🍛', desc: 'Sambar, Dal, Kurma, Gravy', density: '1.05 kg/L' },
-  { id: 'BREAD_BAKERY', label: 'Breads & Roti', icon: '🥖', desc: 'Chapati, Naan, Parotta, Bread', density: '0.45 kg/L' },
-  { id: 'MIXED_MEAL', label: 'Mixed Meals / Thali', icon: '🍱', desc: 'Complete Meals, Full Lunch', density: '0.75 kg/L' },
-  { id: 'COOKED_VEGETABLES', label: 'Cooked Veg & Kootu', icon: '🥗', desc: 'Stir fry, Poriyal, Kootu', density: '0.70 kg/L' },
-  { id: 'RAW_VEGETABLES', label: 'Raw Veg & Produce', icon: '🥦', desc: 'Uncooked Vegetables, Greens', density: '0.50 kg/L' },
-  { id: 'FRUITS', label: 'Fresh Fruits', icon: '🍎', desc: 'Bananas, Apples, Oranges', density: '0.65 kg/L' },
-  { id: 'DAIRY', label: 'Dairy & Desserts', icon: '🥛', desc: 'Curd, Paneer, Payasam, Sweets', density: '1.02 kg/L' },
-  { id: 'SWEETS_DESSERTS', label: 'Traditional Sweets', icon: '🍮', desc: 'Halwa, Laddu, Kesari', density: '1.10 kg/L' },
-  { id: 'PACKAGED_FOOD', label: 'Packaged & Dry', icon: '📦', desc: 'Sealed snacks, dry goods', density: '0.40 kg/L' },
-  { id: 'BEVERAGES', label: 'Juices & Beverages', icon: '🥤', desc: 'Juice, Buttermilk, Tea', density: '1.00 kg/L' },
-  { id: 'OTHER', label: 'Other Culinary', icon: '🍲', desc: 'Specialty culinary items', density: 'Variable' },
+  { id: 'COOKED_RICE', label: 'Rice & Biryani', icon: '', desc: 'Biryani, Pulao, Steamed Rice', density: '0.85 kg/L' },
+  { id: 'COOKED_CURRY', label: 'Curry & Gravy', icon: '', desc: 'Sambar, Dal, Kurma, Gravy', density: '1.05 kg/L' },
+  { id: 'BREAD_BAKERY', label: 'Breads & Roti', icon: '', desc: 'Chapati, Naan, Parotta, Bread', density: '0.45 kg/L' },
+  { id: 'MIXED_MEAL', label: 'Mixed Meals / Thali', icon: '', desc: 'Complete Meals, Full Lunch', density: '0.75 kg/L' },
+  { id: 'COOKED_VEGETABLES', label: 'Cooked Veg & Kootu', icon: '', desc: 'Stir fry, Poriyal, Kootu', density: '0.70 kg/L' },
+  { id: 'RAW_VEGETABLES', label: 'Raw Veg & Produce', icon: '', desc: 'Uncooked Vegetables, Greens', density: '0.50 kg/L' },
+  { id: 'FRUITS', label: 'Fresh Fruits', icon: '', desc: 'Bananas, Apples, Oranges', density: '0.65 kg/L' },
+  { id: 'DAIRY', label: 'Dairy & Desserts', icon: '', desc: 'Curd, Paneer, Payasam, Sweets', density: '1.02 kg/L' },
+  { id: 'SWEETS_DESSERTS', label: 'Traditional Sweets', icon: '', desc: 'Halwa, Laddu, Kesari', density: '1.10 kg/L' },
+  { id: 'PACKAGED_FOOD', label: 'Packaged & Dry', icon: '', desc: 'Sealed snacks, dry goods', density: '0.40 kg/L' },
+  { id: 'BEVERAGES', label: 'Juices & Beverages', icon: '', desc: 'Juice, Buttermilk, Tea', density: '1.00 kg/L' },
+  { id: 'OTHER', label: 'Other Culinary', icon: '', desc: 'Specialty culinary items', density: 'Variable' },
 ];
 
 const CATERING_VESSELS = [
-  { id: 'STANDARD_5L', name: '5L Chafing Dish', capacityKg: 4.0, icon: '🍲', note: '~10 Meals' },
-  { id: 'STANDARD_10L', name: '10L Catering Pot', capacityKg: 8.5, icon: '🥘', note: '~21 Meals' },
-  { id: 'STANDARD_20L', name: '20L Feast Drum', capacityKg: 17.0, icon: '🛢️', note: '~42 Meals' },
-  { id: 'STANDARD_50L', name: '50L Cauldron', capacityKg: 42.0, icon: '🏛️', note: '~105 Meals' },
+  { id: 'STANDARD_5L', name: '5L Chafing Dish', capacityKg: 4.0, icon: '', note: '~10 Meals' },
+  { id: 'STANDARD_10L', name: '10L Catering Pot', capacityKg: 8.5, icon: '', note: '~21 Meals' },
+  { id: 'STANDARD_20L', name: '20L Feast Drum', capacityKg: 17.0, icon: '', note: '~42 Meals' },
+  { id: 'STANDARD_50L', name: '50L Cauldron', capacityKg: 42.0, icon: '', note: '~105 Meals' },
 ];
 
 const QUICK_TRICHY_HUBS = [
-  { name: 'Hotel Sangam, Cantonment', lat: 10.8055, lng: 78.6850, addr: 'Collector Office Road, Cantonment, Trichy', tag: '🏨 Hotel' },
-  { name: 'Royal Mahal, Thillai Nagar', lat: 10.8295, lng: 78.6865, addr: 'Main Road, Thillai Nagar, Trichy', tag: '🏛️ Hall' },
-  { name: 'SRM Hotel, TVS Tollgate', lat: 10.7985, lng: 78.6890, addr: 'Race Course Road, TVS Tollgate, Trichy', tag: '🏨 Hotel' },
-  { name: 'A2B Chathiram Stand', lat: 10.8310, lng: 78.6940, addr: 'Chathiram Bus Stand Corridor, Trichy', tag: '🍛 Dining' },
-  { name: 'Central Bus Stand Depot', lat: 10.7985, lng: 78.6815, addr: 'Central Bus Stand Terminal, Trichy', tag: '🚌 Transit' },
-  { name: 'Golden Palm, KK Nagar', lat: 10.7760, lng: 78.7050, addr: 'KK Nagar Main Road, Trichy', tag: '🎉 Hall' },
-  { name: 'NIT Trichy, Thuvakudi', lat: 10.7600, lng: 78.8150, addr: 'Tanjore Main Road, Thuvakudi, Trichy', tag: '🎓 Campus' },
-  { name: 'Srirangam Temple North', lat: 10.8620, lng: 78.6920, addr: 'North Chithirai St, Srirangam, Trichy', tag: '🛕 Temple' },
+  { name: 'Hotel Sangam, Cantonment', lat: 10.8055, lng: 78.6850, addr: 'Collector Office Road, Cantonment, Trichy', tag: 'Hotel' },
+  { name: 'Royal Mahal, Thillai Nagar', lat: 10.8295, lng: 78.6865, addr: 'Main Road, Thillai Nagar, Trichy', tag: 'Hall' },
+  { name: 'SRM Hotel, TVS Tollgate', lat: 10.7985, lng: 78.6890, addr: 'Race Course Road, TVS Tollgate, Trichy', tag: 'Hotel' },
+  { name: 'A2B Chathiram Stand', lat: 10.8310, lng: 78.6940, addr: 'Chathiram Bus Stand Corridor, Trichy', tag: 'Dining' },
+  { name: 'Central Bus Stand Depot', lat: 10.7985, lng: 78.6815, addr: 'Central Bus Stand Terminal, Trichy', tag: 'Transit' },
+  { name: 'Golden Palm, KK Nagar', lat: 10.7760, lng: 78.7050, addr: 'KK Nagar Main Road, Trichy', tag: 'Hall' },
+  { name: 'NIT Trichy, Thuvakudi', lat: 10.7600, lng: 78.8150, addr: 'Tanjore Main Road, Thuvakudi, Trichy', tag: 'Campus' },
+  { name: 'Srirangam Temple North', lat: 10.8620, lng: 78.6920, addr: 'North Chithirai St, Srirangam, Trichy', tag: 'Temple' },
 ];
 
 const FOOD_NAME_PRESETS = [
@@ -51,12 +51,12 @@ const FOOD_NAME_PRESETS = [
 ];
 
 const QUALITY_TAGS = [
-  { id: 'fresh', label: 'Freshly Cooked (< 2h)', icon: '♨️' },
-  { id: 'warm', label: 'Insulated Warm (> 60°C)', icon: '🔥' },
-  { id: 'chilled', label: 'Refrigerated (< 4°C)', icon: '❄️' },
-  { id: 'veg', label: '100% Pure Veg', icon: '🌿' },
-  { id: 'sealed', label: 'Sealed Containers', icon: '🔒' },
-  { id: 'halal', label: 'Halal Certified', icon: '☪️' },
+  { id: 'fresh', label: 'Freshly Cooked (< 2h)', icon: '' },
+  { id: 'warm', label: 'Insulated Warm (> 60°C)', icon: '' },
+  { id: 'chilled', label: 'Refrigerated (< 4°C)', icon: '' },
+  { id: 'veg', label: '100% Pure Veg', icon: '' },
+  { id: 'sealed', label: 'Sealed Containers', icon: '' },
+  { id: 'halal', label: 'Halal Certified', icon: '' },
 ];
 
 export default function CreateDonation() {
@@ -332,7 +332,7 @@ export default function CreateDonation() {
               className="btn btn-sm btn-secondary"
               style={{ minHeight: '38px', fontSize: '12px', fontWeight: 700 }}
             >
-              📜 History
+              History
             </Link>
           </div>
         </div>
@@ -363,7 +363,7 @@ export default function CreateDonation() {
             margin: '0 auto 16px auto',
             boxShadow: '0 8px 20px rgba(16, 185, 129, 0.35)',
           }}>
-            ✓
+            OK
           </div>
 
           <span className="badge badge-success" style={{ fontSize: '12px', padding: '4px 12px', fontWeight: 800 }}>
@@ -420,7 +420,7 @@ export default function CreateDonation() {
               marginBottom: '24px',
               border: '1px dashed #cbd5e1',
             }}>
-              <span style={{ fontSize: '20px' }}>📱</span>
+              
               <div style={{ textAlign: 'left' }}>
                 <div style={{ fontSize: '11px', color: '#64748b', fontWeight: 700 }}>VERIFICATION QR CODE</div>
                 <div style={{ fontSize: '13px', fontWeight: 800, fontFamily: 'monospace', color: '#0f172a' }}>
@@ -438,7 +438,7 @@ export default function CreateDonation() {
               onClick={() => navigate('/donor')}
               style={{ minHeight: '50px', fontSize: '15px', fontWeight: 800, borderRadius: '14px' }}
             >
-              📊 Go to Donor Dashboard
+              Go to Donor Dashboard
             </button>
 
             <button
@@ -461,7 +461,7 @@ export default function CreateDonation() {
               }}
               style={{ minHeight: '44px', fontSize: '13px', fontWeight: 700 }}
             >
-              ➕ Create Another Donation
+              Create Another Donation
             </button>
           </div>
         </div>
@@ -500,7 +500,7 @@ export default function CreateDonation() {
                 gap: '6px',
               }}
             >
-              <span>{isStep1Valid ? '✅' : '1️⃣'}</span>
+              <span>{isStep1Valid ? 'Complete' : 'Step 1'}</span>
               <span>1. Food & Volume</span>
             </button>
 
@@ -525,7 +525,7 @@ export default function CreateDonation() {
                 gap: '6px',
               }}
             >
-              <span>{isStep2Valid ? '✅' : '2️⃣'}</span>
+              <span>{isStep2Valid ? 'Complete' : 'Step 2'}</span>
               <span>2. Pickup & Map</span>
             </button>
           </div>
@@ -542,7 +542,7 @@ export default function CreateDonation() {
               marginBottom: '16px',
               border: '1px solid #fecaca',
             }}>
-              ⚠️ {error}
+              {error}
             </div>
           )}
 
@@ -557,7 +557,7 @@ export default function CreateDonation() {
               marginBottom: '16px',
               border: '1px solid #bbf7d0',
             }}>
-              ✓ {success}
+              {success}
             </div>
           )}
 
@@ -588,7 +588,7 @@ export default function CreateDonation() {
                 cursor: 'pointer',
               }}
             >
-              <span>📷</span>
+              
               <span>Live AR Scanner</span>
             </button>
 
@@ -612,7 +612,7 @@ export default function CreateDonation() {
                 transition: 'all 0.2s ease',
               }}
             >
-              <span>🤖</span>
+              
               <span>{aiToolMode === 'ai_photo' ? 'Hide AI Photo Tool' : 'Photo AI Estimator'}</span>
             </button>
           </div>
@@ -744,7 +744,7 @@ export default function CreateDonation() {
                         }}
                       >
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                          <span style={{ fontSize: '22px' }}>{cat.icon}</span>
+                          
                           {isSelected && (
                             <span style={{
                               width: '18px',
@@ -758,7 +758,7 @@ export default function CreateDonation() {
                               fontSize: '10px',
                               fontWeight: 900,
                             }}>
-                              ✓
+                              OK
                             </span>
                           )}
                         </div>
@@ -820,7 +820,7 @@ export default function CreateDonation() {
                           minHeight: '54px',
                         }}
                       >
-                        <span style={{ fontSize: '24px' }}>{vessel.icon}</span>
+                        
                         <div>
                           <div style={{ fontSize: '12px', fontWeight: 800, color: '#0f172a' }}>
                             {vessel.name}
@@ -957,7 +957,7 @@ export default function CreateDonation() {
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span style={{ fontSize: '18px' }}>⚡</span>
+                    
                     <span style={{ fontSize: '13px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                       Real-Time Impact Forecast
                     </span>
@@ -969,7 +969,7 @@ export default function CreateDonation() {
                     fontSize: '11px',
                     fontWeight: 800,
                   }}>
-                    {isUrgentPriority ? '🔥 Urgent Priority' : 'Standard Priority'}
+                    {isUrgentPriority ? 'Urgent Priority' : 'Standard Priority'}
                   </span>
                 </div>
 
@@ -1029,9 +1029,9 @@ export default function CreateDonation() {
                           minHeight: '38px',
                         }}
                       >
-                        <span>{tag.icon}</span>
+                        
                         <span>{tag.label}</span>
-                        {active && <span>✓</span>}
+                        {active && <span style={{ color: '#0d9668', fontWeight: 800 }}>OK</span>}
                       </button>
                     );
                   })}
@@ -1103,8 +1103,7 @@ export default function CreateDonation() {
                     gap: '8px',
                   }}
                 >
-                  <span>Continue to Pickup Location</span>
-                  <span>➔</span>
+                  <span>Continue to Pickup Location &rarr;</span>
                 </button>
               </div>
             </div>
@@ -1149,8 +1148,8 @@ export default function CreateDonation() {
                         gap: '4px',
                       }}
                     >
-                      <span>🗺️ G-Maps App</span>
-                      <span>↗</span>
+                      <span>Google Maps</span>
+                      <span>&rarr;</span>
                     </button>
                   </div>
 
@@ -1179,7 +1178,7 @@ export default function CreateDonation() {
                         boxShadow: '0 4px 14px rgba(2, 132, 199, 0.25)',
                       }}
                     >
-                      <span style={{ fontSize: '18px' }}>{gpsDetecting ? '📡' : '📍'}</span>
+                      
                       <span>{gpsDetecting ? 'Acquiring GPS Fix...' : 'Detect My Exact Location (1-Tap GPS)'}</span>
                     </button>
 
@@ -1234,9 +1233,9 @@ export default function CreateDonation() {
                             minHeight: '40px',
                           }}
                         >
-                          <span>{hub.tag.split(' ')[0]}</span>
+                          
                           <span>{hub.name.split(',')[0]}</span>
-                          {isSelected && <span>✓</span>}
+                          {isSelected && <span style={{ color: '#0d9668', fontWeight: 800 }}>OK</span>}
                         </button>
                       );
                     })}
@@ -1343,7 +1342,6 @@ export default function CreateDonation() {
                   marginBottom: '90px',
                 }}>
                   <div style={{ fontWeight: 800, marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <span>🚀</span>
                     <span>Automated AI Dispatch Sequence</span>
                   </div>
                   <div>
@@ -1372,7 +1370,7 @@ export default function CreateDonation() {
                       gap: '10px',
                     }}
                   >
-                    <span style={{ fontSize: '20px' }}>🚀</span>
+                    
                     <span>{loading ? 'Dispatching Food Mission...' : `Dispatch ${quantityNum || 0} kg Surplus Food`}</span>
                   </button>
                   {(!isStep1Valid || !isStep2Valid) && (
@@ -1443,8 +1441,7 @@ export default function CreateDonation() {
                   boxShadow: '0 4px 14px rgba(13, 150, 104, 0.25)',
                 }}
               >
-                <span>Pickup Details</span>
-                <span>➔</span>
+                <span>Pickup Details &rarr;</span>
               </button>
             ) : (
               <div style={{ display: 'flex', gap: '8px', flex: 1 }}>
@@ -1460,7 +1457,7 @@ export default function CreateDonation() {
                     borderRadius: '12px',
                   }}
                 >
-                  ⬅ Back
+                  Back
                 </button>
                 <button
                   type="button"
@@ -1485,7 +1482,6 @@ export default function CreateDonation() {
                     <span>Dispatching...</span>
                   ) : (
                     <>
-                      <span>🚀</span>
                       <span>Dispatch Now</span>
                     </>
                   )}

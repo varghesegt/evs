@@ -98,7 +98,7 @@ export default function HaccpMonitorModal({ donationId = 1, isOpen, onClose }) {
             color: '#64748b',
           }}
         >
-          ✕
+          &times;
         </button>
 
         {/* Header */}

@@ -127,29 +127,29 @@ export function createWhatsAppDispatchMessage({
   const destCoords = { lat: shelterLat, lng: shelterLng };
   const fullRouteUrl = getGoogleMapsMultiStopRouteUrl(originCoords, destCoords, [{ lat: pickupLat, lng: pickupLng }]);
 
-  let msg = `🚨 *ECOSHARE AI - FOOD RESCUE MISSION* 🚨\n`;
+  let msg = `*ECOSHARE AI - FOOD RESCUE MISSION*\n`;
   msg += `━━━━━━━━━━━━━━━━━━━━━\n`;
-  msg += `📦 *Mission:* #${missionId}\n`;
-  msg += `🍲 *Batch:* ${foodName} (${quantity} kg • ${category})\n`;
-  msg += `⏳ *Shelf-Life Window:* ${freshness} Hours Remaining ${isUrgent ? '⚠️ [CODE RED SURGE]' : ''}\n`;
+  msg += `*Mission:* #${missionId}\n`;
+  msg += `*Batch:* ${foodName} (${quantity} kg • ${category})\n`;
+  msg += `*Shelf-Life Window:* ${freshness} Hours Remaining ${isUrgent ? '[CODE RED SURGE]' : ''}\n`;
   if (volunteer?.name) {
-    msg += `🚴 *Assigned Courier:* ${volunteer.name} (${volunteer.phone || '9443100030'})\n`;
+    msg += `*Assigned Courier:* ${volunteer.name} (${volunteer.phone || '9443100030'})\n`;
   }
   msg += `━━━━━━━━━━━━━━━━━━━━━\n`;
-  msg += `📍 *STEP 1: PICKUP (Donor)*\n`;
+  msg += `*STEP 1: PICKUP (Donor)*\n`;
   msg += `• Facility: ${donorName}\n`;
   msg += `• Address: ${pickupAddress}\n`;
-  msg += `• Contact: 📞 ${donorPhone}\n`;
-  msg += `🧭 *Turn-by-Turn to Donor (Google Maps):*\n${pickupGmapsUrl}\n\n`;
-  msg += `🏁 *STEP 2: DROP-OFF (Shelter)*\n`;
+  msg += `• Contact: Tel: ${donorPhone}\n`;
+  msg += `*Turn-by-Turn to Donor (Google Maps):*\n${pickupGmapsUrl}\n\n`;
+  msg += `*STEP 2: DROP-OFF (Shelter)*\n`;
   msg += `• Recipient: ${shelterName}\n`;
   msg += `• Address: ${shelterAddress}\n`;
-  msg += `• Contact: 📞 ${shelterPhone}\n`;
-  msg += `🧭 *Turn-by-Turn to Shelter (Google Maps):*\n${shelterGmapsUrl}\n\n`;
-  msg += `🗺️ *COMPLETE MULTI-STOP ROUTE (Courier -> Donor -> Shelter):*\n${fullRouteUrl}\n`;
+  msg += `• Contact: Tel: ${shelterPhone}\n`;
+  msg += `*Turn-by-Turn to Shelter (Google Maps):*\n${shelterGmapsUrl}\n\n`;
+  msg += `*COMPLETE MULTI-STOP ROUTE (Courier -> Donor -> Shelter):*\n${fullRouteUrl}\n`;
   if (customNotes) {
     msg += `━━━━━━━━━━━━━━━━━━━━━\n`;
-    msg += `📝 *Notes:* ${customNotes}\n`;
+    msg += `*Notes:* ${customNotes}\n`;
   }
   msg += `━━━━━━━━━━━━━━━━━━━━━\n`;
   msg += `*Tap any link to start turn-by-turn navigation in the Google Maps App.*`;

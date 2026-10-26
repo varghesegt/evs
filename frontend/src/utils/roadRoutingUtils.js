@@ -105,7 +105,7 @@ export async function fetchShortestRoadRoute(waypoints, profile = 'driving') {
       }
     }
 
-    const summary = primaryRoute.legs?.map(l => l.summary).filter(Boolean).join(' ➔ ') || 'Shortest Road Route';
+    const summary = primaryRoute.legs?.map(l => l.summary).filter(Boolean).join(' -> ') || 'Shortest Road Route';
 
     const result = {
       polyline: realRoadPolyline,

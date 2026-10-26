@@ -177,14 +177,14 @@ export default function Reports() {
             className="btn btn-secondary"
             style={{ padding: '9px 16px', fontWeight: 700, fontSize: '13px' }}
           >
-            🖨 Print Report
+            Print Report
           </button>
           <button
             onClick={handleExportCSV}
             className="btn btn-primary"
             style={{ padding: '9px 16px', fontWeight: 700, fontSize: '13px' }}
           >
-            ⬇ Export CSV Data
+            Export CSV Data
           </button>
         </div>
       </div>
@@ -255,7 +255,7 @@ export default function Reports() {
               fontSize: '15px',
               pointerEvents: 'none',
             }}>
-              🔍
+              Search
             </span>
             <input
               type="text"
@@ -287,7 +287,7 @@ export default function Reports() {
                   fontSize: '14px',
                 }}
               >
-                ✕
+                &times;
               </button>
             )}
           </div>
@@ -393,7 +393,7 @@ export default function Reports() {
           <div className="loading-spinner"><div className="spinner"></div></div>
         ) : filteredDonations.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '48px 20px', color: '#64748b' }}>
-            <div style={{ fontSize: '36px', marginBottom: '8px' }}>📋</div>
+            
             <div style={{ fontSize: '16px', fontWeight: 800, color: '#1e293b' }}>No operations match the selected criteria</div>
             <p style={{ fontSize: '13px', marginTop: '4px' }}>Try resetting your filter parameters or search query.</p>
             <button
@@ -455,7 +455,7 @@ export default function Reports() {
                           </span>
                           {d.freshnessHoursRemaining && (
                             <span style={{ color: '#059669', fontWeight: 600 }}>
-                              ⏳ {d.freshnessHoursRemaining}h remaining
+                              {d.freshnessHoursRemaining}h remaining
                             </span>
                           )}
                         </div>
@@ -467,7 +467,7 @@ export default function Reports() {
                           {d.donorName || d.donor?.name || 'SRM Hotel & Convention'}
                         </div>
                         <div style={{ fontSize: '11px', color: '#64748b', marginTop: '2px' }}>
-                          📍 {d.pickupAddress || 'Central Junction, Trichy'}
+                          {d.pickupAddress || 'Central Junction, Trichy'}
                         </div>
                       </td>
 
@@ -511,7 +511,7 @@ export default function Reports() {
                           {d.volunteerName || d.volunteer?.name || 'Karthik Raja'}
                         </div>
                         <div style={{ fontSize: '11px', color: '#059669', fontWeight: 600 }}>
-                          🛵 EV Cargo Bike
+                          EV Cargo Bike
                         </div>
                       </td>
 
@@ -617,7 +617,7 @@ export default function Reports() {
                   fontSize: '14px',
                 }}
               >
-                ✕
+                &times;
               </button>
             </div>
 
@@ -666,7 +666,7 @@ export default function Reports() {
                 {selectedRecord.sha256Hash || `0x3a7f9b2c1d8e4f5a6b7c8d9e0f1a2b3c4d5e6f7a${selectedRecord.id}`}
               </div>
               <div style={{ fontSize: '10px', color: '#047857', marginTop: '6px' }}>
-                ✓ Digital Handshake Verified via Dual-GPS Geofence + Courier QR Authenticator
+                Digital Handshake Verified via Dual-GPS Geofence + Courier QR Authenticator
               </div>
             </div>
 

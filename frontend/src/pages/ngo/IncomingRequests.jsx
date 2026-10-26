@@ -101,7 +101,7 @@ export default function IncomingRequests() {
             disabled={loading}
             style={{ minHeight: '44px', fontWeight: 700 }}
           >
-            {loading ? 'Refreshing...' : '🔄 Refresh Feed'}
+            {loading ? 'Refreshing...' : 'Refresh Feed'}
           </button>
           <button
             type="button"
@@ -109,7 +109,7 @@ export default function IncomingRequests() {
             onClick={() => navigate('/ngo/assign')}
             style={{ minHeight: '44px', fontWeight: 700 }}
           >
-            Assign Volunteers ➔
+            Assign Volunteers &rarr;
           </button>
         </div>
       </div>
@@ -144,7 +144,7 @@ export default function IncomingRequests() {
           boxShadow: '0 4px 12px rgba(34, 197, 94, 0.12)',
         }}>
           <div>
-            <strong>✓ Accepted Batch #{acceptedNotice.id} ({acceptedNotice.foodName} • {acceptedNotice.quantityKg} kg)!</strong>
+            <strong>Accepted Batch #{acceptedNotice.id} ({acceptedNotice.foodName} • {acceptedNotice.quantityKg} kg)!</strong>
             <div style={{ fontSize: '12px', color: '#15803d', marginTop: '2px' }}>
               Reserved for your distribution shelter. Assign a volunteer courier to initiate pickup.
             </div>
@@ -155,7 +155,7 @@ export default function IncomingRequests() {
             onClick={() => navigate('/ngo/assign')}
             style={{ fontWeight: 800, padding: '8px 16px' }}
           >
-            Assign Courier Now ➔
+            Assign Courier Now &rarr;
           </button>
         </div>
       )}
@@ -212,8 +212,8 @@ export default function IncomingRequests() {
               }}
             >
               <option value="ALL">All Priorities</option>
-              <option value="URGENT">🔥 Urgent (&lt; 3.5h Freshness)</option>
-              <option value="HIGH_SCORE">⚡ High AI Score (&gt; 80)</option>
+              <option value="URGENT">Urgent (&lt; 3.5h Freshness)</option>
+              <option value="HIGH_SCORE">High AI Score (&gt; 80)</option>
             </select>
 
             {/* View Mode Toggle */}
@@ -342,7 +342,7 @@ export default function IncomingRequests() {
                         rel="noopener noreferrer"
                         style={{ fontSize: '11px', color: '#0284c7', textDecoration: 'none', fontWeight: 700 }}
                       >
-                        🗺️ View on Maps ↗
+                        View on Maps &rarr;
                       </a>
                     </td>
                     <td style={{ padding: '14px 16px' }}>
@@ -378,7 +378,7 @@ export default function IncomingRequests() {
                           whiteSpace: 'nowrap',
                         }}
                       >
-                        {accepting === d.id ? 'Reserving...' : '✓ Accept Batch'}
+                        {accepting === d.id ? 'Reserving...' : 'Accept Batch'}
                       </button>
                     </td>
                   </tr>
@@ -403,7 +403,7 @@ export default function IncomingRequests() {
                     className="btn btn-secondary btn-sm"
                     style={{ fontSize: '11px', fontWeight: 700, padding: '5px 10px' }}
                   >
-                    🗺️ Location
+                    Location
                   </a>
 
                   <button

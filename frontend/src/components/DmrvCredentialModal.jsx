@@ -85,7 +85,7 @@ export default function DmrvCredentialModal({ donationId = 1, isOpen, onClose })
             color: '#64748b',
           }}
         >
-          ✕
+          &times;
         </button>
 
         {/* Modal Header */}

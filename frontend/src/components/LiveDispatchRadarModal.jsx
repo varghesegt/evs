@@ -190,10 +190,10 @@ export default function LiveDispatchRadarModal({ isOpen, onClose, onAcceptTask }
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
             <div>
               <div style={{ fontSize: '16px', fontWeight: 800, color: 'var(--color-text-primary)' }}>
-                🍛 Banquet Biryani & Veg Meals
+                 Banquet Biryani & Veg Meals
               </div>
               <div style={{ fontSize: '13px', color: 'var(--color-text-muted)' }}>
-                📍 SRM Hotel & Convention Centre, Trichy
+                 SRM Hotel & Convention Centre, Trichy
               </div>
             </div>
             <span
@@ -227,7 +227,7 @@ export default function LiveDispatchRadarModal({ isOpen, onClose, onAcceptTask }
             </div>
             <div>
               <span style={{ color: 'var(--color-text-muted)', display: 'block' }}>Freshness:</span>
-              <strong style={{ color: '#ea580c' }}>🔥 5.5h Window</strong>
+              <strong style={{ color: '#ea580c' }}> 5.5h Window</strong>
             </div>
             <div>
               <span style={{ color: 'var(--color-text-muted)', display: 'block' }}>CO₂e Saved:</span>
@@ -258,7 +258,7 @@ export default function LiveDispatchRadarModal({ isOpen, onClose, onAcceptTask }
                 background: isAccepted ? '#10b981' : undefined,
               }}
             >
-              {isAccepted ? '✓ Task Assigned! Opening GPS...' : '⚡ Accept Rescue Task'}
+              {isAccepted ? 'OK Task Assigned! Opening GPS...' : ' Accept Rescue Task'}
             </button>
           </div>
         ) : (
@@ -272,7 +272,7 @@ export default function LiveDispatchRadarModal({ isOpen, onClose, onAcceptTask }
               fontWeight: 700,
             }}
           >
-            ⏱️ Timer Expired. Auto-rerouted to Priya Sundaram (EV Van).
+             Timer Expired. Auto-rerouted to Priya Sundaram (EV Van).
           </div>
         )}
       </div>
