@@ -128,36 +128,26 @@ export default function ActivePickups() {
         </div>
       </div>
 
-      {/* Map of Active Pickups & Trichy Drop-Off Shelters */}
-      <div className="card mb-6" style={{ marginBottom: 'var(--space-6)' }}>
-        <div className="card-header" style={{ marginBottom: 'var(--space-2)' }}>
-          <span className="card-title">Live Pickup Radar & Trichy Destination Shelters</span>
-        </div>
-        <MapView
-          markers={combinedMarkers.length > 0 ? combinedMarkers : activeMarkers}
-          zoom={13}
-          height="400px"
-          showFilters={true}
-          title="Active Pickups & Recipient Shelters in Trichy"
-        />
-      </div>
+      {/* Dual-Column Dispatch View (Side-by-side on desktop, stacked on mobile) */}
+      <div className="desktop-split-half" style={{ marginBottom: 'var(--space-6)' }}>
+        {/* Left Column: Assigned Tasks */}
+        <div>
+          <div className="card-header" style={{ marginBottom: 'var(--space-3)' }}>
+            <span className="card-title">Assigned Pickup Tasks ({pickups.length})</span>
+          </div>
 
-      <div className="card-header" style={{ marginBottom: 'var(--space-4)' }}>
-        <span className="card-title">Assigned Pickup Tasks ({pickups.length})</span>
-      </div>
-
-      {loading ? (
-        <div className="loading-spinner"><div className="spinner"></div></div>
-      ) : pickups.length === 0 ? (
-        <div className="empty-state">
-          <h3>No active pickups</h3>
-          <p>No pending pickup assignments at this time. Check back soon for new dispatch notifications.</p>
-        </div>
-      ) : (
-        <div className="donation-cards-grid">
-          {pickups.map((d, index) => (
-            <DonationCard key={`pickup-${d.id}-${index}`} donation={d} actions={
-              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
+          {loading ? (
+            <div className="loading-spinner"><div className="spinner"></div></div>
+          ) : pickups.length === 0 ? (
+            <div className="empty-state">
+              <h3>No active pickups</h3>
+              <p>No pending pickup assignments at this time. Check back soon for new dispatch notifications.</p>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              {pickups.map((d, index) => (
+                <DonationCard key={`pickup-${d.id}-${index}`} donation={d} actions={
+                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
                 {/* Direct Google Maps Turn-by-Turn Redirection */}
                 <a
                   href={getGoogleMapsNavigationUrl(d.pickupLat || 10.7985, d.pickupLng || 78.6890, d.foodName)}
@@ -221,8 +211,26 @@ export default function ActivePickups() {
               </div>
             } />
           ))}
+            </div>
+          )}
         </div>
-      )}
+
+        {/* Right Column: Sticky Live Radar Map */}
+        <div style={{ position: 'sticky', top: 'calc(var(--navbar-height) + 16px)' }}>
+          <div className="card" style={{ height: '100%' }}>
+            <div className="card-header" style={{ marginBottom: 'var(--space-2)' }}>
+              <span className="card-title">Live Pickup Radar & Recipient Shelters</span>
+            </div>
+            <MapView
+              markers={combinedMarkers.length > 0 ? combinedMarkers : activeMarkers}
+              zoom={13}
+              height="480px"
+              showFilters={true}
+              title="Active Pickups & Recipient Shelters in Trichy"
+            />
+          </div>
+        </div>
+      </div>
 
       <HaccpMonitorModal
         donationId={selectedDonationId}

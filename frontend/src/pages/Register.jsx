@@ -45,7 +45,7 @@ export default function Register() {
 
   return (
     <div className="auth-page">
-      <div className="auth-container" style={{ maxWidth: '500px' }}>
+      <div className="auth-container" style={{ width: '100%', maxWidth: '640px' }}>
         <div className="auth-card">
           <div className="auth-logo">
             <h1>EcoShare AI</h1>

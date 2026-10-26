@@ -77,31 +77,88 @@ export default function NgoDashboard() {
       {/* Code-Red Perishability Surge Escalation Banner */}
       <SurgeEscalationBanner onSelectBatch={() => navigate('/ngo/assign')} />
 
-      <div className="card mb-6" style={{ marginBottom: 'var(--space-6)' }}>
-        <div className="card-header" style={{ marginBottom: 'var(--space-2)' }}>
-          <span className="card-title">Realtime Ecosystem Map & Network Pin Points</span>
+      {/* Dual-Column Operational Dispatch Grid (Side-by-side on desktop, stacked on mobile) */}
+      <div className="desktop-split-60-40" style={{ marginBottom: 'var(--space-6)' }}>
+        {/* Left: Realtime Map */}
+        <div className="card" style={{ height: '100%' }}>
+          <div className="card-header" style={{ marginBottom: 'var(--space-2)' }}>
+            <span className="card-title">Realtime Ecosystem Map & Network Pin Points</span>
+          </div>
+          <MapView markers={mapPins} zoom={12} height="440px" showFilters={true} />
         </div>
-        <MapView markers={mapPins} zoom={12} height="360px" showFilters={true} />
-      </div>
 
-      <div className="card-header" style={{ marginBottom: 'var(--space-4)' }}>
-        <span className="card-title">Recent Activity & Accepted Food Donations</span>
-      </div>
+        {/* Right: Accepted Donations Dispatch Feed */}
+        <div className="card" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+          <div className="card-header" style={{ marginBottom: 'var(--space-3)' }}>
+            <div>
+              <span className="card-title">Accepted Batches</span>
+              <span style={{ fontSize: '11px', color: '#64748b', marginLeft: '6px' }}>({myDonations.length} Active)</span>
+            </div>
+            <button
+              type="button"
+              className="btn btn-outline btn-xs"
+              onClick={() => navigate('/ngo/incoming')}
+              style={{ fontSize: '11px', fontWeight: 700 }}
+            >
+              + Incoming ({available.length})
+            </button>
+          </div>
 
-      {loading ? (
-        <div className="loading-spinner"><div className="spinner"></div></div>
-      ) : myDonations.length === 0 ? (
-        <div className="empty-state">
-          <h3>No accepted donations yet</h3>
-          <p>Check incoming requests to start accepting food donations.</p>
+          {loading ? (
+            <div className="loading-spinner"><div className="spinner"></div></div>
+          ) : myDonations.length === 0 ? (
+            <div className="empty-state" style={{ padding: '30px 16px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+              <h3 style={{ fontSize: '15px' }}>No accepted batches yet</h3>
+              <p style={{ fontSize: '12px' }}>Review incoming surplus food requests to accept and dispatch volunteers.</p>
+              <button
+                type="button"
+                className="btn btn-primary btn-sm"
+                onClick={() => navigate('/ngo/incoming')}
+                style={{ marginTop: '12px', alignSelf: 'center' }}
+              >
+                Browse Incoming Requests
+              </button>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', overflowY: 'auto', maxHeight: '430px', paddingRight: '2px' }}>
+              {myDonations.slice(0, 6).map((d, index) => (
+                <div
+                  key={`ngo-donation-${d.id}-${index}`}
+                  style={{
+                    background: '#f8fafc',
+                    border: '1px solid #e2e8f0',
+                    borderRadius: '10px',
+                    padding: '12px 14px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: '10px',
+                    flexWrap: 'wrap',
+                  }}
+                >
+                  <div>
+                    <div style={{ fontWeight: 800, fontSize: '13px', color: '#0f172a' }}>
+                      #{d.id} • {d.foodName}
+                    </div>
+                    <div style={{ fontSize: '11px', color: '#64748b', marginTop: '2px' }}>
+                      {d.quantityKg} kg • {d.pickupAddress || 'Trichy Hub'}
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    className="btn btn-primary btn-xs"
+                    onClick={() => navigate('/ngo/assign')}
+                    style={{ fontWeight: 800, fontSize: '11px', padding: '6px 12px' }}
+                  >
+                    Assign Volunteer ➔
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
-      ) : (
-        <div className="donation-cards-grid">
-          {myDonations.slice(0, 6).map((d, index) => (
-            <DonationCard key={`ngo-donation-${d.id}-${index}`} donation={d} />
-          ))}
-        </div>
-      )}
+      </div>
 
       <CvrpLogisticsModal
         isOpen={cvrpModalOpen}

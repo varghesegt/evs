@@ -66,12 +66,12 @@ export default function DonorDashboard() {
           <h1>Donor Overview</h1>
           <p>Track surplus food donations, live Trichy recipient shelters, AI priority routing, and carbon offsets</p>
         </div>
-        <div style={{ display: 'flex', gap: 'var(--space-2)', flexWrap: 'wrap', width: '100%', maxWidth: '520px' }}>
+        <div style={{ display: 'flex', gap: 'var(--space-2)', flexWrap: 'wrap', alignItems: 'center' }}>
           <button
             type="button"
             className="btn btn-primary btn-md"
             onClick={() => navigate('/donor/create')}
-            style={{ flex: 1, minHeight: '44px' }}
+            style={{ minHeight: '44px', fontWeight: 700 }}
           >
             Create Food Donation
           </button>
@@ -79,7 +79,7 @@ export default function DonorDashboard() {
             type="button"
             className="btn btn-secondary btn-md"
             onClick={() => setHandshakeModalOpen(true)}
-            style={{ flex: 1, minHeight: '44px' }}
+            style={{ minHeight: '44px', fontWeight: 700 }}
           >
             🛡️ Dynamic QR Handshake
           </button>
@@ -87,7 +87,7 @@ export default function DonorDashboard() {
             type="button"
             className="btn btn-secondary btn-md"
             onClick={() => setCertModalOpen(true)}
-            style={{ flex: 1, minHeight: '44px' }}
+            style={{ minHeight: '44px', fontWeight: 700 }}
           >
             Carbon Certificate
           </button>

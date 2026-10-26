@@ -155,7 +155,7 @@ a:hover {
 
 .page-content {
   padding: var(--space-4) var(--space-4);
-  max-width: 1440px;
+  max-width: 1720px;
   margin: 0 auto;
   width: 100%;
 }
@@ -506,16 +506,31 @@ a:hover {
   margin-left: 4px;
 }
 
-/* Donation Cards Grid: Decongested, responsive card layout */
+/* Donation Cards Grid: Decongested, responsive card layout across all viewports */
 .donation-cards-grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--space-4);
+  width: 100%;
 }
 
-@media (min-width: 992px) {
+@media (min-width: 640px) {
   .donation-cards-grid {
-    grid-template-columns: repeat(auto-fill, minmax(460px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: var(--space-4);
+  }
+}
+
+@media (min-width: 1024px) {
+  .donation-cards-grid {
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: var(--space-5);
+  }
+}
+
+@media (min-width: 1440px) {
+  .donation-cards-grid {
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
     gap: var(--space-5);
   }
 }
@@ -1217,7 +1232,7 @@ a:hover {
     display: block;
   }
   .page-content {
-    padding: var(--space-6) var(--space-8);
+    padding: var(--space-5) clamp(16px, 2.5vw, 36px);
   }
   .page-header {
     flex-direction: row;
@@ -1226,10 +1241,6 @@ a:hover {
   }
   .map-container {
     height: 420px;
-  }
-  .donation-cards-grid {
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: var(--space-5);
   }
   .charts-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -1257,11 +1268,106 @@ a:hover {
 /* Large Screens (>= 1440px) */
 @media (min-width: 1440px) {
   .page-content {
-    padding: var(--space-8) var(--space-10);
+    padding: var(--space-6) clamp(20px, 3vw, 48px);
   }
-  .donation-cards-grid {
-    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-    gap: var(--space-6);
+}
+
+/* Responsive Dual-Column Desktop Utilities */
+.desktop-split-2col {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+  width: 100%;
+}
+
+@media (min-width: 1024px) {
+  .desktop-split-2col {
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: var(--space-5);
+    align-items: start;
+  }
+}
+
+.desktop-split-half {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+  width: 100%;
+}
+
+@media (min-width: 1024px) {
+  .desktop-split-half {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-5);
+    align-items: start;
+  }
+}
+
+.desktop-split-60-40 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+  width: 100%;
+}
+
+@media (min-width: 1024px) {
+  .desktop-split-60-40 {
+    grid-template-columns: 60% 1fr;
+    gap: var(--space-5);
+    align-items: start;
+  }
+}
+
+.table-responsive-desktop {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-xs);
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Donor Create Page Dual-Responsive Architecture */
+@media (max-width: 1023px) {
+  .donor-create-panel.hide-mobile {
+    display: none !important;
+  }
+  .donor-create-desktop-submit {
+    display: none !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .donor-create-stepper-tabs {
+    display: none !important;
+  }
+  .donor-create-step1-continue {
+    display: none !important;
+  }
+  .donor-create-sticky-bottom {
+    display: none !important;
+  }
+  .donor-create-container {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: var(--space-5);
+    align-items: start;
+    width: 100%;
+  }
+  .donor-create-panel {
+    display: block !important;
+  }
+  .donor-create-right-sticky {
+    position: sticky;
+    top: calc(var(--navbar-height) + 16px);
+  }
+}
+
+/* Auth Pages Dual-Showcase Responsive Rules */
+@media (max-width: 767px) {
+  .auth-showcase-desktop {
+    display: none !important;
   }
 }
 

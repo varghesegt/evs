@@ -61,12 +61,12 @@ export default function VolunteerDashboard() {
           <h1>Volunteer Logistics & Navigation</h1>
           <p>Your pickup assignments, live Google Maps GPS routing, zero-trust QR check-in, and multi-vehicle VRPTW optimization</p>
         </div>
-        <div style={{ display: 'flex', gap: 'var(--space-2)', flexWrap: 'wrap', width: '100%', maxWidth: '520px' }}>
+        <div style={{ display: 'flex', gap: 'var(--space-2)', flexWrap: 'wrap', alignItems: 'center' }}>
           <button
             type="button"
             className="btn btn-primary btn-md"
             onClick={() => setCvrpModalOpen(true)}
-            style={{ flex: 1, minHeight: '44px' }}
+            style={{ minHeight: '44px', fontWeight: 700 }}
           >
             VRPTW & CVRP Route Solver
           </button>
@@ -74,7 +74,7 @@ export default function VolunteerDashboard() {
             type="button"
             className="btn btn-secondary btn-md"
             onClick={() => navigate('/volunteer/deliver')}
-            style={{ flex: 1, minHeight: '44px' }}
+            style={{ minHeight: '44px', fontWeight: 700 }}
           >
             QR Verification
           </button>

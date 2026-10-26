@@ -119,24 +119,102 @@ export default function Login() {
   };
 
   return (
-    <div className="auth-page" style={{ padding: '24px 16px', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div className="auth-container" style={{ width: '100%', maxWidth: '400px' }}>
-        <div className="auth-card" style={{
+    <div className="auth-page" style={{ padding: 'clamp(16px, 3vw, 40px)', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div className="auth-container" style={{ width: '100%', maxWidth: '880px' }}>
+        <div style={{
           background: '#ffffff',
-          borderRadius: '16px',
-          boxShadow: '0 8px 30px rgba(0, 0, 0, 0.08)',
-          padding: '32px 24px',
+          borderRadius: '20px',
+          boxShadow: '0 12px 40px rgba(0, 0, 0, 0.08)',
           border: '1px solid #e2e8f0',
+          overflow: 'hidden',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
         }}>
-          {/* Clean Header (No Emojis) */}
-          <div style={{ textAlign: 'center', marginBottom: '24px' }}>
-            <h1 style={{ fontSize: '24px', fontWeight: 800, margin: '0 0 6px 0', color: '#0f172a' }}>
-              EcoShare AI
-            </h1>
-            <p style={{ margin: 0, fontSize: '14px', color: '#64748b' }}>
-              Sign in to your account
-            </p>
+          {/* Desktop Left Showcase Panel */}
+          <div className="auth-showcase-desktop" style={{
+            background: 'linear-gradient(145deg, #064e3b 0%, #047857 50%, #0284c7 100%)',
+            color: '#ffffff',
+            padding: '40px 32px',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+          }}>
+            <div>
+              <div style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '4px 12px',
+                borderRadius: '9999px',
+                background: 'rgba(255, 255, 255, 0.15)',
+                fontSize: '11px',
+                fontWeight: 800,
+                letterSpacing: '0.04em',
+                textTransform: 'uppercase',
+                marginBottom: '16px',
+                backdropFilter: 'blur(8px)',
+              }}>
+                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#34d399', display: 'inline-block' }} />
+                Tiruchirappalli Food Rescue System
+              </div>
+
+              <h2 style={{ fontSize: '28px', fontWeight: 800, lineHeight: 1.2, margin: '0 0 12px 0', color: '#ffffff' }}>
+                Intelligent Food Surplus & Climate Impact Network
+              </h2>
+
+              <p style={{ fontSize: '13px', lineHeight: 1.6, color: 'rgba(255, 255, 255, 0.85)', margin: '0 0 28px 0' }}>
+                Connecting donor marriage halls, canteens, and hotels with recipient shelters through AI perishability routing and two-wheeler rapid dispatch.
+              </p>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                  <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(255, 255, 255, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '13px' }}>
+                    AI
+                  </div>
+                  <div>
+                    <div style={{ fontSize: '13px', fontWeight: 800 }}>Volumetric & Freshness Vision</div>
+                    <div style={{ fontSize: '11px', color: 'rgba(255, 255, 255, 0.75)' }}>Calibrated Indian catering vessels & perishability windows</div>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                  <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(255, 255, 255, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '13px' }}>
+                    GPS
+                  </div>
+                  <div>
+                    <div style={{ fontSize: '13px', fontWeight: 800 }}>VRPTW Fleet Logistics</div>
+                    <div style={{ fontSize: '11px', color: 'rgba(255, 255, 255, 0.75)' }}>Turn-by-turn routing with shortest street network corridors</div>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                  <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(255, 255, 255, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '13px' }}>
+                    QR
+                  </div>
+                  <div>
+                    <div style={{ fontSize: '13px', fontWeight: 800 }}>Zero-Trust Cryptographic DMRV</div>
+                    <div style={{ fontSize: '11px', color: 'rgba(255, 255, 255, 0.75)' }}>IPCC AR6 certified environmental impact ledger</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div style={{ borderTop: '1px solid rgba(255, 255, 255, 0.2)', paddingTop: '16px', marginTop: '24px', fontSize: '11px', color: 'rgba(255, 255, 255, 0.8)' }}>
+              Select your role on the right for 1-tap instant login or enter your account credentials.
+            </div>
           </div>
+
+          {/* Right Form Panel */}
+          <div style={{ padding: 'clamp(24px, 3.5vw, 36px) clamp(20px, 3vw, 32px)' }}>
+            {/* Clean Header (No Emojis) */}
+            <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+              <h1 style={{ fontSize: '24px', fontWeight: 800, margin: '0 0 6px 0', color: '#0f172a' }}>
+                EcoShare AI
+              </h1>
+              <p style={{ margin: 0, fontSize: '14px', color: '#64748b' }}>
+                Sign in to your account
+              </p>
+            </div>
 
           {/* Current Active Session Info (if logged in) */}
           {user && (
@@ -310,5 +388,6 @@ export default function Login() {
         </div>
       </div>
     </div>
+  </div>
   );
 }

@@ -468,7 +468,7 @@ export default function CreateDonation() {
       ) : (
         <>
           {/* STEPPER PROGRESS TABS (Mobile First Ergonomics) */}
-          <div style={{
+          <div className="donor-create-stepper-tabs" style={{
             display: 'grid',
             gridTemplateColumns: '1fr 1fr',
             gap: '8px',
@@ -624,11 +624,12 @@ export default function CreateDonation() {
             </div>
           )}
 
-          {/* ============================================================
-              STEP 1: FOOD CLASSIFICATION & VOLUME SPECIFICATION
-              ============================================================ */}
-          {activeStep === 1 && (
-            <div style={{ animation: 'fadeIn 0.25s ease' }}>
+          {/* Responsive Dual-Column Split Container (Side-by-side on desktop, stepped on mobile) */}
+          <div className="donor-create-container">
+            {/* ============================================================
+                PANEL 1: FOOD CLASSIFICATION & VOLUME SPECIFICATION
+                ============================================================ */}
+            <div className={`donor-create-panel ${activeStep === 1 ? '' : 'hide-mobile'}`} style={{ animation: 'fadeIn 0.25s ease' }}>
               {/* Card 1: Food Title & Quick Preset Pills */}
               <div className="card" style={{
                 borderRadius: 'var(--radius-xl)',
@@ -1079,8 +1080,8 @@ export default function CreateDonation() {
                 </div>
               </div>
 
-              {/* Step 1 Continue Action */}
-              <div style={{ marginTop: 'var(--space-4)', marginBottom: '80px' }}>
+              {/* Step 1 Continue Action (Mobile only) */}
+              <div className="donor-create-step1-continue" style={{ marginTop: 'var(--space-4)', marginBottom: '80px' }}>
                 <button
                   type="button"
                   className="btn btn-primary btn-lg"
@@ -1107,14 +1108,12 @@ export default function CreateDonation() {
                 </button>
               </div>
             </div>
-          )}
 
-          {/* ============================================================
-              STEP 2: PICKUP COORDINATION & INTERACTIVE GPS DISPATCH
-              ============================================================ */}
-          {activeStep === 2 && (
-            <div ref={formSectionRef} style={{ animation: 'fadeIn 0.25s ease' }}>
-              <form onSubmit={handleSubmit}>
+            {/* ============================================================
+                PANEL 2: PICKUP COORDINATION & INTERACTIVE GPS DISPATCH
+                ============================================================ */}
+            <div ref={formSectionRef} className={`donor-create-panel ${activeStep === 2 ? '' : 'hide-mobile'}`} style={{ animation: 'fadeIn 0.25s ease' }}>
+              <div className="donor-create-right-sticky">
                 {/* Card 1: GPS Auto-Detect & Landmark Quick Carousel */}
                 <div className="card" style={{
                   borderRadius: 'var(--radius-xl)',
@@ -1351,15 +1350,46 @@ export default function CreateDonation() {
                     Upon submission, our AI matching engine evaluates distance, capacity, and perishability to alert the nearest Trichy volunteer courier and recipient shelter.
                   </div>
                 </div>
-              </form>
+
+                {/* Desktop High-Impact Dispatch Action Button */}
+                <div className="donor-create-desktop-submit" style={{ marginTop: '16px', marginBottom: '24px' }}>
+                  <button
+                    type="button"
+                    onClick={handleSubmit}
+                    disabled={loading || !isStep1Valid || !isStep2Valid}
+                    className="btn btn-primary btn-lg"
+                    style={{
+                      width: '100%',
+                      minHeight: '56px',
+                      fontSize: '16px',
+                      fontWeight: 800,
+                      borderRadius: '14px',
+                      boxShadow: '0 8px 24px rgba(13, 150, 104, 0.35)',
+                      cursor: (loading || !isStep1Valid || !isStep2Valid) ? 'not-allowed' : 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '10px',
+                    }}
+                  >
+                    <span style={{ fontSize: '20px' }}>🚀</span>
+                    <span>{loading ? 'Dispatching Food Mission...' : `Dispatch ${quantityNum || 0} kg Surplus Food`}</span>
+                  </button>
+                  {(!isStep1Valid || !isStep2Valid) && (
+                    <div style={{ fontSize: '11px', color: '#64748b', textAlign: 'center', marginTop: '6px', fontWeight: 600 }}>
+                      {!isStep1Valid ? 'Please enter food item name & confirmed weight' : 'Please provide pickup address'}
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
-          )}
+          </div>
 
           {/* ============================================================
               STICKY MOBILE BOTTOM ACTION BAR
               Provides thumb-accessible submit CTA and dynamic live summary
               ============================================================ */}
-          <div style={{
+          <div className="donor-create-sticky-bottom" style={{
             position: 'fixed',
             bottom: 0,
             left: 0,
