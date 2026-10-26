@@ -537,6 +537,10 @@ export default function MapView({
       return dynamicRoadPolyline;
     }
 
+    if (!routePolyline || routePolyline.length < 2) {
+      return null;
+    }
+
     const normalized = (routePolyline || []).map(pt => {
       if (Array.isArray(pt)) return [Number(pt[0]), Number(pt[1])];
       if (typeof pt === 'string') {
@@ -549,11 +553,11 @@ export default function MapView({
       return null;
     }).filter(pt => pt && !isNaN(pt[0]) && !isNaN(pt[1]));
 
-    return normalized.length >= 2 ? normalized : TRICHY_CORRIDOR_FALLBACK;
-  }, [routePolyline, dynamicRoadPolyline, TRICHY_CORRIDOR_FALLBACK]);
+    return normalized.length >= 2 ? normalized : null;
+  }, [routePolyline, dynamicRoadPolyline]);
 
   useEffect(() => {
-    if (!effectivePolyline || effectivePolyline.length < 2 || !isSimulating) {
+    if (!routePolyline || !effectivePolyline || effectivePolyline.length < 2 || !isSimulating) {
       if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
       lastTimeRef.current = null;
       return;
@@ -589,13 +593,13 @@ export default function MapView({
       if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
       lastTimeRef.current = null;
     };
-  }, [effectivePolyline, isSimulating, simSpeed]);
+  }, [routePolyline, effectivePolyline, isSimulating, simSpeed]);
 
   const vehicleState = useMemo(() => {
-    return effectivePolyline && effectivePolyline.length > 1
+    return (routePolyline && effectivePolyline && effectivePolyline.length > 1)
       ? getInterpolatedPoint(effectivePolyline, simProgress)
       : null;
-  }, [effectivePolyline, simProgress]);
+  }, [routePolyline, effectivePolyline, simProgress]);
 
   // Split polyline into traveled and remaining
   let traveledPolyline = [];
@@ -739,560 +743,7 @@ export default function MapView({
         </div>
       )}
 
-      {/* Swiggy / Zomato Style Light Theme Live Two-Wheeler Command Cockpit */}
-      {effectivePolyline && effectivePolyline.length >= 2 && (
-        <div style={{
-          background: '#ffffff',
-          color: '#0f172a',
-          padding: '16px 20px',
-          borderRadius: '16px',
-          border: '1px solid #e2e8f0',
-          boxShadow: '0 8px 30px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.03)',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '14px',
-          position: 'relative',
-        }}>
-          {/* Row 1: Swiggy Rider Profile Header & Big ETA Badge (Zero Emojis) */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '14px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <div style={{
-                width: '46px',
-                height: '46px',
-                borderRadius: '50%',
-                background: '#f0fdf4',
-                border: '2px solid #10b981',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: '0 2px 8px rgba(16, 185, 129, 0.25)',
-                position: 'relative',
-              }}>
-                <SvgScooter size={22} color="#059669" />
-                <span style={{
-                  position: 'absolute',
-                  bottom: '-2px',
-                  right: '-2px',
-                  width: '13px',
-                  height: '13px',
-                  borderRadius: '50%',
-                  background: '#10b981',
-                  border: '2px solid #ffffff',
-                }}></span>
-              </div>
-
-              <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                  <h4 style={{ margin: 0, fontSize: '15px', fontWeight: 800, color: '#0f172a' }}>
-                    M. Karthik
-                  </h4>
-                  <span style={{
-                    background: '#fef3c7',
-                    color: '#92400e',
-                    fontSize: '11px',
-                    fontWeight: 800,
-                    padding: '2px 8px',
-                    borderRadius: '6px',
-                    border: '1px solid #fde68a',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '4px',
-                  }}>
-                    <SvgStar size={11} color="#f59e0b" />
-                    <span>4.9 • TVS iQube EV</span>
-                  </span>
-                  <span style={{
-                    background: '#ecfdf5',
-                    color: '#065f46',
-                    fontSize: '10px',
-                    fontWeight: 800,
-                    padding: '2px 8px',
-                    borderRadius: '6px',
-                    border: '1px solid #a7f3d0',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '4px',
-                  }}>
-                    <SvgShield size={11} color="#059669" />
-                    <span>Thermal Box Inspected</span>
-                  </span>
-                </div>
-                <div style={{ fontSize: '12px', color: '#64748b', marginTop: '2px' }}>
-                  Active Two-Wheeler Food Rescue Corridor across Tiruchirappalli
-                </div>
-              </div>
-            </div>
-
-            {/* Swiggy-style Big Live ETA Badge */}
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '14px',
-              background: '#f0fdf4',
-              border: '1.5px solid #86efac',
-              padding: '8px 16px',
-              borderRadius: '12px',
-              boxShadow: '0 2px 8px rgba(34, 197, 94, 0.12)',
-            }}>
-              <div>
-                <span style={{ fontSize: '10px', fontWeight: 800, color: '#047857', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block' }}>
-                  Estimated Arrival
-                </span>
-                <span style={{ fontSize: '22px', fontWeight: 900, color: '#065f46', lineHeight: 1.1 }}>
-                  ~{liveEtaMins} MINS
-                </span>
-              </div>
-              <div style={{ width: '1px', height: '30px', background: '#86efac' }}></div>
-              <div>
-                <span style={{ fontSize: '11px', color: '#059669', display: 'block', fontWeight: 800 }}>
-                  {vehicleState ? `${vehicleState.remainingDistanceKm.toFixed(1)} km left` : 'In Transit'}
-                </span>
-                <span style={{ fontSize: '10px', color: '#166534', fontWeight: 600 }}>
-                  Live Swiggy Telemetry
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Row 2: Swiggy Live Mission Lifecycle Stepper (Zero Emojis) */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))',
-            gap: '8px',
-            background: '#f8fafc',
-            padding: '10px 14px',
-            borderRadius: '10px',
-            border: '1px solid #e2e8f0',
-          }}>
-            <div className="swiggy-step-item active">
-              <span className="swiggy-step-dot" style={{ background: '#10b981', color: '#ffffff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>
-              </span>
-              <span>Donor Packed</span>
-            </div>
-            <div className="swiggy-step-item active">
-              <span className="swiggy-step-dot" style={{ background: '#059669', color: '#ffffff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
-                <SvgScooter size={12} color="#ffffff" />
-              </span>
-              <span>Rider Dispatched</span>
-            </div>
-            <div className={`swiggy-step-item ${simProgress > 0.45 ? 'active' : ''}`}>
-              <span className="swiggy-step-dot" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', background: simProgress > 0.45 ? '#10b981' : '#e2e8f0', color: simProgress > 0.45 ? '#ffffff' : '#64748b' }}>
-                {simProgress > 0.45 ? (
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>
-                ) : '3'}
-              </span>
-              <span>Pickup & Cold-Bay</span>
-            </div>
-            <div className={`swiggy-step-item ${simProgress > 0.90 ? 'active' : ''}`}>
-              <span className="swiggy-step-dot" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', background: simProgress > 0.90 ? '#10b981' : '#e2e8f0', color: simProgress > 0.90 ? '#ffffff' : '#64748b' }}>
-                {simProgress > 0.90 ? (
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>
-                ) : '4'}
-              </span>
-              <span>Shelter Drop-off</span>
-            </div>
-          </div>
-
-          {/* Row 3: Swiggy / Zomato Camera Zoom View Modes & GIS Simulation Controls */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap',
-            gap: '10px',
-            paddingTop: '6px',
-            borderTop: '1px solid #f1f5f9',
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-              {/* Follow Rider Toggle */}
-              <button
-                type="button"
-                onClick={() => setFollowRider(!followRider)}
-                style={{
-                  background: followRider ? '#059669' : '#ffffff',
-                  color: followRider ? '#ffffff' : '#334155',
-                  border: '1.5px solid ' + (followRider ? '#059669' : '#cbd5e1'),
-                  borderRadius: '8px',
-                  padding: '6px 12px',
-                  fontSize: '12px',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  boxShadow: followRider ? '0 2px 8px rgba(5, 150, 105, 0.25)' : 'none',
-                  transition: 'all 0.15s ease',
-                }}
-                title="Automatically follow and center camera on delivery two-wheeler"
-              >
-                <SvgScooter size={14} color={followRider ? '#ffffff' : '#059669'} />
-                <span>{followRider ? 'Follow Rider: ON' : 'Follow Rider: OFF'}</span>
-              </button>
-
-              {/* Street Zoom Mode (Zoom 16x) */}
-              <button
-                type="button"
-                onClick={() => {
-                  setZoomMode('street');
-                  setFollowRider(true);
-                }}
-                style={{
-                  background: zoomMode === 'street' ? '#f0fdf4' : '#ffffff',
-                  color: zoomMode === 'street' ? '#047857' : '#475569',
-                  border: '1px solid ' + (zoomMode === 'street' ? '#86efac' : '#cbd5e1'),
-                  borderRadius: '8px',
-                  padding: '6px 12px',
-                  fontSize: '12px',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                }}
-                title="Zoom close to street-level turns"
-              >
-                <SvgSearch size={13} color={zoomMode === 'street' ? '#047857' : '#475569'} />
-                <span>Street Zoom (16x)</span>
-              </button>
-
-              {/* Fit Full Route */}
-              <button
-                type="button"
-                onClick={() => {
-                  setZoomMode('route');
-                  setFollowRider(false);
-                }}
-                style={{
-                  background: zoomMode === 'route' ? '#eff6ff' : '#ffffff',
-                  color: zoomMode === 'route' ? '#1d4ed8' : '#475569',
-                  border: '1px solid ' + (zoomMode === 'route' ? '#93c5fd' : '#cbd5e1'),
-                  borderRadius: '8px',
-                  padding: '6px 12px',
-                  fontSize: '12px',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                }}
-                title="Fit complete origin, donor and shelter route"
-              >
-                <SvgRoute size={13} color={zoomMode === 'route' ? '#1d4ed8' : '#475569'} />
-                <span>Fit Entire Route</span>
-              </button>
-
-              {/* Map Tile Layer Selector */}
-              <div style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                background: '#f1f5f9',
-                borderRadius: '8px',
-                padding: '2px',
-                gap: '2px',
-                border: '1px solid #cbd5e1',
-              }}>
-                {[
-                  { id: 'osm', label: 'Street Map' },
-                  { id: 'satellite', label: 'Satellite View' },
-                  { id: 'esri', label: 'GIS Highways' },
-                ].map((th) => (
-                  <button
-                    key={th.id}
-                    type="button"
-                    onClick={() => setMapTheme(th.id)}
-                    style={{
-                      background: mapTheme === th.id ? '#ffffff' : 'transparent',
-                      color: mapTheme === th.id ? '#0f172a' : '#64748b',
-                      fontWeight: mapTheme === th.id ? 800 : 600,
-                      boxShadow: mapTheme === th.id ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
-                      border: 'none',
-                      borderRadius: '6px',
-                      padding: '4px 8px',
-                      fontSize: '11px',
-                      cursor: 'pointer',
-                      transition: 'all 0.15s ease',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    {th.label}
-                  </button>
-                ))}
-              </div>
-
-              {/* Live Traffic Flow Toggle */}
-              <button
-                type="button"
-                onClick={() => setShowTraffic(!showTraffic)}
-                style={{
-                  background: showTraffic ? '#fef2f2' : '#ffffff',
-                  color: showTraffic ? '#b91c1c' : '#334155',
-                  border: '1px solid ' + (showTraffic ? '#fca5a5' : '#cbd5e1'),
-                  borderRadius: '8px',
-                  padding: '6px 10px',
-                  fontSize: '11px',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '5px',
-                }}
-                title="Toggle Live Road Congestion Overlay"
-              >
-                <SvgTraffic size={13} color={showTraffic ? '#ef4444' : '#64748b'} />
-                <span>{showTraffic ? 'Traffic: ON' : 'Traffic: OFF'}</span>
-              </button>
-
-              {/* Cold-Chain Safety Radius Perimeter Toggle */}
-              <button
-                type="button"
-                onClick={() => setShowHaccpPerimeter(!showHaccpPerimeter)}
-                style={{
-                  background: showHaccpPerimeter ? '#f0fdf4' : '#ffffff',
-                  color: showHaccpPerimeter ? '#047857' : '#334155',
-                  border: '1px solid ' + (showHaccpPerimeter ? '#86efac' : '#cbd5e1'),
-                  borderRadius: '8px',
-                  padding: '6px 10px',
-                  fontSize: '11px',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '5px',
-                }}
-                title="Toggle 450m Food Safety Radius Buffer"
-              >
-                <SvgShield size={13} color={showHaccpPerimeter ? '#059669' : '#64748b'} />
-                <span>{showHaccpPerimeter ? 'Safety Buffer: ON' : 'Safety Buffer: OFF'}</span>
-              </button>
-
-              {/* Fullscreen Toggle */}
-              <button
-                type="button"
-                onClick={() => setIsFullscreen(!isFullscreen)}
-                style={{
-                  background: isFullscreen ? '#eff6ff' : '#ffffff',
-                  color: isFullscreen ? '#1d4ed8' : '#334155',
-                  border: '1px solid ' + (isFullscreen ? '#93c5fd' : '#cbd5e1'),
-                  borderRadius: '8px',
-                  padding: '6px 10px',
-                  fontSize: '11px',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '5px',
-                }}
-                title="Toggle Fullscreen Dispatch Command Center"
-              >
-                {isFullscreen ? (
-                  <>
-                    <SvgExitFullscreen size={13} color="#1d4ed8" />
-                    <span>Exit Fullscreen</span>
-                  </>
-                ) : (
-                  <>
-                    <SvgFullscreen size={13} color="#334155" />
-                    <span>Fullscreen</span>
-                  </>
-                )}
-              </button>
-            </div>
-
-            {/* Simulation & Speed Controls */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-              <button
-                type="button"
-                onClick={() => setIsSimulating(!isSimulating)}
-                style={{
-                  background: isSimulating ? '#f0fdf4' : '#f8fafc',
-                  color: isSimulating ? '#059669' : '#64748b',
-                  border: '1px solid ' + (isSimulating ? '#86efac' : '#cbd5e1'),
-                  padding: '6px 12px',
-                  borderRadius: '8px',
-                  fontSize: '12px',
-                  fontWeight: 800,
-                  cursor: 'pointer',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '5px',
-                }}
-              >
-                {isSimulating ? (
-                  <>
-                    <SvgPause size={12} color="#059669" />
-                    <span>Pause</span>
-                  </>
-                ) : (
-                  <>
-                    <SvgPlay size={12} color="#64748b" />
-                    <span>Resume</span>
-                  </>
-                )}
-              </button>
-
-              <div style={{ display: 'flex', background: '#f1f5f9', borderRadius: '8px', padding: '2px', border: '1px solid #e2e8f0' }}>
-                {[1, 2, 4].map(s => (
-                  <button
-                    key={`sim-speed-${s}`}
-                    type="button"
-                    onClick={() => setSimSpeed(s)}
-                    style={{
-                      background: simSpeed === s ? '#059669' : 'transparent',
-                      color: simSpeed === s ? '#ffffff' : '#64748b',
-                      border: 'none',
-                      padding: '4px 8px',
-                      borderRadius: '6px',
-                      fontSize: '11px',
-                      fontWeight: 800,
-                      cursor: 'pointer',
-                    }}
-                  >
-                    {s}x
-                  </button>
-                ))}
-              </div>
-
-              <button
-                type="button"
-                onClick={() => setSimProgress(0)}
-                style={{
-                  background: '#ffffff',
-                  color: '#64748b',
-                  border: '1px solid #cbd5e1',
-                  padding: '6px 10px',
-                  borderRadius: '8px',
-                  fontSize: '11px',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                }}
-              >
-                <SvgReset size={12} color="#64748b" />
-                <span>Reset</span>
-              </button>
-
-              {fullRouteGmapsUrl && (
-                <a
-                  href={fullRouteGmapsUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    background: '#1a73e8',
-                    color: '#ffffff',
-                    fontWeight: 700,
-                    fontSize: '11px',
-                    padding: '6px 12px',
-                    borderRadius: '8px',
-                    textDecoration: 'none',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '5px',
-                  }}
-                >
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                    <polygon points="3 11 22 2 13 21 11 13 3 11"/>
-                  </svg>
-                  GMaps App
-                </a>
-              )}
-            </div>
-          </div>
-
-          {/* Row 4: 5 Crisp Light Telemetry Cards (Zero Emojis) */}
-          {vehicleState && (
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))',
-              gap: '10px',
-            }}>
-              <div className="telemetry-gauge-light">
-                <span style={{ fontSize: '10px', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 700 }}>
-                  <SvgSpeedometer size={12} color="#059669" /> Rider Speed
-                </span>
-                <span style={{ fontSize: '18px', fontWeight: 900, color: '#059669', display: 'block' }}>
-                  {liveSpeedKmh} km/h
-                </span>
-                <span style={{ fontSize: '10px', color: '#10b981', fontWeight: 600 }}>TVS EV Steady Throttle</span>
-              </div>
-
-              <div className="telemetry-gauge-light">
-                <span style={{ fontSize: '10px', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 700 }}>
-                  <SvgRoute size={12} color="#0284c7" /> Distance Left
-                </span>
-                <span style={{ fontSize: '18px', fontWeight: 900, color: '#0284c7', display: 'block' }}>
-                  {vehicleState.remainingDistanceKm.toFixed(1)} km
-                </span>
-                <span style={{ fontSize: '10px', color: '#38bdf8', fontWeight: 600 }}>Total {vehicleState.totalDistanceKm.toFixed(1)} km</span>
-              </div>
-
-              <div className="telemetry-gauge-light">
-                <span style={{ fontSize: '10px', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 700 }}>
-                  <SvgClock size={12} color="#d97706" /> ETA to Stop
-                </span>
-                <span style={{ fontSize: '18px', fontWeight: 900, color: '#d97706', display: 'block' }}>
-                  ~{liveEtaMins} mins
-                </span>
-                <span style={{ fontSize: '10px', color: '#f59e0b', fontWeight: 600 }}>Traffic Flow Factored</span>
-              </div>
-
-              <div className="telemetry-gauge-light">
-                <span style={{ fontSize: '10px', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 700 }}>
-                  <SvgThermometer size={12} color="#059669" /> Thermal Hot-Box
-                </span>
-                <span style={{ fontSize: '18px', fontWeight: 900, color: '#059669', display: 'block' }}>
-                  {liveHaccpTemp}°C
-                </span>
-                <span style={{ fontSize: '10px', color: '#10b981', fontWeight: 600 }}>Safe HACCP Perimeter</span>
-              </div>
-
-              <div className="telemetry-gauge-light">
-                <span style={{ fontSize: '10px', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 700 }}>
-                  <SvgCompass size={12} color="#334155" /> Courier Bearing
-                </span>
-                <span style={{ fontSize: '18px', fontWeight: 900, color: '#334155', display: 'block' }}>
-                  {Math.round(vehicleState.bearing)}° {getCardinalDirection(vehicleState.bearing)}
-                </span>
-                <span style={{ fontSize: '10px', color: '#64748b', fontWeight: 600 }}>Gyro Auto-Banking</span>
-              </div>
-            </div>
-          )}
-
-          {/* Row 5: Clean Light Timeline Scrubber */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px',
-            background: '#f8fafc',
-            padding: '8px 14px',
-            borderRadius: '10px',
-            border: '1px solid #e2e8f0',
-          }}>
-            <span style={{ fontSize: '11px', color: '#64748b', fontWeight: 700, minWidth: '35px' }}>Start</span>
-            <input
-              type="range"
-              min="0"
-              max="1"
-              step="0.002"
-              value={simProgress}
-              onChange={(e) => setSimProgress(parseFloat(e.target.value))}
-              style={{
-                flex: 1,
-                accentColor: '#059669',
-                cursor: 'pointer',
-                height: '6px',
-              }}
-            />
-            <span style={{ fontSize: '12px', color: '#059669', fontWeight: 800, minWidth: '45px', textAlign: 'right' }}>
-              {Math.round(simProgress * 100)}%
-            </span>
-          </div>
-        </div>
-      )}
-
-      {/* Top Filter Chips & Live Actions Toolbar */}
+      {/* Top Filter Chips & Map Controls Toolbar */}
       {showFilters && (
         <div className="map-toolbar" style={{
           display: 'flex',
@@ -1311,7 +762,7 @@ export default function MapView({
               gap: '6px',
               overflowX: 'auto',
               flexWrap: 'nowrap',
-              paddingBottom: '4px',
+              paddingBottom: '2px',
               WebkitOverflowScrolling: 'touch',
               scrollbarWidth: 'none',
               flex: 1,
@@ -1345,18 +796,88 @@ export default function MapView({
               ))}
             </div>
 
-            {/* GPS Locate Me Button */}
-            {interactivePicker && (
+            {/* Right Map Actions: Layer Switcher & Fullscreen & GPS */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
+              {/* Map Tile Layer Selector */}
+              <div style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                background: '#f1f5f9',
+                borderRadius: '8px',
+                padding: '2px',
+                gap: '2px',
+                border: '1px solid #cbd5e1',
+              }}>
+                {[
+                  { id: 'osm', label: 'Street Map' },
+                  { id: 'satellite', label: 'Satellite' },
+                  { id: 'esri', label: 'GIS Roads' },
+                ].map((th) => (
+                  <button
+                    key={th.id}
+                    type="button"
+                    onClick={() => setMapTheme(th.id)}
+                    style={{
+                      background: mapTheme === th.id ? '#ffffff' : 'transparent',
+                      color: mapTheme === th.id ? '#0f172a' : '#64748b',
+                      fontWeight: mapTheme === th.id ? 700 : 500,
+                      boxShadow: mapTheme === th.id ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+                      border: 'none',
+                      borderRadius: '6px',
+                      padding: '4px 8px',
+                      fontSize: '11px',
+                      cursor: 'pointer',
+                      transition: 'all 0.15s ease',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {th.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Fullscreen Toggle */}
               <button
                 type="button"
-                className="btn btn-sm btn-accent"
-                style={{ padding: '3px 12px', fontSize: '11px', fontWeight: 700, minHeight: '28px', whiteSpace: 'nowrap', flexShrink: 0 }}
-                onClick={handleGetCurrentLocation}
-                disabled={isLocating}
+                onClick={() => setIsFullscreen(!isFullscreen)}
+                className="btn btn-sm btn-secondary"
+                style={{
+                  padding: '4px 9px',
+                  fontSize: '11px',
+                  fontWeight: 600,
+                  minHeight: '28px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                }}
+                title={isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
               >
-                {isLocating ? 'Acquiring GPS...' : 'Use My GPS Location'}
+                {isFullscreen ? (
+                  <>
+                    <SvgExitFullscreen size={12} color="#475569" />
+                    <span>Exit</span>
+                  </>
+                ) : (
+                  <>
+                    <SvgFullscreen size={12} color="#475569" />
+                    <span>Fullscreen</span>
+                  </>
+                )}
               </button>
-            )}
+
+              {/* GPS Locate Me Button */}
+              {interactivePicker && (
+                <button
+                  type="button"
+                  className="btn btn-sm btn-accent"
+                  style={{ padding: '3px 10px', fontSize: '11px', fontWeight: 700, minHeight: '28px', whiteSpace: 'nowrap' }}
+                  onClick={handleGetCurrentLocation}
+                  disabled={isLocating}
+                >
+                  {isLocating ? 'Locating...' : 'My GPS'}
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Quick Trichy Landmark Navigator */}
@@ -1431,8 +952,8 @@ export default function MapView({
           } : {}),
         }}
       >
-        {/* Floating Real-Time Turn-by-Turn Maneuver HUD (Swiggy / GMaps Style) */}
-        {effectivePolyline && effectivePolyline.length > 1 && showTurnHud && (
+        {/* Floating Real-Time Turn-by-Turn Maneuver HUD (Only shown if mission route with telemetry HUD active) */}
+        {routePolyline && showTelemetryHud && effectivePolyline && effectivePolyline.length > 1 && showTurnHud && (
           <div style={{
             position: 'absolute',
             top: '16px',
@@ -1503,7 +1024,7 @@ export default function MapView({
         )}
 
         {/* Floating Enterprise Compass Rose Dial HUD */}
-        {vehicleState && (
+        {routePolyline && showTelemetryHud && vehicleState && (
           <div
             style={{
               position: 'absolute',
@@ -1708,8 +1229,8 @@ export default function MapView({
             />
           ))}
 
-          {/* Real-Time Animated Courier Vehicle Marker with Heading Rotation */}
-          {vehicleState && (
+          {/* Real-Time Animated Courier Vehicle Marker with Heading Rotation (Only when route is active) */}
+          {routePolyline && vehicleState && (
             <Marker
               position={[vehicleState.lat, vehicleState.lng]}
               icon={createTwoWheelerIcon(vehicleState.bearing, liveSpeedKmh)}
@@ -1723,10 +1244,10 @@ export default function MapView({
                         <SvgScooter size={18} color="#059669" />
                       </div>
                       <div>
-                        <strong style={{ fontSize: '13px', color: '#0f172a', display: 'block', lineHeight: 1.2 }}>M. Karthik</strong>
+                        <strong style={{ fontSize: '13px', color: '#0f172a', display: 'block', lineHeight: 1.2 }}>Active EV Courier</strong>
                         <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px', fontSize: '10px', color: '#059669', fontWeight: 700 }}>
                           <SvgStar size={10} color="#f59e0b" />
-                          <span>4.9 • Two-Wheeler Partner</span>
+                          <span>Electric Two-Wheeler Transit</span>
                         </span>
                       </div>
                     </div>
@@ -1738,7 +1259,7 @@ export default function MapView({
                   <div style={{ marginTop: '8px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
                     <div style={{ fontSize: '11px', color: '#475569', display: 'flex', justifyContent: 'space-between' }}>
                       <span>Vehicle:</span>
-                      <strong style={{ color: '#0f172a' }}>TVS iQube EV (TN-45-BM-8821)</strong>
+                      <strong style={{ color: '#0f172a' }}>Electric Vehicle (TN-45-BM-8821)</strong>
                     </div>
                     <div style={{ fontSize: '11px', color: '#475569', display: 'flex', justifyContent: 'space-between' }}>
                       <span>Live Speed:</span>
