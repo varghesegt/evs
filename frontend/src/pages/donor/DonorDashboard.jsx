@@ -5,6 +5,7 @@ import StatCard from '../../components/StatCard';
 import DonationCard from '../../components/DonationCard';
 import MapView from '../../components/MapView';
 import EvsCertificateModal from '../../components/EvsCertificateModal';
+import RotatingQrHandshakeModal from '../../components/RotatingQrHandshakeModal';
 import { getMyDonations } from '../../api/donationApi';
 import { getMapPins } from '../../api/analyticsApi';
 import { useAuth } from '../../context/AuthContext';
@@ -16,6 +17,7 @@ export default function DonorDashboard() {
   const [mapPins, setMapPins] = useState([]);
   const [loading, setLoading] = useState(true);
   const [certModalOpen, setCertModalOpen] = useState(false);
+  const [handshakeModalOpen, setHandshakeModalOpen] = useState(false);
 
   useEffect(() => {
     Promise.all([getMyDonations(), getMapPins()])
@@ -64,7 +66,7 @@ export default function DonorDashboard() {
           <h1>Donor Overview</h1>
           <p>Track surplus food donations, live Trichy recipient shelters, AI priority routing, and carbon offsets</p>
         </div>
-        <div style={{ display: 'flex', gap: 'var(--space-2)', flexWrap: 'wrap', width: '100%', maxWidth: '420px' }}>
+        <div style={{ display: 'flex', gap: 'var(--space-2)', flexWrap: 'wrap', width: '100%', maxWidth: '520px' }}>
           <button
             type="button"
             className="btn btn-primary btn-md"
@@ -72,6 +74,14 @@ export default function DonorDashboard() {
             style={{ flex: 1, minHeight: '44px' }}
           >
             Create Food Donation
+          </button>
+          <button
+            type="button"
+            className="btn btn-secondary btn-md"
+            onClick={() => setHandshakeModalOpen(true)}
+            style={{ flex: 1, minHeight: '44px' }}
+          >
+            🛡️ Dynamic QR Handshake
           </button>
           <button
             type="button"
@@ -128,6 +138,13 @@ export default function DonorDashboard() {
         donorId={user?.id || 1}
         isOpen={certModalOpen}
         onClose={() => setCertModalOpen(false)}
+      />
+
+      <RotatingQrHandshakeModal
+        isOpen={handshakeModalOpen}
+        onClose={() => setHandshakeModalOpen(false)}
+        mode="donor"
+        donationData={donations[0] || { id: 101, foodName: 'Banquet Meals Surplus' }}
       />
     </DashboardLayout>
   );

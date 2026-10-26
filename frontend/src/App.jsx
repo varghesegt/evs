@@ -23,6 +23,7 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import UserManagement from './pages/admin/UserManagement';
 import AnalyticsDashboard from './pages/admin/AnalyticsDashboard';
 import Reports from './pages/admin/Reports';
+import MissionControl from './pages/admin/MissionControl';
 
 function AppRoutes() {
   const { user } = useAuth();
@@ -54,6 +55,7 @@ function AppRoutes() {
       <Route path="/admin/users" element={<ProtectedRoute roles={['ROLE_ADMIN']}><UserManagement /></ProtectedRoute>} />
       <Route path="/admin/analytics" element={<ProtectedRoute roles={['ROLE_ADMIN', 'ROLE_NGO', 'ROLE_DONOR', 'ROLE_VOLUNTEER']}><AnalyticsDashboard /></ProtectedRoute>} />
       <Route path="/admin/reports" element={<ProtectedRoute roles={['ROLE_ADMIN']}><Reports /></ProtectedRoute>} />
+      <Route path="/admin/mission-control" element={<ProtectedRoute roles={['ROLE_ADMIN', 'ROLE_NGO', 'ROLE_VOLUNTEER']}><MissionControl /></ProtectedRoute>} />
 
       {/* Fallback */}
       <Route path="*" element={<Navigate to="/" replace />} />

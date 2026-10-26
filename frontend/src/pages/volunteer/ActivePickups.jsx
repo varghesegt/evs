@@ -3,6 +3,8 @@ import DashboardLayout from '../../components/DashboardLayout';
 import DonationCard from '../../components/DonationCard';
 import MapView from '../../components/MapView';
 import HaccpMonitorModal from '../../components/HaccpMonitorModal';
+import LiveTrackingModal from '../../components/LiveTrackingModal';
+import RotatingQrHandshakeModal from '../../components/RotatingQrHandshakeModal';
 import { getActivePickups, markPickedUp } from '../../api/volunteerApi';
 import { getMapPins } from '../../api/analyticsApi';
 import { getGoogleMapsNavigationUrl } from '../../utils/gmapsUtils';
@@ -13,7 +15,10 @@ export default function ActivePickups() {
   const [loading, setLoading] = useState(true);
   const [acting, setActing] = useState(null);
   const [haccpModalOpen, setHaccpModalOpen] = useState(false);
+  const [trackingModalOpen, setTrackingModalOpen] = useState(false);
+  const [handshakeModalOpen, setHandshakeModalOpen] = useState(false);
   const [selectedDonationId, setSelectedDonationId] = useState(1);
+  const [selectedTask, setSelectedTask] = useState(null);
 
   const fetchData = () => {
     setLoading(true);
@@ -63,27 +68,64 @@ export default function ActivePickups() {
           <h1>Active Pickups & Navigation</h1>
           <p>Navigate to pickup locations in Google Maps, monitor IoT cold-chain telemetry, and collect surplus batches</p>
         </div>
-        {pickups.length > 0 && pickups[0].pickupLat && (
-          <a
-            href={getGoogleMapsNavigationUrl(pickups[0].pickupLat, pickups[0].pickupLng, pickups[0].foodName)}
-            target="_blank"
-            rel="noopener noreferrer"
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+          <button
+            onClick={() => {
+              setSelectedTask(pickups[0] || { id: 201, foodName: 'Banquet Meals Rescue' });
+              setTrackingModalOpen(true);
+            }}
             className="btn btn-primary btn-md"
             style={{
               display: 'inline-flex',
               alignItems: 'center',
-              gap: '8px',
-              background: 'linear-gradient(135deg, #1a73e8 0%, #0d5bbd 100%)',
+              gap: '6px',
               fontWeight: 800,
               minHeight: '44px',
             }}
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <polygon points="3 11 22 2 13 21 11 13 3 11"/>
-            </svg>
-            Start GPS Navigation in Google Maps
-          </a>
-        )}
+            <span>📡</span>
+            <span>Live GPS Telemetry</span>
+          </button>
+
+          <button
+            onClick={() => {
+              setSelectedTask(pickups[0] || { id: 201, foodName: 'Banquet Meals Rescue' });
+              setHandshakeModalOpen(true);
+            }}
+            className="btn btn-secondary btn-md"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              fontWeight: 800,
+              minHeight: '44px',
+            }}
+          >
+            <span>🛡️</span>
+            <span>Scan Donor QR</span>
+          </button>
+
+          {pickups.length > 0 && pickups[0].pickupLat && (
+            <a
+              href={getGoogleMapsNavigationUrl(pickups[0].pickupLat, pickups[0].pickupLng, pickups[0].foodName)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-secondary btn-md"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                fontWeight: 700,
+                minHeight: '44px',
+              }}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <polygon points="3 11 22 2 13 21 11 13 3 11"/>
+              </svg>
+              Google Maps
+            </a>
+          )}
+        </div>
       </div>
 
       {/* Map of Active Pickups & Trichy Drop-Off Shelters */}
@@ -153,6 +195,24 @@ export default function ActivePickups() {
                 <button
                   type="button"
                   className="btn btn-outline btn-sm"
+                  style={{ borderColor: '#059669', color: '#059669' }}
+                  onClick={() => { setSelectedTask(d); setTrackingModalOpen(true); }}
+                >
+                  📡 Live GPS
+                </button>
+
+                <button
+                  type="button"
+                  className="btn btn-outline btn-sm"
+                  style={{ borderColor: '#d97706', color: '#d97706' }}
+                  onClick={() => { setSelectedTask(d); setHandshakeModalOpen(true); }}
+                >
+                  🛡️ QR Handshake
+                </button>
+
+                <button
+                  type="button"
+                  className="btn btn-outline btn-sm"
                   style={{ borderColor: '#0284c7', color: '#0284c7' }}
                   onClick={() => { setSelectedDonationId(d.id); setHaccpModalOpen(true); }}
                 >
@@ -168,6 +228,23 @@ export default function ActivePickups() {
         donationId={selectedDonationId}
         isOpen={haccpModalOpen}
         onClose={() => setHaccpModalOpen(false)}
+      />
+
+      <LiveTrackingModal
+        isOpen={trackingModalOpen}
+        onClose={() => setTrackingModalOpen(false)}
+        taskData={selectedTask}
+      />
+
+      <RotatingQrHandshakeModal
+        isOpen={handshakeModalOpen}
+        onClose={() => setHandshakeModalOpen(false)}
+        mode="volunteer"
+        donationData={selectedTask || { id: 201, foodName: 'Banquet Meals Surplus' }}
+        onHandshakeComplete={(res) => {
+          alert(`Custody of Task #${res.donationId} confirmed with cryptographic signature!`);
+          setHandshakeModalOpen(false);
+        }}
       />
     </DashboardLayout>
   );

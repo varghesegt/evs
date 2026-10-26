@@ -11,12 +11,14 @@ const ngoLinks = [
   { to: '/ngo', label: 'Dashboard', icon: 'grid' },
   { to: '/ngo/incoming', label: 'Incoming Requests', icon: 'inbox' },
   { to: '/ngo/assign', label: 'Assign Volunteer', icon: 'users' },
+  { to: '/admin/mission-control', label: 'City Radar & Fleet', icon: 'radar' },
 ];
 
 const volunteerLinks = [
   { to: '/volunteer', label: 'Dashboard', icon: 'grid' },
   { to: '/volunteer/active', label: 'Active Pickups', icon: 'truck' },
   { to: '/volunteer/deliver', label: 'Delivery', icon: 'check' },
+  { to: '/admin/mission-control', label: 'City Radar & Fleet', icon: 'radar' },
 ];
 
 const adminLinks = [
@@ -24,10 +26,12 @@ const adminLinks = [
   { to: '/admin/users', label: 'User Management', icon: 'users' },
   { to: '/admin/analytics', label: 'Analytics', icon: 'chart' },
   { to: '/admin/reports', label: 'Reports', icon: 'file' },
+  { to: '/admin/mission-control', label: 'Mission Control Radar', icon: 'radar' },
 ];
 
 function SvgIcon({ name }) {
   const icons = {
+    radar: <><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/><line x1="12" y1="2" x2="12" y2="12"/></>,
     grid: <><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></>,
     plus: <><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></>,
     list: <><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></>,

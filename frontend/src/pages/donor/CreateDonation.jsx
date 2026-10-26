@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../../components/DashboardLayout';
 import MapView from '../../components/MapView';
 import AiQuantityEstimator from '../../components/AiQuantityEstimator';
+import LiveArFoodScannerModal from '../../components/LiveArFoodScannerModal';
 import { createDonation } from '../../api/donationApi';
 import { getMapPins } from '../../api/analyticsApi';
 
@@ -18,6 +19,7 @@ export default function CreateDonation() {
   const navigate = useNavigate();
   const formSectionRef = useRef(null);
   const [activeStep, setActiveStep] = useState(1); // 1 = AI Estimation, 2 = Pickup & Location Details
+  const [arScannerOpen, setArScannerOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -207,6 +209,33 @@ export default function CreateDonation() {
       {/* Step 1 Container: AI Volumetric Food Estimator */}
       {activeStep === 1 && (
         <div style={{ animation: 'fadeIn 0.25s ease' }}>
+          <div style={{ marginBottom: 'var(--space-3)' }}>
+            <button
+              type="button"
+              onClick={() => setArScannerOpen(true)}
+              className="btn"
+              style={{
+                width: '100%',
+                minHeight: '48px',
+                fontSize: '14px',
+                fontWeight: 800,
+                background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+                color: '#ffffff',
+                border: 'none',
+                borderRadius: 'var(--radius-xl)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
+                boxShadow: '0 4px 14px rgba(5, 150, 105, 0.3)',
+                cursor: 'pointer',
+              }}
+            >
+              <span>📷</span>
+              <span>Launch Live AR Camera Scanner (Auto-Bounding Box)</span>
+            </button>
+          </div>
+
           <AiQuantityEstimator onConfirmEstimate={handleConfirmAiEstimate} />
           
           <div style={{ marginTop: 'var(--space-4)', textAlign: 'center' }}>
@@ -482,6 +511,12 @@ export default function CreateDonation() {
           </form>
         </div>
       )}
+
+      <LiveArFoodScannerModal
+        isOpen={arScannerOpen}
+        onClose={() => setArScannerOpen(false)}
+        onEstimateCaptured={handleConfirmAiEstimate}
+      />
     </DashboardLayout>
   );
 }
