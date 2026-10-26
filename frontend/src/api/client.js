@@ -14,23 +14,23 @@ const client = axios.create({
   timeout: 10000,
 });
 
-// Demo accounts for instant login anywhere
+// Demo accounts for instant login anywhere - clean role names only
 const OFFLINE_USERS = {
-  'donor1@ecoshare.com': { id: 1, name: 'SRM Hotel & Convention Centre', email: 'donor1@ecoshare.com', role: 'ROLE_DONOR' },
-  'donor@ecoshare.com': { id: 1, name: 'SRM Hotel & Convention Centre', email: 'donor1@ecoshare.com', role: 'ROLE_DONOR' },
-  'donor': { id: 1, name: 'SRM Hotel & Convention Centre', email: 'donor1@ecoshare.com', role: 'ROLE_DONOR' },
+  'donor1@ecoshare.com': { id: 1, name: 'Donor', email: 'donor1@ecoshare.com', role: 'ROLE_DONOR' },
+  'donor@ecoshare.com': { id: 1, name: 'Donor', email: 'donor1@ecoshare.com', role: 'ROLE_DONOR' },
+  'donor': { id: 1, name: 'Donor', email: 'donor1@ecoshare.com', role: 'ROLE_DONOR' },
 
-  'ngo1@ecoshare.com': { id: 2, name: 'Trichy Seva Sangam Shelter', email: 'ngo1@ecoshare.com', role: 'ROLE_NGO' },
-  'ngo@ecoshare.com': { id: 2, name: 'Trichy Seva Sangam Shelter', email: 'ngo1@ecoshare.com', role: 'ROLE_NGO' },
-  'ngo': { id: 2, name: 'Trichy Seva Sangam Shelter', email: 'ngo1@ecoshare.com', role: 'ROLE_NGO' },
+  'ngo1@ecoshare.com': { id: 2, name: 'NGO', email: 'ngo1@ecoshare.com', role: 'ROLE_NGO' },
+  'ngo@ecoshare.com': { id: 2, name: 'NGO', email: 'ngo1@ecoshare.com', role: 'ROLE_NGO' },
+  'ngo': { id: 2, name: 'NGO', email: 'ngo1@ecoshare.com', role: 'ROLE_NGO' },
 
-  'vol1@ecoshare.com': { id: 3, name: 'Karthik Raja (Courier)', email: 'vol1@ecoshare.com', role: 'ROLE_VOLUNTEER' },
-  'vol@ecoshare.com': { id: 3, name: 'Karthik Raja (Courier)', email: 'vol1@ecoshare.com', role: 'ROLE_VOLUNTEER' },
-  'volunteer@ecoshare.com': { id: 3, name: 'Karthik Raja (Courier)', email: 'vol1@ecoshare.com', role: 'ROLE_VOLUNTEER' },
-  'volunteer': { id: 3, name: 'Karthik Raja (Courier)', email: 'vol1@ecoshare.com', role: 'ROLE_VOLUNTEER' },
+  'vol1@ecoshare.com': { id: 3, name: 'Volunteer', email: 'vol1@ecoshare.com', role: 'ROLE_VOLUNTEER' },
+  'vol@ecoshare.com': { id: 3, name: 'Volunteer', email: 'vol1@ecoshare.com', role: 'ROLE_VOLUNTEER' },
+  'volunteer@ecoshare.com': { id: 3, name: 'Volunteer', email: 'vol1@ecoshare.com', role: 'ROLE_VOLUNTEER' },
+  'volunteer': { id: 3, name: 'Volunteer', email: 'vol1@ecoshare.com', role: 'ROLE_VOLUNTEER' },
 
-  'admin@ecoshare.com': { id: 4, name: 'EcoShare Trichy Administrator', email: 'admin@ecoshare.com', role: 'ROLE_ADMIN' },
-  'admin': { id: 4, name: 'EcoShare Trichy Administrator', email: 'admin@ecoshare.com', role: 'ROLE_ADMIN' },
+  'admin@ecoshare.com': { id: 4, name: 'Admin', email: 'admin@ecoshare.com', role: 'ROLE_ADMIN' },
+  'admin': { id: 4, name: 'Admin', email: 'admin@ecoshare.com', role: 'ROLE_ADMIN' },
 };
 
 function extractPayload(data) {
@@ -67,11 +67,19 @@ function resolveOfflineUser(payload) {
     return OFFLINE_USERS['donor1@ecoshare.com'];
   }
 
+  const role = explicitRole || 'ROLE_DONOR';
+  const roleNameMap = {
+    ROLE_ADMIN: 'Admin',
+    ROLE_DONOR: 'Donor',
+    ROLE_NGO: 'NGO',
+    ROLE_VOLUNTEER: 'Volunteer',
+  };
+
   return {
     id: 1,
-    name: email ? email.split('@')[0].toUpperCase() : 'EcoShare Member',
+    name: roleNameMap[role] || 'User',
     email: email || 'user@ecoshare.com',
-    role: explicitRole || 'ROLE_DONOR',
+    role,
   };
 }
 
