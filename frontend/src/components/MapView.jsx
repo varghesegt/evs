@@ -471,7 +471,7 @@ export default function MapView({
   // Swiggy / Zomato Two-Wheeler Live Camera & Theme Controls
   const [followRider, setFollowRider] = useState(true);
   const [zoomMode, setZoomMode] = useState('street'); // 'street' (16x) | 'route' (fit bounds)
-  const [mapTheme, setMapTheme] = useState('voyager'); // 'voyager' (fast CartoDB) | 'osm' | 'hot'
+  const [mapTheme, setMapTheme] = useState('osm'); // 'osm' (official OpenStreetMap) | 'esri' | 'hot'
 
   // Enterprise GIS Overlays & Controls
   const [showTraffic, setShowTraffic] = useState(false);
@@ -1522,7 +1522,14 @@ export default function MapView({
 
         <MapContainer center={defaultCenter} zoom={zoom} style={{ height: '100%', width: '100%' }}>
           <MapInvalidator />
-          {mapTheme === 'hot' ? (
+          {mapTheme === 'esri' ? (
+            <TileLayer
+              key="tile-esri"
+              attribution='Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ'
+              url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}"
+              maxZoom={19}
+            />
+          ) : mapTheme === 'hot' ? (
             <TileLayer
               key="tile-osm-hot"
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -1530,21 +1537,12 @@ export default function MapView({
               subdomains={['a', 'b', 'c']}
               maxZoom={19}
             />
-          ) : mapTheme === 'osm' ? (
-            <TileLayer
-              key="tile-osm-std"
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              subdomains={['a', 'b', 'c']}
-              maxZoom={19}
-            />
           ) : (
             <TileLayer
-              key="tile-carto-voyager"
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/">CARTO</a>'
-              url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-              subdomains={['a', 'b', 'c', 'd']}
-              maxZoom={20}
+              key="tile-osm-std"
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+              maxZoom={19}
             />
           )}
 
