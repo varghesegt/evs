@@ -228,6 +228,42 @@ client.interceptors.request.use(async (config) => {
       return config;
     }
 
+    // 6b. Admin Toggle User Status
+    if (config.url?.includes('/admin/users/') && config.url?.endsWith('/toggle')) {
+      const parts = config.url.split('/');
+      const userId = parseInt(parts[parts.length - 2], 10);
+      const currentUsers = getCachedEndpoint('/admin/users') || [];
+      const updated = currentUsers.map(u => u.id === userId ? { ...u, isActive: !u.isActive } : u);
+      saveCachedEndpoint('/admin/users', updated);
+
+      config.adapter = () => Promise.resolve({
+        data: { success: true, message: 'User status updated' },
+        status: 200,
+        statusText: 'OK (User Toggled)',
+        headers: {},
+        config,
+      });
+      return config;
+    }
+
+    // 6c. Admin Approve NGO
+    if (config.url?.includes('/admin/ngo/') && config.url?.endsWith('/approve')) {
+      const parts = config.url.split('/');
+      const userId = parseInt(parts[parts.length - 2], 10);
+      const currentUsers = getCachedEndpoint('/admin/users') || [];
+      const updated = currentUsers.map(u => u.id === userId ? { ...u, isApproved: true } : u);
+      saveCachedEndpoint('/admin/users', updated);
+
+      config.adapter = () => Promise.resolve({
+        data: { success: true, message: 'NGO verified and approved' },
+        status: 200,
+        statusText: 'OK (NGO Approved)',
+        headers: {},
+        config,
+      });
+      return config;
+    }
+
     // 7. AI Quantity Estimator
     if (config.url === '/ai/estimate-quantity') {
       const payload = extractPayload(config.data);

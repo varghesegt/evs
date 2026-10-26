@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import DashboardLayout from '../../components/DashboardLayout';
 import StatCard from '../../components/StatCard';
 import EvsEquivalencyCards from '../../components/EvsEquivalencyCards';
@@ -141,26 +142,66 @@ export default function AnalyticsDashboard() {
 
   return (
     <DashboardLayout>
-      <div className="page-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
+      {/* Executive Command Header */}
+      <div style={{
+        background: 'var(--color-surface)',
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-xl)',
+        padding: '24px 28px',
+        marginBottom: 'var(--space-6)',
+        boxShadow: 'var(--shadow-sm)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: '16px',
+      }}>
         <div>
-          <h1>Environmental Analytics Observatory</h1>
-          <p>IPCC AR6 emissions methodology · Predictive shortage forecasting · Corporate ESG Leaderboard · SHA-256 Ledger</p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+            <span style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '4px 10px',
+              background: '#ecfdf5',
+              color: '#065f46',
+              borderRadius: '9999px',
+              fontSize: '11px',
+              fontWeight: 800,
+              textTransform: 'uppercase',
+              letterSpacing: '0.04em',
+              border: '1px solid #a7f3d0',
+            }}>
+              <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#10b981' }} />
+              IPCC AR6 Certified
+            </span>
+            <span style={{ fontSize: '12px', color: '#64748b', fontWeight: 600 }}>
+              Trichy District Climate Action & ESG Observatory
+            </span>
+          </div>
+          <h1 style={{ fontSize: '26px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+            Environmental Analytics Observatory
+          </h1>
+          <p style={{ margin: '4px 0 0 0', fontSize: '14px', color: '#64748b' }}>
+            Lifecycle greenhouse gas abatement, predictive deficit forecasting, and cryptographic ESG ledger
+          </p>
         </div>
-        <span style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: '6px',
-          background: '#ecfdf5',
-          color: '#065f46',
-          border: '1px solid #a7f3d0',
-          padding: '6px 12px',
-          borderRadius: '8px',
-          fontSize: '11px',
-          fontWeight: 700,
-        }}>
-          <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10b981', display: 'inline-block' }} />
-          Live Telemetry Active
-        </span>
+
+        {/* Quick Operational Navigation Hub */}
+        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+          <Link to="/admin" className="btn btn-secondary" style={{ padding: '9px 16px', fontWeight: 700, fontSize: '13px' }}>
+            Admin Dashboard
+          </Link>
+          <Link to="/admin/mission-control" className="btn btn-secondary" style={{ padding: '9px 16px', fontWeight: 700, fontSize: '13px' }}>
+            Mission Control
+          </Link>
+          <Link to="/admin/users" className="btn btn-secondary" style={{ padding: '9px 16px', fontWeight: 700, fontSize: '13px' }}>
+            User Management
+          </Link>
+          <Link to="/admin/reports" className="btn btn-secondary" style={{ padding: '9px 16px', fontWeight: 700, fontSize: '13px' }}>
+            Reports
+          </Link>
+        </div>
       </div>
 
       {/* Feature 11: Stat Cards */}
