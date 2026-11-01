@@ -1,7 +1,7 @@
 // EcoShare AI - Progressive Web App Service Worker
-// Version 3.0.0 - Rock-Solid GitHub Pages, Tile Fallback, and Offline Reliability
+// Version 3.1.0 - Instant Deployment Sync, Offline Cache Invalidation & Telemetry
 
-const CACHE_NAME = 'ecoshare-v7';
+const CACHE_NAME = 'ecoshare-v10';
 
 // Crisp vector street grid fallback tile for offline map tiles & failed network requests
 const FALLBACK_TILE_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
@@ -151,7 +151,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // C. Same-Origin Static Assets (/assets/*, .js, .css, .svg, .png, .woff2)
+  // C. Same-Origin Static Assets (/assets/*, .js, .css, .svg, .png, .woff2) - Network First with Offline Cache Fallback
   if (
     isSameOrigin && (
       url.pathname.includes('/assets/') ||
@@ -164,33 +164,26 @@ self.addEventListener('fetch', (event) => {
   ) {
     event.respondWith(
       (async () => {
-        const cached = await caches.match(request);
-        if (cached) {
-          // Revalidate in background
-          fetch(request)
-            .then(async (res) => {
-              if (res && res.status === 200) {
-                const c = await caches.open(CACHE_NAME);
-                c.put(request, res);
-              }
-            })
-            .catch(() => {});
-          return cached;
-        }
-
         try {
           const networkResponse = await fetch(request);
           if (networkResponse && networkResponse.status === 200) {
             const cache = await caches.open(CACHE_NAME);
             cache.put(request, networkResponse.clone());
+            return networkResponse;
           }
-          return networkResponse;
         } catch (e) {
+          // Offline fallback: serve from cache if network fails
+          const cached = await caches.match(request);
+          if (cached) return cached;
           if (url.pathname.endsWith('.png') || url.pathname.endsWith('.jpg')) {
             return new Response(TRANSPARENT_PNG, { status: 200, headers: { 'Content-Type': 'image/png' } });
           }
           return new Response('', { status: 200, headers: { 'Content-Type': 'text/plain' } });
         }
+
+        const cached = await caches.match(request);
+        if (cached) return cached;
+        return new Response('', { status: 200 });
       })()
     );
     return;
