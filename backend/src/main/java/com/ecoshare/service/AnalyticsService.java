@@ -188,7 +188,7 @@ public class AnalyticsService {
                 pins.add(MapPinResponse.builder()
                         .id(d.getId())
                         .title(d.getFoodName())
-                        .subtitle(d.getQuantityKg() + " kg • Priority " + d.getPriorityScore() + "/100")
+                        .subtitle(d.getQuantityKg() + " kg â€¢ Priority " + d.getPriorityScore() + "/100")
                         .lat(d.getPickupLat())
                         .lng(d.getPickupLng())
                         .type("donation")
@@ -233,6 +233,234 @@ public class AnalyticsService {
     }
 
     private void addTrichyRealtimeEcosystemPins(List<MapPinResponse> pins) {
+        // --- SAMAYAPURAM CORRIDOR (NH-45 North) ---
+        pins.add(MapPinResponse.builder().id(101L).title("Samayapuram Temple Free Annadhanam Bhojana Salai")
+                .subtitle("65 kg Steamed Rice & Sambar • 500 Servings").lat(10.9284).lng(78.7428).type("donation").status("AVAILABLE")
+                .quantityKg(65.0).priorityScore(98).freshnessHours(4.5)
+                .address("Temple Car Street, Near Raja Gopuram, Samayapuram, Trichy - 621112").phone("04312670460").build());
+
+        pins.add(MapPinResponse.builder().id(102L).title("Samayapuram Annadhanam Trust Relief Kitchen")
+                .subtitle("Free Community Dining & Pilgrim Relief (Cap: 450 Meals)").lat(10.9295).lng(78.7415).type("ngo").status("ACTIVE")
+                .address("North Ratha Veethi, Samayapuram, Trichy - 621112").phone("9443178901").build());
+
+        pins.add(MapPinResponse.builder().id(103L).title("K. Ramakrishnan College of Technology (KRCT) Canteen")
+                .subtitle("Campus Central Dining Food Court • 1,500+ Students").lat(10.9235).lng(78.7290).type("donor").status("ACTIVE")
+                .address("KRCT Campus, Kariyamanickam Road, Samayapuram, Trichy - 621112").phone("04312670799").build());
+
+        pins.add(MapPinResponse.builder().id(104L).title("KRCT Student Canteen - Lunch Meal Surplus")
+                .subtitle("35 kg Sambar Rice, Kootu & Appalam • 120 Servings").lat(10.9238).lng(78.7295).type("donation").status("AVAILABLE")
+                .quantityKg(35.0).priorityScore(91).freshnessHours(5.0)
+                .address("KRCT Dining Hall B, Samayapuram, Trichy").phone("04312670799").build());
+
+        pins.add(MapPinResponse.builder().id(105L).title("K. Ramakrishnan College of Engineering (KRCE) Hostel Mess")
+                .subtitle("Resident Hostels Dining Block • 800 Boarders").lat(10.9220).lng(78.7265).type("donor").status("ACTIVE")
+                .address("KRCE Hostels Complex, Samayapuram, Trichy - 621112").phone("04312670699").build());
+
+        pins.add(MapPinResponse.builder().id(106L).title("SRM Trichy Medical College Hospital Canteen")
+                .subtitle("Hospital Doctors & Staff Food Court • 24/7 Operations").lat(10.9390).lng(78.7610).type("donor").status("ACTIVE")
+                .address("SRM Nagar, Irungalur, NH-45, Samayapuram, Trichy - 621105").phone("04312258687").build());
+
+        pins.add(MapPinResponse.builder().id(107L).title("SRM Medical College Student Hostels Dining Hall")
+                .subtitle("Resident Doctors & Students Dining Block • 1,100 Residents").lat(10.9412).lng(78.7635).type("donor").status("ACTIVE")
+                .address("SRM Trichy Hostels Block C, Irungalur, Samayapuram, Trichy").phone("04312258900").build());
+
+        pins.add(MapPinResponse.builder().id(108L).title("Dhanalakshmi Srinivasan University Campus Food Plaza")
+                .subtitle("University Main Canteen & Hostels Food Complex").lat(10.9320).lng(78.7510).type("donor").status("ACTIVE")
+                .address("NH-45 Trichy-Chennai Highway, Samayapuram, Trichy - 621112").phone("04312670142").build());
+
+        pins.add(MapPinResponse.builder().id(109L).title("M.A.M. College of Engineering Canteen & Hostels")
+                .subtitle("Engineering Mess & Student Dining Hall").lat(10.9520).lng(78.7750).type("donor").status("ACTIVE")
+                .address("Trichy-Chennai Trunk Road, Siruganur, Samayapuram, Trichy - 621105").phone("04312910220").build());
+
+        pins.add(MapPinResponse.builder().id(110L).title("Hotel Temple City Highway Inn & Food Court")
+                .subtitle("Highway Family Restaurant & Fast Food Plaza").lat(10.9185).lng(78.7390).type("donor").status("ACTIVE")
+                .address("NH-45 Highway, Near Samayapuram Toll Plaza, Trichy - 621112").phone("9443134567").build());
+
+        pins.add(MapPinResponse.builder().id(111L).title("Hotel Temple City - Breakfast Surplus Batch")
+                .subtitle("22 kg Idli, Vada, Chutney & Sambar • 75 Servings").lat(10.9185).lng(78.7390).type("donation").status("AVAILABLE")
+                .quantityKg(22.0).priorityScore(94).freshnessHours(3.5)
+                .address("Hotel Temple City, NH-45 Samayapuram Tollgate, Trichy").phone("9443134567").build());
+
+        pins.add(MapPinResponse.builder().id(112L).title("Arusuvai Arasu Highway Inn Restaurant")
+                .subtitle("Traditional South Indian Vegetarian Dining").lat(10.9210).lng(78.7410).type("donor").status("ACTIVE")
+                .address("Opposite Petrol Bunk, Samayapuram Bypass, Trichy - 621112").phone("9443145678").build());
+
+        pins.add(MapPinResponse.builder().id(113L).title("Shri Sangeethas Pure Veg Tollgate Plaza")
+                .subtitle("Premium Vegetarian Restaurant & Confectionery").lat(10.9160).lng(78.7380).type("donor").status("ACTIVE")
+                .address("NH-45 Chennai Highway, Samayapuram Toll Gate, Trichy - 621112").phone("04312670500").build());
+
+        pins.add(MapPinResponse.builder().id(114L).title("Karunya Destitute & Children Shelter")
+                .subtitle("Child Shelter & Rural Welfare Home (Cap: 95 Persons)").lat(10.9250).lng(78.7402).type("ngo").status("ACTIVE")
+                .address("Kariyamanickam Road, Samayapuram, Trichy - 621112").phone("9842466789").build());
+
+        pins.add(MapPinResponse.builder().id(115L).title("Vigneshwaran R. (EcoShare EV Courier #4)")
+                .subtitle("Ather 450X EV • 40kg Insulated Box • Battery 89%").lat(10.9260).lng(78.7400).type("volunteer").status("ACTIVE")
+                .address("Samayapuram Tollgate EV Station, Trichy").phone("9789022334").build());
+
+        // --- PANJAPUR CORRIDOR (NH-45B South) ---
+        pins.add(MapPinResponse.builder().id(201L).title("Panjapur New Integrated Bus Terminus (IBT) Food Plaza")
+                .subtitle("Central Transit Hub Dining Concourse • 24/7 Operations").lat(10.7515).lng(78.6655).type("donor").status("ACTIVE")
+                .address("Panjapur Integrated Bus Terminal Complex, NH-45B, Trichy - 620012").phone("04312401100").build());
+
+        pins.add(MapPinResponse.builder().id(202L).title("Panjapur IBT Food Court - Fresh Lunch Surplus")
+                .subtitle("30 kg Steamed Meals, Curd Rice & Poriyal • 100 Servings").lat(10.7518).lng(78.6658).type("donation").status("AVAILABLE")
+                .quantityKg(30.0).priorityScore(93).freshnessHours(4.2)
+                .address("Platform Bay 12 Kitchen, Panjapur IBT, Trichy").phone("04312401100").build());
+
+        pins.add(MapPinResponse.builder().id(203L).title("Panjapur Central Agro & Vegetable Wholesale Market")
+                .subtitle("Major Fresh Produce Salvage Hub • 400+ Farmer Stalls").lat(10.7490).lng(78.6630).type("donor").status("ACTIVE")
+                .address("Integrated Wholesale Market Complex, Panjapur, Trichy - 620012").phone("04312401500").build());
+
+        pins.add(MapPinResponse.builder().id(204L).title("Panjapur Market - Fresh Vegetables & Fruit Crates")
+                .subtitle("85 kg Fresh Vegetables & Seasonal Fruits • 250 Meals Equiv.").lat(10.7492).lng(78.6635).type("donation").status("AVAILABLE")
+                .quantityKg(85.0).priorityScore(96).freshnessHours(24.0)
+                .address("Gate #3 Farmer Salvage Dock, Panjapur Market, Trichy").phone("04312401500").build());
+
+        pins.add(MapPinResponse.builder().id(205L).title("Saranathan College of Engineering Central Canteen")
+                .subtitle("Campus Dining Hall & Food Court • 2,200 Students").lat(10.7580).lng(78.6720).type("donor").status("ACTIVE")
+                .address("Venkateswara Nagar, Panjapur, Tiruchirappalli - 620012").phone("04312473286").build());
+
+        pins.add(MapPinResponse.builder().id(206L).title("Saranathan Engineering Mens & Womens Hostels Dining")
+                .subtitle("Residential Hostels Dining Mess • 950 Resident Students").lat(10.7595).lng(78.6740).type("donor").status("ACTIVE")
+                .address("Hostel Block 2, Saranathan College Campus, Panjapur, Trichy").phone("04312473288").build());
+
+        pins.add(MapPinResponse.builder().id(207L).title("Saranathan College Mess - Evening Feast Surplus")
+                .subtitle("45 kg Veg Biryani, Onion Raita & Brinjal Gravy • 150 Servings").lat(10.7590).lng(78.6735).type("donation").status("AVAILABLE")
+                .quantityKg(45.0).priorityScore(95).freshnessHours(5.2)
+                .address("Main Mess Kitchen, Saranathan College, Panjapur, Trichy").phone("04312473286").build());
+
+        pins.add(MapPinResponse.builder().id(208L).title("Oxford Engineering College & Polytechnic Canteen")
+                .subtitle("Campus Student Canteen & Hostel Mess").lat(10.7440).lng(78.6580).type("donor").status("ACTIVE")
+                .address("Pirattiyur - Panjapur Link Road, Trichy - 620009").phone("04312403450").build());
+
+        pins.add(MapPinResponse.builder().id(209L).title("Blossom Old Age Home & Palliative Care Shelter")
+                .subtitle("Senior Destitute Care & Rehabilitation (Cap: 110 Persons)").lat(10.7535).lng(78.6685).type("ngo").status("ACTIVE")
+                .address("Near Ring Road Junction, Panjapur, Trichy - 620012").phone("9842433211").build());
+
+        pins.add(MapPinResponse.builder().id(210L).title("Annai Indira Gandhi Memorial Destitute Children Home")
+                .subtitle("Child Welfare & Educational Shelter (Cap: 80 Children)").lat(10.7560).lng(78.6710).type("ngo").status("ACTIVE")
+                .address("Panjapur - Edamalaipatti Pudur Road, Trichy - 620012").phone("9443188765").build());
+
+        pins.add(MapPinResponse.builder().id(211L).title("Hotel Vasantham Highway Inn & Family Restaurant")
+                .subtitle("Madurai National Highway Dining & Banquet Hall").lat(10.7475).lng(78.6615).type("donor").status("ACTIVE")
+                .address("NH-45B Madurai Road, Panjapur Ring Road Corner, Trichy").phone("9443156789").build());
+
+        pins.add(MapPinResponse.builder().id(212L).title("Trichy Truck Terminal Drivers & Crew Canteen")
+                .subtitle("24-Hour Highway Logistics Food Center").lat(10.7460).lng(78.6600).type("donor").status("ACTIVE")
+                .address("Truck Logistics Terminal, Panjapur Bypass, Trichy - 620012").phone("04312401890").build());
+
+        pins.add(MapPinResponse.builder().id(213L).title("Panjapur Community Food Bank & Relief Center")
+                .subtitle("Emergency Food Distribution & Cold Storage (Cap: 200 Meals)").lat(10.7525).lng(78.6670).type("ngo").status("ACTIVE")
+                .address("Service Road, Opposite New Terminal, Panjapur, Trichy").phone("9842411990").build());
+
+        pins.add(MapPinResponse.builder().id(214L).title("Senthil Kumar (EcoShare EV Courier #3)")
+                .subtitle("Mahindra Treo Zor Cargo Auto • 350kg Capacity • Battery 91%").lat(10.7505).lng(78.6640).type("volunteer").status("ACTIVE")
+                .address("Panjapur IBT Rapid Courier Station, Trichy").phone("9789077889").build());
+
+        // --- TRICHY CENTRAL, CANTONMENT, THILLAI NAGAR & COLLEGES ---
+        pins.add(MapPinResponse.builder().id(301L).title("Courtyard by Marriott Tiruchirappalli")
+                .subtitle("5-Star Luxury Hotel & Kitchen").lat(10.8075).lng(78.6835).type("donor").status("ACTIVE")
+                .address("Collectorate Road, Cantonment, Trichy - 620001").phone("04312411100").build());
+
+        pins.add(MapPinResponse.builder().id(302L).title("Courtyard by Marriott - Continental Buffet Surplus")
+                .subtitle("24 kg Pasta & Mixed Vegetables • 80 Servings").lat(10.8075).lng(78.6835).type("donation").status("AVAILABLE")
+                .quantityKg(24.0).priorityScore(90).freshnessHours(3.8)
+                .address("Marriott Service Gate, Cantonment, Trichy").phone("04312411100").build());
+
+        pins.add(MapPinResponse.builder().id(303L).title("St. Joseph's College Student Canteen")
+                .subtitle("Autonomous College Canteen • 3,000+ Students").lat(10.8285).lng(78.6930).type("donor").status("ACTIVE")
+                .address("College Road, Teppakulam, Trichy - 620002").phone("04312700320").build());
+
+        pins.add(MapPinResponse.builder().id(304L).title("St. Joseph's College Bellarmine Hostel Mess")
+                .subtitle("Resident Student Dining Hall • 750 Boarders").lat(10.8300).lng(78.6945).type("donor").status("ACTIVE")
+                .address("Bellarmine Hostel Campus, Teppakulam, Trichy - 620002").phone("04312700325").build());
+
+        pins.add(MapPinResponse.builder().id(305L).title("St. Joseph's College - Fresh Tiffin Surplus")
+                .subtitle("32 kg Lemon Rice & Curd Rice • 110 Servings").lat(10.8285).lng(78.6930).type("donation").status("AVAILABLE")
+                .quantityKg(32.0).priorityScore(91).freshnessHours(4.0)
+                .address("Main Canteen Counter, St. Joseph's College, Trichy").phone("04312700320").build());
+
+        pins.add(MapPinResponse.builder().id(306L).title("Bishop Heber College Student Canteen")
+                .subtitle("Main Campus Food Court • 3,500 Students").lat(10.8205).lng(78.6760).type("donor").status("ACTIVE")
+                .address("Vayalur Main Road, Puthur, Trichy - 620017").phone("04312770136").build());
+
+        pins.add(MapPinResponse.builder().id(307L).title("Bishop Heber Schwartz Hostel Dining Hall")
+                .subtitle("Resident Scholars Hostels Mess • 850 Students").lat(10.8220).lng(78.6775).type("donor").status("ACTIVE")
+                .address("Schwartz Hostel Block, Bishop Heber Campus, Puthur, Trichy").phone("04312770138").build());
+
+        pins.add(MapPinResponse.builder().id(308L).title("Bishop Heber Hostels - Dinner Chapati Batch")
+                .subtitle("26 kg Wheat Chapatis & Dal • 90 Servings").lat(10.8220).lng(78.6775).type("donation").status("AVAILABLE")
+                .quantityKg(26.0).priorityScore(93).freshnessHours(4.5)
+                .address("Kitchen Gate 2, Bishop Heber Hostels, Puthur, Trichy").phone("04312770138").build());
+
+        pins.add(MapPinResponse.builder().id(309L).title("Holy Cross College Canteen & Dining Hall")
+                .subtitle("Women's College Canteen & Bakery").lat(10.8315).lng(78.6915).type("donor").status("ACTIVE")
+                .address("Teppakulam Post, Trichy - 620002").phone("04312700637").build());
+
+        pins.add(MapPinResponse.builder().id(310L).title("Cauvery College for Women Hostel Dining")
+                .subtitle("Resident Hostels Dining Hall • 1,200 Students").lat(10.8240).lng(78.6710).type("donor").status("ACTIVE")
+                .address("Annamalai Nagar, Trichy - 620018").phone("04312751232").build());
+
+        pins.add(MapPinResponse.builder().id(311L).title("Jamal Mohamed College Central Canteen")
+                .subtitle("Autonomous College Canteen • 4,000+ Students").lat(10.7850).lng(78.6990).type("donor").status("ACTIVE")
+                .address("Race Course Road, Khajamalai, Trichy - 620020").phone("04312331035").build());
+
+        pins.add(MapPinResponse.builder().id(312L).title("Jamal Mohamed College Khaja Hostel Mess")
+                .subtitle("Resident Hostels Dining Block • 1,400 Boarders").lat(10.7870).lng(78.7010).type("donor").status("ACTIVE")
+                .address("Khaja Hostel Campus, TVS Tollgate, Trichy - 620020").phone("04312331135").build());
+
+        pins.add(MapPinResponse.builder().id(313L).title("Jamal Mohamed Hostel - Special Lunch Surplus")
+                .subtitle("38 kg Veg Ghee Rice & Dhalcha • 120 Servings").lat(10.7870).lng(78.7010).type("donation").status("AVAILABLE")
+                .quantityKg(38.0).priorityScore(94).freshnessHours(4.5)
+                .address("Kitchen Dock 1, Khaja Hostel, TVS Tollgate, Trichy").phone("04312331135").build());
+
+        pins.add(MapPinResponse.builder().id(314L).title("Government Law College Hostels Mess")
+                .subtitle("State Law College Student Dining Hall").lat(10.7890).lng(78.7070).type("donor").status("ACTIVE")
+                .address("Race Course Road, Khajamalai, Trichy - 620023").phone("04312420321").build());
+
+        pins.add(MapPinResponse.builder().id(315L).title("National College Central Canteen & Student Dining")
+                .subtitle("Autonomous College Canteen • 2,800 Students").lat(10.7820).lng(78.6640).type("donor").status("ACTIVE")
+                .address("Dindigul Road, Karumandapam, Trichy - 620001").phone("04312482995").build());
+
+        // --- NIT TRICHY MEGA MESS & THUVAKUDI ---
+        pins.add(MapPinResponse.builder().id(316L).title("National Institute of Technology (NIT Trichy) Mega Mess Complex")
+                .subtitle("Institute Central Mega Mess • 6,000+ Students Daily").lat(10.7610).lng(78.8160).type("donor").status("ACTIVE")
+                .address("Tanjore Main Road, NH-67, Thuvakudi, Trichy - 620015").phone("04312503000").build());
+
+        pins.add(MapPinResponse.builder().id(317L).title("NIT Trichy Mega Mess - High Quality Lunch Surplus")
+                .subtitle("55 kg Steamed Rice, Sambar & Poriyal • 180 Servings").lat(10.7610).lng(78.8160).type("donation").status("AVAILABLE")
+                .quantityKg(55.0).priorityScore(98).freshnessHours(5.5)
+                .address("Mega Mess Loading Bay, NIT Campus, Thuvakudi, Trichy").phone("04312503000").build());
+
+        pins.add(MapPinResponse.builder().id(318L).title("NIT Trichy Opal & Amber Hostels Dining")
+                .subtitle("Girls & Boys Hostel Mess • 1,800 Residents").lat(10.7630).lng(78.8180).type("donor").status("ACTIVE")
+                .address("Opal Hostel Block, NIT Trichy Campus, Thuvakudi").phone("04312503700").build());
+
+        pins.add(MapPinResponse.builder().id(319L).title("Indian Institute of Management (IIM Trichy) Executive Dining")
+                .subtitle("National Institute Dining Concourse").lat(10.7510).lng(78.7780).type("donor").status("ACTIVE")
+                .address("Pudukkottai Main Road, Chinna Suriyur, Trichy - 620024").phone("04312505000").build());
+
+        // --- SRIRANGAM ISLAND & OTHER HOTELS ---
+        pins.add(MapPinResponse.builder().id(320L).title("Srirangam Sri Ranganathaswamy Temple Prasadam Hall")
+                .subtitle("Mega Daily Free Feast Facility • Serves 2,500+ Devotees").lat(10.8625).lng(78.6915).type("donor").status("ACTIVE")
+                .address("South Uthara Street, Srirangam, Trichy - 620006").phone("04312432246").build());
+
+        pins.add(MapPinResponse.builder().id(321L).title("Srirangam Temple Prasadam - Afternoon Surplus")
+                .subtitle("50 kg Traditional Puliyodarai & Sakkarai Pongal • 180 Servings").lat(10.8625).lng(78.6915).type("donation").status("AVAILABLE")
+                .quantityKg(50.0).priorityScore(97).freshnessHours(6.0)
+                .address("East Gate Bhojana Kitchen, Srirangam Temple, Trichy").phone("04312432246").build());
+
+        pins.add(MapPinResponse.builder().id(322L).title("Vasanta Bhavan Restaurant - Srirangam")
+                .subtitle("Traditional Vegetarian Tiffin & Meals").lat(10.8640).lng(78.6930).type("donor").status("ACTIVE")
+                .address("Gandhi Road, Srirangam, Trichy - 620006").phone("04312433555").build());
+
+        pins.add(MapPinResponse.builder().id(323L).title("Annai Ashram Children & Destitute Home")
+                .subtitle("Orphanage & Destitute Elders Haven (Cap: 130 Persons)").lat(10.8590).lng(78.6960).type("ngo").status("ACTIVE")
+                .address("Amma Mandapam Road, Srirangam, Trichy - 620006").phone("04312432190").build());
+
+        pins.add(MapPinResponse.builder().id(324L).title("Priya Sundaram (EcoShare EV Courier #2)")
+                .subtitle("Tata Ace EV Reefer Van • 250kg Capacity • Battery 82%").lat(10.8600).lng(78.6940).type("volunteer").status("ACTIVE")
+                .address("Amma Mandapam Gate EV Depot, Srirangam, Trichy").phone("9789044556").build());
         // Additional Donors / Hotels / Kitchens in Trichy
         pins.add(MapPinResponse.builder().id(201L).title("Breeze Residency Restaurant & Banquet")
                 .subtitle("Banquet & Continental Kitchen").lat(10.8005).lng(78.6845).type("donor").status("ACTIVE")
@@ -289,7 +517,7 @@ public class AnalyticsService {
 
         // Additional Active Volunteer Couriers in Trichy
         pins.add(MapPinResponse.builder().id(401L).title("Dinesh K. (E-Bike Express Courier)")
-                .subtitle("Electric Two-Wheeler • Insulated Cargo Box").lat(10.8310).lng(78.6960).type("volunteer").status("ACTIVE")
+                .subtitle("Electric Two-Wheeler â€¢ Insulated Cargo Box").lat(10.8310).lng(78.6960).type("volunteer").status("ACTIVE")
                 .address("Chathiram Bus Stand Hub, Trichy").phone("9443100041").build());
 
         pins.add(MapPinResponse.builder().id(402L).title("Priya S. (Tata Ace EV Reefer Van)")
@@ -306,27 +534,27 @@ public class AnalyticsService {
 
         // Additional Live Surplus Food Batches in Trichy
         pins.add(MapPinResponse.builder().id(501L).title("Executive Lunch Buffet Surplus")
-                .subtitle("38 kg • Priority 92/100 • 4.5h left").lat(10.8005).lng(78.6845).type("donation").status("ACTIVE")
+                .subtitle("38 kg â€¢ Priority 92/100 â€¢ 4.5h left").lat(10.8005).lng(78.6845).type("donation").status("ACTIVE")
                 .quantityKg(38.0).priorityScore(92).freshnessHours(4.5)
                 .address("Breeze Residency, McDonald's Rd, Cantonment, Trichy").phone("9443100021").build());
 
         pins.add(MapPinResponse.builder().id(502L).title("Wedding Reception Biryani & Feast")
-                .subtitle("65 kg • Priority 88/100 • 5.0h left").lat(10.7760).lng(78.7050).type("donation").status("ACTIVE")
+                .subtitle("65 kg â€¢ Priority 88/100 â€¢ 5.0h left").lat(10.7760).lng(78.7050).type("donation").status("ACTIVE")
                 .quantityKg(65.0).priorityScore(88).freshnessHours(5.0)
                 .address("Golden Palm Hall, KK Nagar Main Road, Trichy").phone("9443100026").build());
 
         pins.add(MapPinResponse.builder().id(503L).title("Fresh Morning Breads & Bakery")
-                .subtitle("22 kg • Priority 74/100 • 8.0h left").lat(10.7985).lng(78.6815).type("donation").status("ACTIVE")
+                .subtitle("22 kg â€¢ Priority 74/100 â€¢ 8.0h left").lat(10.7985).lng(78.6815).type("donation").status("ACTIVE")
                 .quantityKg(22.0).priorityScore(74).freshnessHours(8.0)
                 .address("Plazza Bakery, Central Bus Stand, Trichy").phone("9443100024").build());
 
         pins.add(MapPinResponse.builder().id(504L).title("Chilled Milk Packets & Fresh Curd")
-                .subtitle("30 kg • Priority 96/100 • 3.0h left").lat(10.8025).lng(78.6860).type("donation").status("ACTIVE")
+                .subtitle("30 kg â€¢ Priority 96/100 â€¢ 3.0h left").lat(10.8025).lng(78.6860).type("donation").status("ACTIVE")
                 .quantityKg(30.0).priorityScore(96).freshnessHours(3.0)
                 .address("Femina Dairy, Williams Road, Cantonment, Trichy").phone("9443100023").build());
 
         pins.add(MapPinResponse.builder().id(505L).title("Banana Leaf Traditional Meals")
-                .subtitle("42 kg • Priority 86/100 • 4.0h left").lat(10.8285).lng(78.6830).type("donation").status("ACTIVE")
+                .subtitle("42 kg â€¢ Priority 86/100 â€¢ 4.0h left").lat(10.8285).lng(78.6830).type("donation").status("ACTIVE")
                 .quantityKg(42.0).priorityScore(86).freshnessHours(4.0)
                 .address("Ramba Mess, 10th Cross, Thillai Nagar, Trichy").phone("9443100028").build());
     }

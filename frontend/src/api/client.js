@@ -5,6 +5,7 @@ import {
   addToSyncQueue,
   processSyncQueue
 } from '../utils/offlineSync';
+import { TRICHY_FULL_ECOSYSTEM_PINS } from '../data/trichyRealtimeData';
 
 const API_BASE = '/api';
 
@@ -119,7 +120,9 @@ client.interceptors.request.use(async (config) => {
       // On static hosts (GitHub Pages), resolve immediately so browser never makes a doomed 404 request
       if (isStaticHost) {
         let fallbackData = [];
-        if (config.url?.includes('surge')) {
+        if (config.url?.includes('map-pins')) {
+          fallbackData = TRICHY_FULL_ECOSYSTEM_PINS;
+        } else if (config.url?.includes('surge')) {
           fallbackData = {
             activeSurgeAlert: false,
             surgeLevel: 'NORMAL',
@@ -530,7 +533,9 @@ client.interceptors.response.use(
         const cached = getCachedEndpoint(config.url);
         let fallbackData = cached;
         if (fallbackData === null) {
-          if (config.url?.includes('surge')) {
+          if (config.url?.includes('map-pins')) {
+            fallbackData = TRICHY_FULL_ECOSYSTEM_PINS;
+          } else if (config.url?.includes('surge')) {
             fallbackData = {
               activeSurgeAlert: false,
               surgeLevel: 'NORMAL',

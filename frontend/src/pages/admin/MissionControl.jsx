@@ -100,6 +100,36 @@ const INITIAL_FLEET = [
     origin: 'Royal Mahal',
     destination: 'Trichy Seva Sangam',
   },
+  {
+    id: 'EV-105',
+    name: 'Vigneshwaran R.',
+    phone: '+91 97890 22334',
+    vehicle: 'Ather 450X EV',
+    battery: 89,
+    lat: 10.9260,
+    lng: 78.7400,
+    speed: 31,
+    status: 'EN_ROUTE',
+    temp: 4.8,
+    currentPayload: 'Temple Annadhanam Rice (65 kg)',
+    origin: 'Samayapuram Temple Bhojana Salai',
+    destination: 'Karunya Destitute Shelter',
+  },
+  {
+    id: 'EV-106',
+    name: 'Senthil Kumar (Panjapur)',
+    phone: '+91 97890 77889',
+    vehicle: 'Mahindra Treo Zor Cargo Auto',
+    battery: 91,
+    lat: 10.7505,
+    lng: 78.6640,
+    speed: 26,
+    status: 'DELIVERING',
+    temp: 3.9,
+    currentPayload: 'Wholesale Market Produce (85 kg)',
+    origin: 'Panjapur Agro Wholesale Market',
+    destination: 'Blossom Old Age Home Panjapur',
+  },
 ];
 
 export default function MissionControl() {
@@ -245,7 +275,7 @@ export default function MissionControl() {
                   CRITICAL HACCP COLD-CHAIN BREACH DETECTED!
                 </strong>
                 <span style={{ fontSize: '13px', color: '#fca5a5' }}>
-                  Unit EV-101 (Karthik Raja) temperature spiked to 13.5°C in Container #2. Spoilage risk imminent.
+                  Unit EV-101 (Karthik Raja) temperature spiked to 13.5Â°C in Container #2. Spoilage risk imminent.
                 </span>
               </div>
             </div>
@@ -314,7 +344,7 @@ export default function MissionControl() {
               HACCP Cargo Temp
             </span>
             <div style={{ fontSize: '28px', fontWeight: 900, color: haccpAlert ? '#ef4444' : '#0284c7', margin: '4px 0' }}>
-              {haccpAlert ? '13.5°C' : '4.2°C'}
+              {haccpAlert ? '13.5Â°C' : '4.2Â°C'}
             </div>
             <span style={{ fontSize: '12px', color: haccpAlert ? '#ef4444' : '#059669', fontWeight: 700 }}>
               {haccpAlert ? 'BREACH ALERT DETECTED' : 'Optimal Cold-Chain Compliance'}
@@ -403,7 +433,7 @@ export default function MissionControl() {
               <Marker position={[10.8120, 78.6920]}>
                 <Popup>
                   <strong>Trichy Seva Sangam Shelter</strong><br />
-                  Capacity: 120 Persons • Awaiting Delivery
+                  Capacity: 120 Persons â€¢ Awaiting Delivery
                 </Popup>
               </Marker>
 
@@ -430,7 +460,7 @@ export default function MissionControl() {
                   <Popup>
                     <strong>{unit.name} ({unit.id})</strong><br />
                     Vehicle: {unit.vehicle}<br />
-                    Battery: {unit.battery}% • Speed: {unit.speed} km/h<br />
+                    Battery: {unit.battery}% â€¢ Speed: {unit.speed} km/h<br />
                     <button
                       onClick={() => {
                         setSelectedUnit(unit);
@@ -485,7 +515,7 @@ export default function MissionControl() {
                   </div>
                 </div>
                 <span style={{ fontSize: '11px', color: '#059669', fontWeight: 800, background: '#ecfdf5', padding: '3px 8px', borderRadius: '6px', border: '1px solid #a7f3d0' }}>
-                  ● ALL STREAMING
+                  â— ALL STREAMING
                 </span>
               </div>
 
@@ -514,7 +544,7 @@ export default function MissionControl() {
                         {u.name} <span style={{ fontSize: '11px', color: '#64748b' }}>({u.id})</span>
                       </div>
                       <div style={{ fontSize: '11px', color: '#64748b', marginTop: '2px' }}>
-                        {u.vehicle} • <strong>{u.speed} km/h</strong>
+                        {u.vehicle} â€¢ <strong>{u.speed} km/h</strong>
                       </div>
                       <div style={{ fontSize: '10px', color: '#059669', marginTop: '2px', fontWeight: 600 }}>
                         {u.currentPayload}
@@ -571,7 +601,7 @@ export default function MissionControl() {
                   borderRadius: '6px',
                   border: `1px solid ${haccpAlert ? '#fecaca' : '#bae6fd'}`,
                 }}>
-                  {tempHistory[tempHistory.length - 1]}°C
+                  {tempHistory[tempHistory.length - 1]}Â°C
                 </span>
               </div>
 
@@ -599,7 +629,7 @@ export default function MissionControl() {
                         borderRadius: '3px 3px 0 0',
                         transition: 'height 0.4s ease',
                       }}
-                      title={`${val}°C`}
+                      title={`${val}Â°C`}
                     />
                   );
                 })}
@@ -616,7 +646,7 @@ export default function MissionControl() {
                 }}
               >
                 <span>-10s</span>
-                <span>Safe Threshold: &lt; 5°C</span>
+                <span>Safe Threshold: &lt; 5Â°C</span>
                 <span>Real-Time</span>
               </div>
             </div>
@@ -718,7 +748,7 @@ export default function MissionControl() {
                         color: (unit.id === 'EV-101' && haccpAlert) ? '#ef4444' : '#0369a1',
                         border: `1px solid ${(unit.id === 'EV-101' && haccpAlert) ? '#fecaca' : '#bae6fd'}`,
                       }}>
-                        {(unit.id === 'EV-101' && haccpAlert) ? '13.5°C (Alert)' : `${unit.temp}°C`}
+                        {(unit.id === 'EV-101' && haccpAlert) ? '13.5Â°C (Alert)' : `${unit.temp}Â°C`}
                       </span>
                     </td>
 

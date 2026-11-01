@@ -7,6 +7,7 @@ import {
   getGoogleMapsSearchUrl,
   TRICHY_LANDMARKS,
 } from '../utils/gmapsUtils';
+import { TRICHY_FULL_ECOSYSTEM_PINS } from '../data/trichyRealtimeData';
 import {
   VERIFIED_MISSION_ROAD_COORDS,
   VERIFIED_MISSION_STEPS,
@@ -123,15 +124,15 @@ function calculateBearing(lat1, lon1, lat2, lon2) {
   const toRad = deg => (deg * Math.PI) / 180;
   const toDeg = rad => (rad * 180) / Math.PI;
 
-  const φ1 = toRad(lat1);
-  const φ2 = toRad(lat2);
-  const Δλ = toRad(lon2 - lon1);
+  const phi1 = toRad(lat1);
+  const phi2 = toRad(lat2);
+  const deltaLambda = toRad(lon2 - lon1);
 
-  const y = Math.sin(Δλ) * Math.cos(φ2);
-  const x = Math.cos(φ1) * Math.sin(φ2) - Math.sin(φ1) * Math.cos(φ2) * Math.cos(Δλ);
-  const θ = Math.atan2(y, x);
+  const y = Math.sin(deltaLambda) * Math.cos(phi2);
+  const x = Math.cos(phi1) * Math.sin(phi2) - Math.sin(phi1) * Math.cos(phi2) * Math.cos(deltaLambda);
+  const theta = Math.atan2(y, x);
 
-  return (toDeg(θ) + 360) % 360;
+  return (toDeg(theta) + 360) % 360;
 }
 
 function getInterpolatedPoint(polyline, progress) {
@@ -486,6 +487,8 @@ export default function MapView({
 }) {
   const defaultCenter = center || [10.8030, 78.6850]; // Cantonment, Trichy
   const [filterType, setFilterType] = useState('ALL');
+  const [zoneFilter, setZoneFilter] = useState('ALL');
+  const [searchQuery, setSearchQuery] = useState('');
   const [isLocating, setIsLocating] = useState(false);
   const [flyTarget, setFlyTarget] = useState(null);
 
@@ -667,23 +670,55 @@ export default function MapView({
     };
   }, [turnSteps, roadSummary, simProgress]);
 
-  // Filter markers based on selected chip (Memoized)
+  // Fallback to comprehensive 80+ Trichy ecosystem dataset if markers not supplied or empty
+  const effectiveMarkers = useMemo(() => {
+    if (routePolyline || selectedLocation || interactivePicker) {
+      return markers || [];
+    }
+    return (markers && markers.length >= 20) ? markers : TRICHY_FULL_ECOSYSTEM_PINS;
+  }, [markers, routePolyline, selectedLocation, interactivePicker]);
+
+  // Filter markers based on selected chip, zone, and search query (Memoized)
   const filteredMarkers = useMemo(() => {
-    return markers.filter(m => {
-      if (filterType === 'ALL') return true;
-      if (filterType === 'DONATIONS') return m.type === 'donation';
-      if (filterType === 'DONORS') return m.type === 'donor';
-      if (filterType === 'NGOS') return m.type === 'ngo';
-      if (filterType === 'VOLUNTEERS') return m.type === 'volunteer';
+    return effectiveMarkers.filter(m => {
+      // 1. Zone filter
+      if (zoneFilter !== 'ALL' && m.zone !== zoneFilter) return false;
+
+      // 2. Category / Type filter
+      if (filterType === 'DONATIONS') {
+        if (m.type !== 'donation') return false;
+      } else if (filterType === 'DONORS') {
+        if (m.type !== 'donor') return false;
+      } else if (filterType === 'NGOS') {
+        if (m.type !== 'ngo') return false;
+      } else if (filterType === 'VOLUNTEERS') {
+        if (m.type !== 'volunteer') return false;
+      } else if (filterType === 'HOTELS') {
+        if (m.category !== 'HOTEL') return false;
+      } else if (filterType === 'COLLEGES') {
+        if (m.category !== 'COLLEGE_CANTEEN' && m.category !== 'COLLEGE_HOSTEL') return false;
+      }
+
+      // 3. Search query
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase().trim();
+        const text = `${m.title || ''} ${m.subtitle || ''} ${m.address || ''} ${m.zone || ''} ${m.categoryLabel || ''} ${m.category || ''} ${m.donorName || ''} ${m.foodCategory || ''}`.toLowerCase();
+        if (!text.includes(q)) return false;
+      }
+
       return true;
     });
-  }, [markers, filterType]);
+  }, [effectiveMarkers, filterType, zoneFilter, searchQuery]);
 
-  // Calculate counts for chips (Memoized)
-  const countDonations = useMemo(() => markers.filter(m => m.type === 'donation').length, [markers]);
-  const countDonors = useMemo(() => markers.filter(m => m.type === 'donor').length, [markers]);
-  const countNgos = useMemo(() => markers.filter(m => m.type === 'ngo').length, [markers]);
-  const countVolunteers = useMemo(() => markers.filter(m => m.type === 'volunteer').length, [markers]);
+  // Calculate dynamic counts for chips (Memoized)
+  const countDonations = useMemo(() => effectiveMarkers.filter(m => m.type === 'donation').length, [effectiveMarkers]);
+  const countDonors = useMemo(() => effectiveMarkers.filter(m => m.type === 'donor').length, [effectiveMarkers]);
+  const countNgos = useMemo(() => effectiveMarkers.filter(m => m.type === 'ngo').length, [effectiveMarkers]);
+  const countVolunteers = useMemo(() => effectiveMarkers.filter(m => m.type === 'volunteer').length, [effectiveMarkers]);
+  const countHotels = useMemo(() => effectiveMarkers.filter(m => m.category === 'HOTEL').length, [effectiveMarkers]);
+  const countColleges = useMemo(() => effectiveMarkers.filter(m => m.category === 'COLLEGE_CANTEEN' || m.category === 'COLLEGE_HOSTEL').length, [effectiveMarkers]);
+  const countSamayapuram = useMemo(() => effectiveMarkers.filter(m => m.zone === 'Samayapuram').length, [effectiveMarkers]);
+  const countPanjapur = useMemo(() => effectiveMarkers.filter(m => m.zone === 'Panjapur').length, [effectiveMarkers]);
 
   const handleGetCurrentLocation = () => {
     if (!navigator.geolocation) {
@@ -738,7 +773,7 @@ export default function MapView({
           <h4 style={{ margin: 0, fontSize: '14px', fontWeight: 700, color: 'var(--color-text)' }}>{title}</h4>
           <span style={{ fontSize: '11px', color: '#059669', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
             <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#10b981', display: 'inline-block' }} />
-            Live Trichy Network Active ({markers.length} Pins)
+            Live Trichy Network Active ({filteredMarkers.length} of {effectiveMarkers.length} Nodes)
           </span>
         </div>
       )}
@@ -755,45 +790,51 @@ export default function MapView({
           border: '1px solid var(--color-border)',
           fontSize: 'var(--font-size-xs)',
         }}>
+          {/* Top Control Bar: Live Search & Map Themes & Fullscreen */}
           <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '8px', width: '100%', minWidth: 0 }}>
-            {/* Category Filter Chips */}
-            <div className="map-filter-chips" style={{
-              display: 'flex',
-              gap: '6px',
-              overflowX: 'auto',
-              flexWrap: 'nowrap',
-              paddingBottom: '2px',
-              WebkitOverflowScrolling: 'touch',
-              scrollbarWidth: 'none',
-              flex: 1,
-              minWidth: 0,
-              maxWidth: '100%',
-            }}>
-              {[
-                { id: 'ALL', label: `All Network (${markers.length})` },
-                { id: 'DONATIONS', label: `Food Surplus (${countDonations})`, color: '#ea580c' },
-                { id: 'DONORS', label: `Donors (${countDonors})`, color: '#0d9668' },
-                { id: 'NGOS', label: `NGO Shelters (${countNgos})`, color: '#0284c7' },
-                { id: 'VOLUNTEERS', label: `Volunteers (${countVolunteers})`, color: '#8b5cf6' },
-              ].map((chip) => (
-                <button
-                  key={chip.id}
-                  type="button"
-                  className={`btn btn-sm ${filterType === chip.id ? 'btn-primary' : 'btn-secondary'}`}
+            {/* Live Real-Time Search Bar */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', minWidth: '220px', flex: '1 1 260px' }}>
+              <div style={{ position: 'relative', width: '100%' }}>
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search Trichy: Samayapuram, Panjapur, Canteen, Sangam..."
                   style={{
-                    padding: '3px 10px',
+                    width: '100%',
+                    padding: '6px 28px 6px 10px',
                     fontSize: '11px',
-                    fontWeight: 600,
-                    minHeight: '28px',
-                    borderColor: filterType === chip.id ? undefined : 'var(--color-border)',
-                    whiteSpace: 'nowrap',
-                    flexShrink: 0,
+                    borderRadius: '6px',
+                    border: '1px solid #cbd5e1',
+                    background: '#ffffff',
+                    color: '#0f172a',
+                    outline: 'none',
+                    boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.05)',
                   }}
-                  onClick={() => setFilterType(chip.id)}
-                >
-                  {chip.label}
-                </button>
-              ))}
+                />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => setSearchQuery('')}
+                    style={{
+                      position: 'absolute',
+                      right: '8px',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      background: 'none',
+                      border: 'none',
+                      fontSize: '14px',
+                      color: '#94a3b8',
+                      cursor: 'pointer',
+                      padding: 0,
+                      lineHeight: 1,
+                    }}
+                    title="Clear search"
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
             </div>
 
             {/* Right Map Actions: Layer Switcher & Fullscreen & GPS */}
@@ -878,6 +919,58 @@ export default function MapView({
                 </button>
               )}
             </div>
+          </div>
+
+          {/* Category & Zone Filter Chips Bar */}
+          <div className="map-filter-chips" style={{
+            display: 'flex',
+            gap: '6px',
+            overflowX: 'auto',
+            flexWrap: 'nowrap',
+            paddingBottom: '2px',
+            WebkitOverflowScrolling: 'touch',
+            scrollbarWidth: 'none',
+            width: '100%',
+            minWidth: 0,
+            maxWidth: '100%',
+          }}>
+            {[
+              { id: 'ALL', zone: 'ALL', label: `All Trichy (${effectiveMarkers.length})` },
+              { id: 'ALL', zone: 'Samayapuram', label: `📍 Samayapuram (${countSamayapuram})`, fly: { lat: 10.9284, lng: 78.7428, zoom: 13 } },
+              { id: 'ALL', zone: 'Panjapur', label: `📍 Panjapur (${countPanjapur})`, fly: { lat: 10.7512, lng: 78.6654, zoom: 14 } },
+              { id: 'HOTELS', zone: 'ALL', label: `🏨 Hotels (${countHotels})` },
+              { id: 'COLLEGES', zone: 'ALL', label: `🎓 Colleges & Hostels (${countColleges})` },
+              { id: 'NGOS', zone: 'ALL', label: `🤝 NGOs & Shelters (${countNgos})` },
+              { id: 'DONATIONS', zone: 'ALL', label: `🍲 Food Surplus (${countDonations})` },
+              { id: 'VOLUNTEERS', zone: 'ALL', label: `⚡ EV Fleet (${countVolunteers})` },
+            ].map((chip) => {
+              const isActive = (filterType === chip.id && zoneFilter === chip.zone);
+              return (
+                <button
+                  key={`${chip.id}-${chip.zone}`}
+                  type="button"
+                  className={`btn btn-sm ${isActive ? 'btn-primary' : 'btn-secondary'}`}
+                  style={{
+                    padding: '3px 10px',
+                    fontSize: '11px',
+                    fontWeight: 600,
+                    minHeight: '28px',
+                    borderColor: isActive ? undefined : 'var(--color-border)',
+                    whiteSpace: 'nowrap',
+                    flexShrink: 0,
+                  }}
+                  onClick={() => {
+                    setFilterType(chip.id);
+                    setZoneFilter(chip.zone);
+                    if (chip.fly) {
+                      setFlyTarget(chip.fly);
+                    }
+                  }}
+                >
+                  {chip.label}
+                </button>
+              );
+            })}
           </div>
 
           {/* Quick Trichy Landmark Navigator */}
@@ -1044,7 +1137,7 @@ export default function MapView({
               pointerEvents: 'auto',
               cursor: 'pointer',
             }}
-            title={`Courier Heading: ${Math.round(vehicleState.bearing)}° (${getCardinalDirection(vehicleState.bearing)}). Click to center.`}
+            title={`Courier Heading: ${Math.round(vehicleState.bearing)}Â° (${getCardinalDirection(vehicleState.bearing)}). Click to center.`}
             onClick={() => setFollowRider(true)}
           >
             <div style={{ position: 'relative', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -1263,7 +1356,7 @@ export default function MapView({
                     </div>
                     <div style={{ fontSize: '11px', color: '#475569', display: 'flex', justifyContent: 'space-between' }}>
                       <span>Live Speed:</span>
-                      <strong style={{ color: '#059669' }}>{liveSpeedKmh} km/h • {Math.round(vehicleState.bearing)}° {getCardinalDirection(vehicleState.bearing)}</strong>
+                      <strong style={{ color: '#059669' }}>{liveSpeedKmh} km/h â€¢ {Math.round(vehicleState.bearing)}Â° {getCardinalDirection(vehicleState.bearing)}</strong>
                     </div>
                     <div style={{ fontSize: '11px', color: '#475569', display: 'flex', justifyContent: 'space-between' }}>
                       <span>Distance to Drop:</span>
@@ -1271,7 +1364,7 @@ export default function MapView({
                     </div>
                     <div style={{ fontSize: '11px', color: '#475569', display: 'flex', justifyContent: 'space-between' }}>
                       <span>Thermal Hot-Box:</span>
-                      <strong style={{ color: '#059669' }}>{liveHaccpTemp}°C (Safe Range)</strong>
+                      <strong style={{ color: '#059669' }}>{liveHaccpTemp}Â°C (Safe Range)</strong>
                     </div>
                   </div>
 
@@ -1320,7 +1413,7 @@ export default function MapView({
                 <Popup>
                   <div style={{ padding: '4px', minWidth: '190px' }}>
                     <div style={{ fontSize: '10px', fontWeight: 800, color: routeColor, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                      Stop #{wp.stepNumber || idx + 1} • {wp.roleTag || 'Waypoint'}
+                      Stop #{wp.stepNumber || idx + 1} â€¢ {wp.roleTag || 'Waypoint'}
                     </div>
                     <strong style={{ fontSize: '13px', color: '#0f172a', display: 'block', margin: '2px 0' }}>
                       {wp.title}
@@ -1428,32 +1521,138 @@ export default function MapView({
             return (
               <Marker key={uniqueMarkerKey} position={[m.lat, m.lng]} icon={icons[m.type] || icons.default}>
                 <Popup>
-                  <div style={{ padding: '4px', minWidth: '200px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
-                      <strong style={{ fontSize: '13px', color: '#0f172a' }}>{m.title}</strong>
-                      <span className={`badge ${badgeClass}`} style={{ fontSize: '9px', textTransform: 'uppercase' }}>
-                        {m.type}
+                  <div style={{ padding: '6px', minWidth: '220px', maxWidth: '300px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '6px', flexWrap: 'wrap', marginBottom: '4px' }}>
+                      <span style={{
+                        fontSize: '9px',
+                        fontWeight: 800,
+                        textTransform: 'uppercase',
+                        padding: '2px 6px',
+                        borderRadius: '4px',
+                        background: m.type === 'donation' ? '#ffedd5' : m.type === 'donor' ? '#ecfdf5' : m.type === 'ngo' ? '#e0f2fe' : '#f3e8ff',
+                        color: m.type === 'donation' ? '#c2410c' : m.type === 'donor' ? '#047857' : m.type === 'ngo' ? '#0369a1' : '#6d28d9',
+                      }}>
+                        {m.categoryLabel || m.type}
                       </span>
+                      {m.zone && (
+                        <span style={{
+                          fontSize: '9px',
+                          fontWeight: 700,
+                          padding: '2px 6px',
+                          borderRadius: '4px',
+                          background: '#f1f5f9',
+                          color: '#475569',
+                          border: '1px solid #e2e8f0',
+                        }}>
+                          📍 {m.zone}
+                        </span>
+                      )}
                     </div>
 
+                    <strong style={{ fontSize: '13px', color: '#0f172a', display: 'block', lineHeight: 1.25 }}>
+                      {m.title}
+                    </strong>
+
                     {m.subtitle && (
-                      <div style={{ fontSize: '12px', fontWeight: 600, color: '#334155', marginTop: '2px' }}>
+                      <div style={{ fontSize: '11px', fontWeight: 600, color: '#334155', marginTop: '3px', lineHeight: 1.3 }}>
                         {m.subtitle}
                       </div>
                     )}
                     {m.address && (
-                      <div style={{ fontSize: '11px', color: '#64748b', marginTop: '4px', lineHeight: 1.3 }}>
+                      <div style={{ fontSize: '10px', color: '#64748b', marginTop: '4px', lineHeight: 1.3 }}>
                         {m.address}
                       </div>
                     )}
+
+                    {/* Operational Telemetry Details */}
+                    {m.type === 'donation' && (
+                      <div style={{
+                        marginTop: '6px',
+                        padding: '6px',
+                        background: '#fff7ed',
+                        borderRadius: '6px',
+                        border: '1px solid #fed7aa',
+                        fontSize: '10px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '3px',
+                      }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                          <span style={{ color: '#9a3412', fontWeight: 600 }}>Surplus Batch:</span>
+                          <strong style={{ color: '#ea580c' }}>{m.quantityKg} kg (~{m.servings || Math.round((m.quantityKg || 20) * 2.5)} meals)</strong>
+                        </div>
+                        {m.freshnessHours && (
+                          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <span style={{ color: '#9a3412', fontWeight: 600 }}>Safe Window:</span>
+                            <strong style={{ color: '#047857' }}>{m.freshnessHours} hrs remaining</strong>
+                          </div>
+                        )}
+                        {m.haccpTemp && (
+                          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <span style={{ color: '#9a3412', fontWeight: 600 }}>HACCP Thermal:</span>
+                            <strong style={{ color: '#059669' }}>{m.haccpTemp}</strong>
+                          </div>
+                        )}
+                        {m.priorityScore && (
+                          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <span style={{ color: '#9a3412', fontWeight: 600 }}>Priority Index:</span>
+                            <strong style={{ color: '#dc2626' }}>{m.priorityScore}/100</strong>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {m.type === 'ngo' && m.capacity && (
+                      <div style={{
+                        marginTop: '6px',
+                        padding: '5px 6px',
+                        background: '#f0f9ff',
+                        borderRadius: '6px',
+                        border: '1px solid #bae6fd',
+                        fontSize: '10px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '2px',
+                      }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                          <span style={{ color: '#0369a1', fontWeight: 600 }}>Shelter Capacity:</span>
+                          <strong style={{ color: '#0284c7' }}>{m.capacity} Persons</strong>
+                        </div>
+                        {m.beneficiaryType && (
+                          <div style={{ fontSize: '9px', color: '#475569' }}>
+                            Beneficiary: {m.beneficiaryType}
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {m.type === 'volunteer' && (
+                      <div style={{
+                        marginTop: '6px',
+                        padding: '5px 6px',
+                        background: '#faf5ff',
+                        borderRadius: '6px',
+                        border: '1px solid #e9d5ff',
+                        fontSize: '10px',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                      }}>
+                        <span style={{ color: '#6d28d9', fontWeight: 600 }}>Fleet Unit:</span>
+                        <strong style={{ color: '#7c3aed' }}>{m.vehicle || 'EV Two-Wheeler'} ({m.battery || 85}%)</strong>
+                      </div>
+                    )}
+
                     {m.phone && (
-                      <div style={{ fontSize: '11px', color: '#0d9668', fontWeight: 600, marginTop: '3px' }}>
-                        Phone: {m.phone}
+                      <div style={{ fontSize: '10px', color: '#0d9668', fontWeight: 700, marginTop: '6px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <span>Phone: {m.phone}</span>
+                        <a href={`tel:${m.phone}`} style={{ color: '#0d9668', textDecoration: 'none', fontWeight: 800, padding: '1px 6px', background: '#ecfdf5', borderRadius: '4px', border: '1px solid #a7f3d0' }}>
+                          📞 Call
+                        </a>
                       </div>
                     )}
 
                     {/* Coordinates & Google Maps Search Link */}
-                    <div style={{ fontSize: '10px', color: '#94a3b8', marginTop: '4px' }}>
+                    <div style={{ fontSize: '9px', color: '#94a3b8', marginTop: '5px' }}>
                       GPS: {Number(m.lat).toFixed(4)}, {Number(m.lng).toFixed(4)} •{' '}
                       <a href={gmapsSearchUrl} target="_blank" rel="noopener noreferrer" style={{ color: '#1a73e8', textDecoration: 'underline' }}>
                         View on GMaps

@@ -73,6 +73,8 @@ export function openInGoogleMaps(url) {
  */
 export const TRICHY_LANDMARKS = [
   { name: 'Cantonment', lat: 10.8030, lng: 78.6850, desc: 'Central Commercial & Hotel Zone' },
+  { name: 'Samayapuram', lat: 10.9284, lng: 78.7428, desc: 'Temple Annadhanam, KRCT, KRCE & Highway Hub' },
+  { name: 'Panjapur', lat: 10.7512, lng: 78.6654, desc: 'New Integrated Bus Terminus (IBT) & Wholesale Market' },
   { name: 'Thillai Nagar', lat: 10.8280, lng: 78.6860, desc: 'Dining & Residential Corridor' },
   { name: 'Chathiram Bus Stand', lat: 10.8310, lng: 78.6940, desc: 'Heritage Hub & Akshaya Patra' },
   { name: 'KK Nagar', lat: 10.7760, lng: 78.7050, desc: 'South Residential & Anbalayam Shelter' },
@@ -128,30 +130,30 @@ export function createWhatsAppDispatchMessage({
   const fullRouteUrl = getGoogleMapsMultiStopRouteUrl(originCoords, destCoords, [{ lat: pickupLat, lng: pickupLng }]);
 
   let msg = `*ECOSHARE AI - FOOD RESCUE MISSION*\n`;
-  msg += `━━━━━━━━━━━━━━━━━━━━━\n`;
+  msg += `â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”\n`;
   msg += `*Mission:* #${missionId}\n`;
-  msg += `*Batch:* ${foodName} (${quantity} kg • ${category})\n`;
+  msg += `*Batch:* ${foodName} (${quantity} kg â€¢ ${category})\n`;
   msg += `*Shelf-Life Window:* ${freshness} Hours Remaining ${isUrgent ? '[CODE RED SURGE]' : ''}\n`;
   if (volunteer?.name) {
     msg += `*Assigned Courier:* ${volunteer.name} (${volunteer.phone || '9443100030'})\n`;
   }
-  msg += `━━━━━━━━━━━━━━━━━━━━━\n`;
+  msg += `â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”\n`;
   msg += `*STEP 1: PICKUP (Donor)*\n`;
-  msg += `• Facility: ${donorName}\n`;
-  msg += `• Address: ${pickupAddress}\n`;
-  msg += `• Contact: Tel: ${donorPhone}\n`;
+  msg += `â€¢ Facility: ${donorName}\n`;
+  msg += `â€¢ Address: ${pickupAddress}\n`;
+  msg += `â€¢ Contact: Tel: ${donorPhone}\n`;
   msg += `*Turn-by-Turn to Donor (Google Maps):*\n${pickupGmapsUrl}\n\n`;
   msg += `*STEP 2: DROP-OFF (Shelter)*\n`;
-  msg += `• Recipient: ${shelterName}\n`;
-  msg += `• Address: ${shelterAddress}\n`;
-  msg += `• Contact: Tel: ${shelterPhone}\n`;
+  msg += `â€¢ Recipient: ${shelterName}\n`;
+  msg += `â€¢ Address: ${shelterAddress}\n`;
+  msg += `â€¢ Contact: Tel: ${shelterPhone}\n`;
   msg += `*Turn-by-Turn to Shelter (Google Maps):*\n${shelterGmapsUrl}\n\n`;
   msg += `*COMPLETE MULTI-STOP ROUTE (Courier -> Donor -> Shelter):*\n${fullRouteUrl}\n`;
   if (customNotes) {
-    msg += `━━━━━━━━━━━━━━━━━━━━━\n`;
+    msg += `â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”\n`;
     msg += `*Notes:* ${customNotes}\n`;
   }
-  msg += `━━━━━━━━━━━━━━━━━━━━━\n`;
+  msg += `â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”\n`;
   msg += `*Tap any link to start turn-by-turn navigation in the Google Maps App.*`;
 
   return msg;
