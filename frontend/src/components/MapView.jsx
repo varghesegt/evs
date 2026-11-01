@@ -675,7 +675,7 @@ export default function MapView({
     if (routePolyline || selectedLocation || interactivePicker) {
       return markers || [];
     }
-    return (markers && markers.length >= 20) ? markers : TRICHY_FULL_ECOSYSTEM_PINS;
+    return (markers && markers.length >= 50) ? markers : TRICHY_FULL_ECOSYSTEM_PINS;
   }, [markers, routePolyline, selectedLocation, interactivePicker]);
 
   // Filter markers based on selected chip, zone, and search query (Memoized)

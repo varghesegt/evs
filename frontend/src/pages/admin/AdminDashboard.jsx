@@ -15,7 +15,7 @@ import { TRICHY_FULL_ECOSYSTEM_PINS } from '../../data/trichyRealtimeData';
 export default function AdminDashboard() {
   const [stats, setStats] = useState(null);
   const [envSummary, setEnvSummary] = useState(null);
-  const [mapPins, setMapPins] = useState([]);
+  const [mapPins, setMapPins] = useState(TRICHY_FULL_ECOSYSTEM_PINS);
   const [recentDonations, setRecentDonations] = useState([]);
   const [loading, setLoading] = useState(true);
 
